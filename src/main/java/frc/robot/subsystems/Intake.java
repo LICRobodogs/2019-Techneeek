@@ -1,0 +1,125 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.OI;
+import frc.robot.Robot;
+import frc.robot.RobotMap;
+import frc.util.ControlLoopable;
+
+public class Intake extends Subsystem implements ControlLoopable {
+    public static enum IntakeState {
+        SUCC_IN, SUCC_OUT
+    };
+
+	public static final double INTAKE_LOAD_SPEED = 0.65;
+	public static final double INTAKE_EJECT_SPEED = -0.55;
+
+	private static Solenoid leftSuctionSolenoid;
+	private static Solenoid rightSuctionSolenoid;
+    private TalonSRX topIntake, leftSuction, rightSuction;
+    private VictorSPX bottomIntake;
+
+	public Intake() {
+		try {
+			topIntake = new TalonSRX(RobotMap.TOP_INTAKE_TALON_ID);
+            bottomIntake = new VictorSPX(RobotMap.BOTTOM_INTAKE_VICTOR_ID);
+            leftSuction = new TalonSRX(RobotMap.LEFT_SUCTION_TALON_ID);
+            rightSuction = new TalonSRX(RobotMap.RIGHT_SUCTION_TALON_ID);
+            leftSuctionSolenoid = new Solenoid(RobotMap.LEFT_SUCTION_PCM_ID);
+            rightSuctionSolenoid = new Solenoid(RobotMap.RIGHT_SUCTION_PCM_ID);
+		} catch (Exception e) {
+			System.err.println("An error occurred in the Intake constructor");
+		}
+	}
+
+	public double getRightTriggerAxis() {
+		return OI.getInstance().getOperatorGamepad().getRightTriggerAxis() > 0.3
+				? OI.getInstance().getOperatorGamepad().getRightTriggerAxis()
+				: 0;
+	}
+
+	public double getLeftTriggerAxis() {
+		return OI.getInstance().getOperatorGamepad().getLeftTriggerAxis() > 0.3
+				? OI.getInstance().getOperatorGamepad().getLeftTriggerAxis()
+				: 0;
+	}
+
+	public void setSpeed() {
+		topIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+		bottomIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+	}
+
+	public void setSpeed(double speed) {
+		topIntake.set(ControlMode.PercentOutput, -speed);
+		bottomIntake.set(ControlMode.PercentOutput, -speed);
+	}
+
+	@Override
+	protected void initDefaultCommand() {
+
+	}
+
+    public void updateStatus(Robot.OperationMode operationMode) {
+		if (operationMode == Robot.OperationMode.COMPETITION) {
+			SmartDashboard.putNumber("Current Left Suction Current: ", leftSuction.getOutputCurrent());
+			SmartDashboard.putNumber("Current Right Suction Current: ", rightSuction.getOutputCurrent());
+			SmartDashboard.putNumber("Current Top Roller Current: ", topIntake.getOutputCurrent());
+		}
+	}
+
+
+	public boolean isSucc() {
+		return (leftSuction.getOutputCurrent() > 5 || rightSuction.getOutputCurrent() > 5) == true;
+	}
+
+	public boolean hasCargo() {
+		return topIntake.getOutputCurrent() > 5;
+	}
+
+	public void setSuction(IntakeState state) {
+		if (state == IntakeState.SUCC_IN) {
+			leftSuctionSolenoid.set(false);
+            rightSuctionSolenoid.set(false);
+            leftSuction.set(ControlMode.PercentOutput, 1);
+            rightSuction.set(ControlMode.PercentOutput, 1);
+		} else if (state == IntakeState.SUCC_OUT) {
+			leftSuctionSolenoid.set(true);
+            rightSuctionSolenoid.set(true);
+            leftSuction.set(ControlMode.PercentOutput, 0);
+            rightSuction.set(ControlMode.PercentOutput, 0);
+        }
+	}
+
+	@Override
+	public void controlLoopUpdate() {
+		// if(Math.abs(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis())>0&&innerWheelPiston.get()==Value.kReverse)
+		// setIntakePiston(IntakePistonState.IN);
+		// setSpeed(0.6*(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis()));
+	}
+
+	@Override
+	public void setPeriodMs(long periodMs) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void setSpeed(double mSpeed, double mSpeed2) {
+		topIntake.set(ControlMode.PercentOutput, mSpeed);
+		bottomIntake.set(ControlMode.PercentOutput, -mSpeed2);
+
+	}
+
+	public void setTopSpeed(double speed) {
+		topIntake.set(ControlMode.PercentOutput, speed);
+	}
+
+	public void setBottomSpeed(double speed) {
+		bottomIntake.set(ControlMode.PercentOutput, -speed);
+	}
+}
