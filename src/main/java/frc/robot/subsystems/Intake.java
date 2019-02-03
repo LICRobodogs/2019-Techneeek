@@ -51,13 +51,13 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSpeed() {
-		topIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
-		bottomIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+		topIntake.set(ControlMode.PercentOutput, -0.75 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+		bottomIntake.set(ControlMode.PercentOutput, 0.75 * (getRightTriggerAxis() - getLeftTriggerAxis()));
 	}
 
 	public void setSpeed(double speed) {
 		topIntake.set(ControlMode.PercentOutput, -speed);
-		bottomIntake.set(ControlMode.PercentOutput, -speed);
+		bottomIntake.set(ControlMode.PercentOutput, speed);
 	}
 
 	@Override

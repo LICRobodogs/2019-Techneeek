@@ -20,8 +20,8 @@ public class RobotMap {
 	public static final int DRIVETRAIN_RIGHT_MOTOR1_ID = 4;
 	public static final int DRIVETRAIN_RIGHT_MOTOR2_ID = 5;
 
-	public static final int TOP_INTAKE_TALON_ID = 0;
-	public static final int BOTTOM_INTAKE_VICTOR_ID = 0;
+	public static final int TOP_INTAKE_TALON_ID = 1;
+	public static final int BOTTOM_INTAKE_VICTOR_ID = 7;
 
 	public static final int ELEVATOR_TALON1_ID = 1;
 	public static final int ELEVATOR_TALON2_ID = 2;
@@ -35,11 +35,11 @@ public class RobotMap {
 
 
 	// PNEUMATICS
-	public static final int BRAKE_DEPLOY_PCM_ID = 0;
-	public static final int BRAKE_RELEASE_PCM_ID = 1;
+	public static final int BRAKE_DEPLOY_PCM_ID = 2;
+	public static final int BRAKE_RELEASE_PCM_ID = 3;
 
-	public static final int LEFT_SUCTION_PCM_ID = 2;
-	public static final int RIGHT_SUCTION_PCM_ID = 3;
+	public static final int LEFT_SUCTION_PCM_ID = 0;
+	public static final int RIGHT_SUCTION_PCM_ID = 1;
 
 	public static final int SHOOT_IN_PCM_ID = 4;
 	public static final int SHOOT_OUT_PCM_ID = 5;

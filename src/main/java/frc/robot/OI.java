@@ -27,11 +27,11 @@ public class OI {
 
 		// DRIVER CONTROLS
 
-		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.LEFT_BUMPER_BUTTON);
-		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
+		// JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.LEFT_BUMPER_BUTTON);
+		// armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
 
-		JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.RIGHT_BUMPER_BUTTON);
-		scoreHatch.whenPressed(new ScoreHatch());
+		// JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.RIGHT_BUMPER_BUTTON);
+		// scoreHatch.whenPressed(new ScoreHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
@@ -54,11 +54,11 @@ public class OI {
 		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.RIGHT_BUMPER_BUTTON);
 		suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 
-		JoystickButton armBrake = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);
-		armBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
+		// JoystickButton armBrake = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);
+		// armBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
 
-		JoystickButton armRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.X_BUTTON);
-		armRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
+		// JoystickButton armRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.X_BUTTON);
+		// armRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
 
 		// Pneumatics Diagonostics
 

@@ -48,10 +48,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     driveTrain = new DriveTrain();
 		intake = new Intake();
-		arm = new Arm();
+		// arm = new Arm();
 		oi = new OI();
 		controlLoop.addLoopable(driveTrain);
-		controlLoop.addLoopable(arm);
+		// controlLoop.addLoopable(arm);
     controlLoop.addLoopable(intake);
     
     setupAutonChooser();
@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
 		//autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
 		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
-		arm.setControlMode(ArmControlMode.MANUAL);
+		// arm.setControlMode(ArmControlMode.MANUAL);
 		driveTrain.setPeriodMs(10);
 		controlLoop.start();
 	}
@@ -97,7 +97,7 @@ public class Robot extends TimedRobot {
   }
 
   public void updateStatus() {
-		arm.updateStatus(operationMode);
+		// arm.updateStatus(operationMode);
 		driveTrain.updateStatus(operationMode);
 	}
   

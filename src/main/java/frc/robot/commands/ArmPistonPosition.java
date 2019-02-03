@@ -8,13 +8,13 @@ public class ArmPistonPosition extends Command {
 	private ArmPistonState state;
 
 	public ArmPistonPosition(ArmPistonState state) {
-		requires(Robot.arm);
+		// requires(Robot.arm);
 		this.state = state;
 	}
 
 	@Override
 	protected void initialize() {
-		Robot.arm.setArmPiston(state);
+		// Robot.arm.setArmPiston(state);
 	}
 
 	@Override

@@ -93,8 +93,8 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 		if (controlMode != DriveTrainControlMode.JOYSTICK || m_drive == null)
 			return;
 
-		m_moveInput = OI.getInstance().getMoveInput();
-		m_steerInput = OI.getInstance().getSteerInput();
+		m_moveInput = 0.5*OI.getInstance().getMoveInput();
+		m_steerInput = 0.5*OI.getInstance().getSteerInput();
 
 		m_drive.curvatureDrive(m_moveInput, m_steerInput, true);
 	}
