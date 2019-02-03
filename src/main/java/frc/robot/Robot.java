@@ -7,23 +7,43 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.Autonomous.Framework.AutoModeExecuter;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmControlMode;
+import frc.robot.subsystems.DriveBaseSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Intake;
 import frc.util.ControlLooper;
+import frc.util.CustomSubsystem;
+import frc.util.ThreadRateControl;
+import frc.util.drivers.Controllers;
+import frc.util.loops.Looper;
+import frc.util.loops.RobotStateEstimator;
 
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot { 
   public static DriveTrain driveTrain;
   public static Intake intake;
-  public static Arm arm;
+	public static Arm arm;
+
+
+	private Controllers robotControllers;
+	
+	private ArrayList<CustomSubsystem> subsystemVector; //use so we can instantiate everything in a forloop and then for every subsystem in here, register its loop  in the looper
+	private Looper mLooper;
+	private DriveBaseSubsystem driveBaseSubsystem;
+	private RobotStateEstimator robotStateEstimator;
+	private ThreadRateControl threadRateControl = new ThreadRateControl();
+	private AutoModeExecuter autoModeExecuter;
+	// final Ps4_Controller controller;	
 
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
@@ -44,6 +64,8 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
+	
+	 /* commented out for test build
   @Override
   public void robotInit() {
     driveTrain = new DriveTrain();
@@ -55,7 +77,19 @@ public class Robot extends TimedRobot {
     controlLoop.addLoopable(intake);
     
     setupAutonChooser();
-  }
+	}
+	*/
+	@Override
+  public void robotInit() {
+    robotControllers = Controllers.getInstance(); //want to spawn asap 
+		mLooper = new Looper();
+
+		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
+		driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
+		robotStateEstimator = RobotStateEstimator.getInstance();
+		mLooper.register(robotStateEstimator); 
+
+	}
 
   @Override
   public void robotPeriodic() {
@@ -106,5 +140,32 @@ public class Robot extends TimedRobot {
 		// autonChooser.addDefault("Straight Only", new StraightOnly());
 		autonChooser.addOption("Do Nothing", new CommandGroup());
 		SmartDashboard.putData("Auton Setting", autonChooser);
+	}
+
+	
+	public void disabled() {
+		exitAuto();//need to call bc 1 of biggest problems is auton ends & robot stuck in pathfinding mode & teleop can't control
+		//force robot to exit auto and into teleop
+		mLooper.stop();
+		threadRateControl.start(true); //threadrate control is utility to help with loop timing so you don't have to do try catch everytime
+
+		while (isDisabled()) {
+			driveBaseSubsystem.setBrakeMode(false);
+			threadRateControl.doRateControl(100);
+		}
+
+	}
+
+	private void exitAuto() {
+		try {
+			if (autoModeExecuter != null) //automode executer is the thing that actually runs our autonmode
+				autoModeExecuter.stop();
+
+			// FileReporter.getInstance().terminate();
+
+			autoModeExecuter = null;
+		} catch (Throwable t) {
+			// ConsoleReporter.report(t, MessageLevel.ERROR);
+		}
 	}
 }

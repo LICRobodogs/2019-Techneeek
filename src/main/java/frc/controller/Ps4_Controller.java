@@ -1,23 +1,30 @@
 package frc.controller;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
+import frc.util.Constants;
 
 
 
 public class Ps4_Controller extends Joystick {
     
-    static final int LEFT_TRIGGER_AXIS = 3;
-    static final int RIGHT_TRIGGER_AXIS = 4;
-    static final int LEFT_X_AXIS = 0;
-    private static final double DEADZONE = 0.10;
-
-	public static final int LEFT_BUMPER_BUTTON = 5;
-	public static final int RIGHT_BUMPER_BUTTON = 6;
+    static final int leftTriggerAxis = Constants.leftTriggerAxis;
+    static final int rightTriggerAxis = Constants.rightTriggerAxis;
+    static final int leftAnalogAxis = Constants.leftAnalogAxis;
+    private static final double DEADZONE = Constants.DEADZONE;
+    static final int squareIndex = Constants.squareIndex;
+    static final int xIndex = Constants.xIndex;
+    static final int circleIndex = Constants.circleIndex;
+    static final int triangleIndex = Constants.triangleIndex;
+    static final int lbIndex = Constants.lbIndex;
+	static final int rbIndex = Constants.rbIndex;
+	
+	public enum Buttons {X,CIRCLE,SQUARE,TRIABLE,LB,RB}
+	public static enum Directions {UP, DOWN, LEFT, RIGHT}
 
     public Ps4_Controller(int axis) {
         super(axis);
     }
 
+	//WHY
     public Joystick getJoyStick() {
 		return this;
 	}
@@ -31,15 +38,13 @@ public class Ps4_Controller extends Joystick {
     }
 
     public double getLeftTrigger() {
-        return getAxisWithDeadZoneCheck(this.getRawAxis(LEFT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(leftTriggerAxis));
     }
     public double getRightTrigger() {
-        // System.out.print(this.getRawAxis(rightTriggerAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(RIGHT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(rightTriggerAxis));
     }
     public double getLeftAnalog() {
-        // System.out.print(this.getRawAxis(leftAnalogAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(LEFT_X_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(leftAnalogAxis));
     }
     private boolean inDeadZone(double input) {
 		boolean inDeadZone;
@@ -50,7 +55,7 @@ public class Ps4_Controller extends Joystick {
 		}
 		return inDeadZone;
 	}
-
+    
 	private double getAxisWithDeadZoneCheck(double input) {
 		if (inDeadZone(input)) {
 			input = 0.0;
@@ -58,73 +63,57 @@ public class Ps4_Controller extends Joystick {
 		return input;
     }
 
-    /**
+	public boolean isButtonPressed(String button) {
+        if (!contains(button)) {
+            throw new Error("Illegal button type passed");
+        }
+        switch(button) {
+            case "X":
+                return this.getRawButton(xIndex);
+            case "CIRCLE":
+                return this.getRawButton(circleIndex);
+            case "SQUARE":
+                return this.getRawButton(squareIndex);
+            case "TRIANGLE":
+                return this.getRawButton(triangleIndex);
+            case "LB":    
+                return this.getRawButton(lbIndex);
+            case "RB":
+                return this.getRawButton(rbIndex);
+            default:
+                return false;
+        }
+	}
+	public static boolean contains(String button) {
+        for (Buttons b: Buttons.values()) {
+            if (b.name().equals(button)) {
+                return true;
+            }
+        }
+        return false;
+	}
+	public Directions getDPadDirection() {
+		switch(getDpadAngle()) {
+			case 0:
+				return Directions.UP;
+			case 90:
+				return Directions.RIGHT;
+			case 180:
+				return Directions.DOWN;
+			case 270:
+				return Directions.LEFT;
+			default:
+				throw new Error("Error with angle of Dpad");
+		}
+	}
+	public boolean isDPadDirection(String direction) {
+		return direction.toUpperCase() == getDPadDirection().name();
+	}
+	 /**
 	 * Returns -1 if nothing is pressed, or the angle of the button pressed 0 = up,
 	 * 90 = right, etc.
 	 */
 	public int getDpadAngle() {
 		return this.getPOV();
-	}
-
-	public boolean getRawDPadUp() {
-		return getDpadAngle() == 0;
-	}
-
-	public DPadButton getDPadUp() {
-		return new DPadButton(this, DPadButton.Direction.UP);
-	}
-
-	public boolean getRawDPadDown() {
-		return getDpadAngle() == 180;
-	}
-
-	public DPadButton getDPadDown() {
-		return new DPadButton(this, DPadButton.Direction.DOWN);
-	}
-
-	public boolean getRawDPadLeft() {
-		return getDpadAngle() == 270;
-	}
-
-	public DPadButton getDPadLeft() {
-		return new DPadButton(this, DPadButton.Direction.LEFT);
-	}
-
-	public boolean getRawDPadRight() {
-		return getDpadAngle() == 90;
-	}
-
-	public DPadButton getDPadRight() {
-        return new DPadButton(this, DPadButton.Direction.RIGHT);
-    }
-    
-    public static class DPadButton extends Button {
-		public static enum Direction {
-			UP, DOWN, LEFT, RIGHT
-		}
-
-		private Ps4_Controller gamepad;
-		private Direction direction;
-
-		public DPadButton(Ps4_Controller gamepad, Direction direction) {
-			this.gamepad = gamepad;
-			this.direction = direction;
-		}
-
-		@Override
-		public boolean get() {
-			switch (direction) {
-			case UP:
-				return gamepad.getRawDPadUp();
-			case DOWN:
-				return gamepad.getRawDPadDown();
-			case LEFT:
-				return gamepad.getRawDPadLeft();
-			case RIGHT:
-				return gamepad.getRawDPadRight();
-			default: // Never reached
-				return false;
-			}
-		}
 	}
 }
