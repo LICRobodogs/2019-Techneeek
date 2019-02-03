@@ -13,11 +13,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Autonomous.Framework.AutoModeBase;
 import frc.Autonomous.Framework.AutoModeExecuter;
 import frc.Autonomous.Modes.BasicMode;
+import frc.controller.Ps4_Controller;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.DriveBaseSubsystem;
@@ -45,7 +48,11 @@ public class Robot extends TimedRobot {
 	private RobotStateEstimator robotStateEstimator;
 	private ThreadRateControl threadRateControl = new ThreadRateControl();
 	private AutoModeExecuter autoModeExecuter;
-	// final Ps4_Controller controller;	
+	private Ps4_Controller ps_controller;	
+
+	//can delete below
+	public DifferentialDrive myDrive;
+
 
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
@@ -85,7 +92,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     robotControllers = Controllers.getInstance(); //want to spawn asap 
 		mLooper = new Looper();
-
+		ps_controller = new Ps4_Controller(0);
 		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
 		driveBaseSubsystem.init();
 		driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
@@ -108,20 +115,60 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
   }
 
+//   @Override
+// 	public void teleopInit() {
+// 		//autonomousCommand.cancel();
+// 		Scheduler.getInstance().removeAll();
+// 		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
+// 		arm.setControlMode(ArmControlMode.MANUAL);
+// 		driveTrain.setPeriodMs(10);
+// 		controlLoop.start();
+// 	}
+
   @Override
 	public void teleopInit() {
 		//autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
 		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
-		arm.setControlMode(ArmControlMode.MANUAL);
+		// arm.setControlMode(ArmControlMode.MANUAL);
 		driveTrain.setPeriodMs(10);
-		controlLoop.start();
+		// controlLoop.start();
+		myDrive = new DifferentialDrive(driveBaseSubsystem.getLeftMaster(), driveBaseSubsystem.getRightMaster());
 	}
 
+//   @Override
+//   public void teleopPeriodic() {
+//     updateStatus();
+// 		Scheduler.getInstance().run();
+//   }
   @Override
   public void teleopPeriodic() {
-    updateStatus();
-		Scheduler.getInstance().run();
+    
+    myDrive.curvatureDrive(ps_controller.xSpeed(), ps_controller.zRotation(), true);
+    if (ps_controller.isButtonPressed("SQUARE")) {
+      System.out.println("Left Sensor Vel:" + driveBaseSubsystem.getLeftVelocityInchesPerSec());
+      System.out.println("Sensor Pos:" + driveBaseSubsystem.getLeftDistanceInches());
+      System.out.println("Angle is "+ driveBaseSubsystem.getGyroAngle());
+      // System.out.println("Out %" + base.dt.leftDrive1.getMotorOutputPercent());
+      // System.out.println("Out Of Phase:" + _faults.SensorOutOfPhase);
+    }
+    if (ps_controller.isButtonPressed("CIRCLE")) {
+      System.out.println("Right Sensor Vel:" + driveBaseSubsystem.getRightVelocityInchesPerSec());
+      System.out.println("Sensor Pos:" + driveBaseSubsystem.getRightDistanceInches());
+      // System.out.println("Out %" + base.dt.leftDrive1.getMotorOutputPercent());
+      // System.out.println("Out Of Phase:" + _faults.SensorOutOfPhase);
+    }
+    /*
+    if (base.controller.getRawButton(2)){
+      base.intake.getController().set(ControlMode.PercentOutput, -1);
+      base.suctionSolenoid.set(true);
+    }
+    
+    if (base.controller.getRawButton(4)){
+      base.intake.getController().set(ControlMode.PercentOutput, 0);
+      base.suctionSolenoid.set(false);
+    }
+    */
   }
 
   public void disabledInit() {

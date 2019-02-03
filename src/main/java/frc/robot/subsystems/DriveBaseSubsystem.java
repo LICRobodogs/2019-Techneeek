@@ -219,6 +219,12 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 		gyro.reset();
 		gyro.setAngleAdjustment(angle);
      }
+     public DunkTalonSRX getLeftMaster() {
+          return leftMaster;
+     }
+     public DunkTalonSRX getRightMaster() {
+          return rightMaster;
+     }
      
      /**
 	 * Configures the drivebase to drive a path. Used for autonomous driving
