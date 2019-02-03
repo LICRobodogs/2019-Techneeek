@@ -27,11 +27,11 @@ public class OI {
 
 		// DRIVER CONTROLS
 
-		// JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.LEFT_BUMPER_BUTTON);
-		// armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
+		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.LEFT_BUMPER_BUTTON);
+		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
 
-		// JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.RIGHT_BUMPER_BUTTON);
-		// scoreHatch.whenPressed(new ScoreHatch());
+		JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.RIGHT_BUMPER_BUTTON);
+		scoreHatch.whenPressed(new ScoreHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));

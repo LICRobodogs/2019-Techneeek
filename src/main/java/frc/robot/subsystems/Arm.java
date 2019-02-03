@@ -54,25 +54,25 @@ public class Arm extends Subsystem implements ControlLoopable {
 		try {
 			shootPiston = new DoubleSolenoid(RobotMap.SHOOT_IN_PCM_ID, RobotMap.SHOOT_OUT_PCM_ID);
 
-			armTalon = new TalonSRX(RobotMap.WRIST_TALON_ID);
-			armFollower = new VictorSPX(RobotMap.WRIST_VICTOR_ID);
+			// armTalon = new TalonSRX(RobotMap.WRIST_TALON_ID);
+			// armFollower = new VictorSPX(RobotMap.WRIST_VICTOR_ID);
 
-			armFollower.follow(armTalon);
+			// armFollower.follow(armTalon);
 
-			armTalon.setNeutralMode(NeutralMode.Brake);
-			armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
-			armTalon.setSensorPhase(true);
-			armTalon.config_kP(0, mArmKp, 10);
-			armTalon.config_kI(0, mArmKi, 10);
-			armTalon.config_kD(0, mArmKd, 10);
-			armTalon.config_kF(0, mArmKf, 10);
-			armTalon.config_IntegralZone(0, mArmIZone, 10);
-			armTalon.configClosedloopRamp(mArmRampRate, 10);
-			armTalon.configNominalOutputForward(0, 10);
-			armTalon.configNominalOutputReverse(0, 10);
-			armTalon.configPeakOutputForward(ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
-			armTalon.configPeakOutputReverse(-ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
-			armTalon.set(ControlMode.PercentOutput, 0);
+			// armTalon.setNeutralMode(NeutralMode.Brake);
+			// armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+			// armTalon.setSensorPhase(true);
+			// armTalon.config_kP(0, mArmKp, 10);
+			// armTalon.config_kI(0, mArmKi, 10);
+			// armTalon.config_kD(0, mArmKd, 10);
+			// armTalon.config_kF(0, mArmKf, 10);
+			// armTalon.config_IntegralZone(0, mArmIZone, 10);
+			// armTalon.configClosedloopRamp(mArmRampRate, 10);
+			// armTalon.configNominalOutputForward(0, 10);
+			// armTalon.configNominalOutputReverse(0, 10);
+			// armTalon.configPeakOutputForward(ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
+			// armTalon.configPeakOutputReverse(-ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
+			// armTalon.set(ControlMode.PercentOutput, 0);
 
 		} catch (Exception e) {
 			System.err.println("An error occurred in the Arm constructor");
@@ -96,7 +96,8 @@ public class Arm extends Subsystem implements ControlLoopable {
 	}
 
 	public boolean isBrakeEngaged() {
-		return brakePiston.get() == Value.kReverse;
+		return true;
+		// return brakePiston.get() == Value.kReverse;
     }
 
 	public void setArmAngle() {

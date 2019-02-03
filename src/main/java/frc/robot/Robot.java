@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     driveTrain = new DriveTrain();
 		intake = new Intake();
-		// arm = new Arm();
+		arm = new Arm();
 		oi = new OI();
 		controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
