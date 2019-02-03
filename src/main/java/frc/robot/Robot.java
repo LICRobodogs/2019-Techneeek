@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.Autonomous.Framework.AutoModeBase;
 import frc.Autonomous.Framework.AutoModeExecuter;
+import frc.Autonomous.Modes.BasicMode;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.DriveBaseSubsystem;
@@ -85,6 +87,7 @@ public class Robot extends TimedRobot {
 		mLooper = new Looper();
 
 		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
+		driveBaseSubsystem.init();
 		driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
 		robotStateEstimator = RobotStateEstimator.getInstance();
 		mLooper.register(robotStateEstimator); 
@@ -140,6 +143,27 @@ public class Robot extends TimedRobot {
 		// autonChooser.addDefault("Straight Only", new StraightOnly());
 		autonChooser.addOption("Do Nothing", new CommandGroup());
 		SmartDashboard.putData("Auton Setting", autonChooser);
+	}
+	public void autonomous() {
+//		Controllers.getInstance().getCompressor().start();
+//		Controllers.getInstance().getCompressor().setClosedLoopControl(true);
+
+		mLooper.start(true);
+		driveBaseSubsystem.setBrakeMode(true);
+		autoModeExecuter = new AutoModeExecuter();
+
+
+		AutoModeBase autoMode = new BasicMode();
+		
+		if (autoMode != null)
+			autoModeExecuter.setAutoMode(autoMode);
+		else
+			return;
+
+		autoModeExecuter.start();
+		threadRateControl.start(true);
+
+		while (isAutonomous() && isEnabled()) {threadRateControl.doRateControl(100);}
 	}
 
 	

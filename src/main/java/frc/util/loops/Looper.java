@@ -25,25 +25,34 @@ public class Looper {
     private final Object taskRunningLock_ = new Object();
     private double timestamp_ = 0;
     private double dt_ = 0;
+    private boolean isFirstStart = true;
+    private boolean isFirstRun = true;
+
+    private boolean isAuto = false;
 
     private final CrashTrackingRunnable runnable_ = new CrashTrackingRunnable() {
         @Override
         public void runCrashTracked() {
             synchronized (taskRunningLock_) {
+                if (isFirstRun) {
+                    Thread.currentThread().setPriority(Constants.kLooperThreadPriority);
+                    isFirstRun = false;
+                }
+
                 if (running_) {
                     double now = Timer.getFPGATimestamp();
-
                     for (Loop loop : loops_) {
-                        loop.onLoop(now);
+                        loop.onLoop(now, isAuto);
                     }
 
                     dt_ = now - timestamp_;
                     timestamp_ = now;
+
+//                    outputToSmartDashboard()
                 }
             }
         }
     };
-
     public Looper() {
         notifier_ = new Notifier(runnable_);
         running_ = false;
@@ -55,16 +64,33 @@ public class Looper {
             loops_.add(loop);
         }
     }
+    public synchronized void register(List<Loop> loopArr) {
+        synchronized (taskRunningLock_) {
+            for (Loop loop: loopArr) {
+                loops_.add(loop);
+            }
+        }
+    }
 
-    public synchronized void start() {
+
+    public synchronized void start(boolean isAuto) {
+        this.isAuto = isAuto;
+        start();
+    }
+
+    private synchronized void start() {
         if (!running_) {
-            System.out.println("Starting loops");
+            //ConsoleReporter.report("Starting loops");
             synchronized (taskRunningLock_) {
                 timestamp_ = Timer.getFPGATimestamp();
                 for (Loop loop : loops_) {
+                    if (isFirstStart) {
+                        loop.onFirstStart(timestamp_);
+                    }
                     loop.onStart(timestamp_);
                 }
                 running_ = true;
+                isFirstStart = false;
             }
             notifier_.startPeriodic(kPeriod);
         }
@@ -72,13 +98,13 @@ public class Looper {
 
     public synchronized void stop() {
         if (running_) {
-            System.out.println("Stopping loops");
+            //ConsoleReporter.report("Stopping loops");
             notifier_.stop();
             synchronized (taskRunningLock_) {
                 running_ = false;
                 timestamp_ = Timer.getFPGATimestamp();
                 for (Loop loop : loops_) {
-                    System.out.println("Stopping " + loop);
+                    //ConsoleReporter.report("Stopping " + loop);
                     loop.onStop(timestamp_);
                 }
             }

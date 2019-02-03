@@ -82,7 +82,7 @@ public class DriveBaseSubsystem implements CustomSubsystem {
                }
           }
           @Override
-          public void onLoop(double timestamp) {
+          public void onLoop(double timestamp, boolean isAuto) {
                synchronized(DriveBaseSubsystem.this) {
                     switch(controlMode) {
                          case OPEN_LOOP:
@@ -321,6 +321,6 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 
      @Override
      public void registerEnabledLoops(Looper in) {
-
+          in.register(mLoop);
      }
 }

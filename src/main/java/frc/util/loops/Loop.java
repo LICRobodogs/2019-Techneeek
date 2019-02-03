@@ -6,9 +6,11 @@ package frc.util.loops;
  */
 public interface Loop {
 
-    public void onStart(double timestamp);
+    void onFirstStart(double timestamp);
 
-    public void onLoop(double timestamp);
+    void onStart(double timestamp);
 
-    public void onStop(double timestamp);
+    void onLoop(double timestamp, boolean isAuto);
+
+    void onStop(double timestamp);
 }

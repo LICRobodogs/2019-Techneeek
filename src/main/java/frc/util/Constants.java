@@ -90,5 +90,10 @@ public class Constants {
 	public static final double kPathFollowingGoalVelTolerance = 18.0;
 	public static final double kPathStopSteeringDistance = 9.0;
 
+		//Thread prioritization - 5 is default
+		
+		public static final int kLooperThreadPriority = Thread.MAX_PRIORITY;
+		
+
 
 }
