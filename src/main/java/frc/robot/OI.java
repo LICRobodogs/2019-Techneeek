@@ -24,7 +24,7 @@ public class OI {
 
 	private OI() {
 		m_driverGamepad = Ps4_Controller.getInstance();
-		m_operatorGamepad = new GamePad(Constants.OPERATOR_GAMEPAD_USB_ID);
+		m_operatorGamepad = GamePad.getInstance();
 
 		// DRIVER CONTROLS
 

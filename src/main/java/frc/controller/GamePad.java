@@ -11,9 +11,15 @@ import frc.util.Constants;
  * @author frc1675
  */
 public class GamePad {
+	public static GamePad instance = null;
+	public static GamePad getInstance() {
+		if (instance == null)
+			instance = new GamePad(Constants.OPERATOR_GAMEPAD_USB_ID);
+		return instance;
+	}
 	private Joystick stick;
 
-	public GamePad(int portNumber) {
+	private GamePad(int portNumber) {
 		stick = new Joystick(portNumber);
 	}
 
