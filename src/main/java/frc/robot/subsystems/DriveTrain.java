@@ -3,13 +3,13 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
-import frc.util.*;
-import frc.robot.*;
-import frc.robot.commands.*;
-
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.OI;
+import frc.robot.Robot;
+import frc.robot.commands.JoystickDrive;
+import frc.util.Constants;
+import frc.util.ControlLoopable;
 
 public class DriveTrain extends Subsystem implements ControlLoopable {
 	private static DriveTrain instance = null;
@@ -27,12 +27,12 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 	// Input Device Constants
 
-	public static final double DRIVER_JOY1_C1 = .0089;
-	public static final double DRIVER_JOY1_C2 = .0737;
-	public static final double DRIVER_JOY1_C3 = 2.4126;
+	public static final double DRIVER_JOY1_C1 = Constants.DRIVER_JOY1_C1;
+	public static final double DRIVER_JOY1_C2 = Constants.DRIVER_JOY1_C2;
+	public static final double DRIVER_JOY1_C3 = Constants.DRIVER_JOY1_C3;
 
-	private double m_moveInput = 0.0;
-	private double m_steerInput = 0.0;
+	private double m_moveInput = Constants.m_moveInput;
+	private double m_steerInput = Constants.m_steerInput;
 
 	// NavX
 
@@ -44,18 +44,18 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	// Robot Intrinsics
 	public static double m_periodMs;
 
-	public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 4.0;
-	public static final int DRIVE_TICKS_PER_FOOT = 3978; //Move robot 10 feet, get position from sensor, divide by 10
+	public static final double ENCODER_TICKS_TO_INCHES = Constants.ENCODER_TICKS_TO_INCHES;
+	public static final int DRIVE_TICKS_PER_FOOT = Constants.DRIVE_TICKS_PER_FOOT; //Move robot 10 feet, get position from sensor, divide by 10
 
-	public static final double LEFT_P = 1.0;
-	public static final double LEFT_I = 0.0;
-	public static final double LEFT_D = 0.0;
-	public static final double LEFT_F = 1023/5816;
+	public static final double LEFT_P = Constants.LEFT_P;
+	public static final double LEFT_I = Constants.LEFT_I;
+	public static final double LEFT_D = Constants.LEFT_D;
+	public static final double LEFT_F = Constants.LEFT_F;
 
-	public static final double RIGHT_P = 1.0;
-	public static final double RIGHT_I = 0.0;
-	public static final double RIGHT_D = 0.0;
-	public static final double RIGHT_F = 1023/5574;
+	public static final double RIGHT_P = Constants.RIGHT_P;
+	public static final double RIGHT_I = Constants.RIGHT_I;
+	public static final double RIGHT_D = Constants.RIGHT_D;
+	public static final double RIGHT_F = Constants.RIGHT_F;
 
     private CANSparkMax leftDrive1;
     private CANSparkMax leftDrive2;

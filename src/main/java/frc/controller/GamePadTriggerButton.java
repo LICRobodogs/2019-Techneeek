@@ -1,19 +1,9 @@
 package frc.controller;
 
 import edu.wpi.first.wpilibj.buttons.Button;
+import frc.util.Constants;
 
 public class GamePadTriggerButton extends Button {
-
-	public static final int RIGHT_TRIGGER = 3;
-	public static final int LEFT_TRIGGER = 2;
-	// public static final int RIGHT_AXIS_UP_TRIGGER = 2;
-	// public static final int RIGHT_AXIS_DOWN_TRIGGER = 3;
-	public static final int RIGHT_AXIS_RIGHT_TRIGGER = 4;
-	public static final int RIGHT_AXIS_LEFT_TRIGGER = 5;
-	public static final int LEFT_AXIS_UP_TRIGGER = 6;
-	public static final int LEFT_AXIS_DOWN_TRIGGER = 7;
-	public static final int LEFT_AXIS_RIGHT_TRIGGER = 8;
-	public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
 
 	private GamePad m_controller;
 	private int m_trigger;
@@ -24,9 +14,9 @@ public class GamePadTriggerButton extends Button {
 	}
 
 	public boolean get() {
-		if (m_trigger == RIGHT_TRIGGER) {
+		if (m_trigger == Constants.RIGHT_TRIGGER) {
 			return m_controller.getRightTrigger();
-		} else if (m_trigger == LEFT_TRIGGER) {
+		} else if (m_trigger == Constants.LEFT_TRIGGER) {
 			return m_controller.getLeftTrigger();
 		}
 		/*
@@ -34,17 +24,17 @@ public class GamePadTriggerButton extends Button {
 		 * m_controller.getRightAxisUpTrigger(); } else if (m_trigger ==
 		 * RIGHT_AXIS_DOWN_TRIGGER) { return m_controller.getRightAxisDownTrigger(); }
 		 */
-		else if (m_trigger == RIGHT_AXIS_RIGHT_TRIGGER) {
+		else if (m_trigger == Constants.RIGHT_AXIS_RIGHT_TRIGGER) {
 			return m_controller.getRightAxisRightTrigger();
-		} else if (m_trigger == RIGHT_AXIS_LEFT_TRIGGER) {
+		} else if (m_trigger == Constants.RIGHT_AXIS_LEFT_TRIGGER) {
 			return m_controller.getRightAxisLeftTrigger();
-		} else if (m_trigger == LEFT_AXIS_UP_TRIGGER) {
+		} else if (m_trigger == Constants.LEFT_AXIS_UP_TRIGGER) {
 			return m_controller.getLeftAxisUpTrigger();
-		} else if (m_trigger == LEFT_AXIS_DOWN_TRIGGER) {
+		} else if (m_trigger == Constants.LEFT_AXIS_DOWN_TRIGGER) {
 			return m_controller.getLeftAxisDownTrigger();
-		} else if (m_trigger == LEFT_AXIS_RIGHT_TRIGGER) {
+		} else if (m_trigger == Constants.LEFT_AXIS_RIGHT_TRIGGER) {
 			return m_controller.getLeftAxisRightTrigger();
-		} else if (m_trigger == LEFT_AXIS_LEFT_TRIGGER) {
+		} else if (m_trigger == Constants.LEFT_AXIS_LEFT_TRIGGER) {
 			return m_controller.getLeftAxisLeftTrigger();
 		}
 		return false;
