@@ -19,6 +19,13 @@ import frc.robot.commands.JoystickArm;
 import frc.util.ControlLoopable;
 
 public class Arm extends Subsystem implements ControlLoopable {
+	private static Arm instance = null;
+
+	public static Arm getInstance() {
+		if (instance == null)
+			instance = new Arm();
+		return instance;
+	}
     public static enum ArmPistonState {
         BRAKE, RELEASE, SHOOT, RELOAD
     }
@@ -50,7 +57,7 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 	private DigitalInput homeLimit;
 
-	public Arm() {
+	private Arm() {
 		try {
 			shootPiston = new DoubleSolenoid(RobotMap.SHOOT_IN_PCM_ID, RobotMap.SHOOT_OUT_PCM_ID);
 

@@ -13,6 +13,12 @@ import frc.robot.RobotMap;
 import frc.util.ControlLoopable;
 
 public class Intake extends Subsystem implements ControlLoopable {
+	private static Intake instance = null;
+	public static Intake getInstance() {
+		if (instance == null)
+			instance = new Intake();
+		return instance;
+	}
     public static enum IntakeState {
         SUCC_IN, SUCC_OUT
     };
@@ -25,7 +31,7 @@ public class Intake extends Subsystem implements ControlLoopable {
     private TalonSRX topIntake, leftSuction, rightSuction;
     private VictorSPX bottomIntake;
 
-	public Intake() {
+	private Intake() {
 		try {
 			topIntake = new TalonSRX(RobotMap.TOP_INTAKE_TALON_ID);
             bottomIntake = new VictorSPX(RobotMap.BOTTOM_INTAKE_VICTOR_ID);

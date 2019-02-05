@@ -46,10 +46,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    driveTrain = new DriveTrain();
-		intake = new Intake();
-		arm = new Arm();
-		oi = new OI();
+    driveTrain = DriveTrain.getInstance();
+		intake = Intake.getInstance();
+		arm = Arm.getInstance();
+		oi = OI.getInstance();
 		controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
     controlLoop.addLoopable(intake);

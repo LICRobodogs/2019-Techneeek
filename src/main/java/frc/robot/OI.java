@@ -21,7 +21,7 @@ public class OI {
 	private Ps4_Controller m_driverGamepad;
 	private GamePad m_operatorGamepad;
 
-	public OI() {
+	private OI() {
 		m_driverGamepad = new Ps4_Controller(RobotMap.DRIVER_GAMEPAD_USB_ID);
 		m_operatorGamepad = new GamePad(RobotMap.OPERATOR_GAMEPAD_USB_ID);
 

@@ -12,6 +12,15 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTrain extends Subsystem implements ControlLoopable {
+	private static DriveTrain instance = null;
+	
+	public static DriveTrain getInstance() {
+		if (instance == null)
+			instance = new DriveTrain();
+		return instance;
+	}
+
+	
 	public static enum DriveTrainControlMode {
 		JOYSTICK, AUTON, HOLD, TEST
 	};
@@ -58,7 +67,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	@SuppressWarnings("unused")
 	private static boolean isRunning;
 
-	public DriveTrain() {
+	private DriveTrain() {
 		try {
 			leftDrive1 = new CANSparkMax(2,CANSparkMaxLowLevel.MotorType.kBrushless);
             leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
