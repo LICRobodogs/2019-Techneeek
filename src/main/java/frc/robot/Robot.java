@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -23,7 +24,8 @@ import frc.util.ControlLooper;
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Intake intake;
-  public static Arm arm;
+	public static Arm arm;
+	public static Compressor comp;
 
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
@@ -53,7 +55,7 @@ public class Robot extends TimedRobot {
 		controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
     controlLoop.addLoopable(intake);
-    
+    comp = new Compressor();
     setupAutonChooser();
   }
 
