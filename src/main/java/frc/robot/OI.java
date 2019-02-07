@@ -14,6 +14,7 @@ import frc.robot.commands.IntakeSuction;
 import frc.robot.commands.ScoreHatch;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
+import frc.util.Constants;
 
 public class OI {
     private static OI instance;
@@ -21,16 +22,16 @@ public class OI {
 	private Ps4_Controller m_driverGamepad;
 	private GamePad m_operatorGamepad;
 
-	public OI() {
-		m_driverGamepad = new Ps4_Controller(RobotMap.DRIVER_GAMEPAD_USB_ID);
-		m_operatorGamepad = new GamePad(RobotMap.OPERATOR_GAMEPAD_USB_ID);
+	private OI() {
+		m_driverGamepad = Ps4_Controller.getInstance();
+		m_operatorGamepad = GamePad.getInstance();
 
 		// DRIVER CONTROLS
 
-		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.LEFT_BUMPER_BUTTON);
+		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
 
-		JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Ps4_Controller.RIGHT_BUMPER_BUTTON);
+		JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
 		scoreHatch.whenPressed(new ScoreHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
@@ -40,22 +41,22 @@ public class OI {
 		// armGearboxDogClimb.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.CLIMB_DOG));
 
 		// OPERATOR CONTROLS
-		GamePadTriggerButton intakeOut = new GamePadTriggerButton(m_operatorGamepad, GamePad.LEFT_TRIGGER_AXIS);
+		GamePadTriggerButton intakeOut = new GamePadTriggerButton(m_operatorGamepad, Constants.LEFT_TRIGGER_AXIS);
 		intakeOut.whileHeld(new IntakeSpeed());
 		intakeOut.whenReleased(new IntakeSpeedOff());
 
-		GamePadTriggerButton intakeIn = new GamePadTriggerButton(m_operatorGamepad, GamePad.RIGHT_TRIGGER_AXIS);
+		GamePadTriggerButton intakeIn = new GamePadTriggerButton(m_operatorGamepad, Constants.RIGHT_TRIGGER_AXIS);
 		intakeIn.whileHeld(new IntakeSpeed());
 		intakeIn.whenReleased(new IntakeSpeedOff());
 
-		JoystickButton intakeHold = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);
+		JoystickButton intakeHold = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
 		intakeHold.whileHeld(new IntakeSpeed(.275));
 		intakeHold.whenReleased(new IntakeSpeedOff());
 
-		JoystickButton suctionRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.LEFT_BUMPER_BUTTON);
+		JoystickButton suctionRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
-		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.RIGHT_BUMPER_BUTTON);
+		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
 		suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 
 		// JoystickButton armBrake = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);

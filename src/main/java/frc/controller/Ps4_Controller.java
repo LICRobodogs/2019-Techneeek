@@ -1,20 +1,19 @@
 package frc.controller;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
-
+import frc.util.Constants;
 
 
 public class Ps4_Controller extends Joystick {
+	private static Ps4_Controller instance = null;
+	public static Ps4_Controller getInstance() {
+		if (instance == null)
+			instance = new Ps4_Controller(Constants.DRIVER_GAMEPAD_USB_ID);
+		return instance;
+	}
     
-    static final int LEFT_TRIGGER_AXIS = 3;
-    static final int RIGHT_TRIGGER_AXIS = 4;
-    static final int LEFT_X_AXIS = 0;
-    private static final double DEADZONE = 0.10;
 
-	public static final int LEFT_BUMPER_BUTTON = 5;
-	public static final int RIGHT_BUMPER_BUTTON = 6;
-
-    public Ps4_Controller(int axis) {
+    private Ps4_Controller(int axis) {
         super(axis);
     }
 
@@ -31,19 +30,19 @@ public class Ps4_Controller extends Joystick {
     }
 
     public double getLeftTrigger() {
-        return getAxisWithDeadZoneCheck(this.getRawAxis(LEFT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_TRIGGER_AXIS));
     }
     public double getRightTrigger() {
         // System.out.print(this.getRawAxis(rightTriggerAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(RIGHT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.RIGHT_TRIGGER_AXIS));
     }
     public double getLeftAnalog() {
         // System.out.print(this.getRawAxis(leftAnalogAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(LEFT_X_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_X_AXIS));
     }
     private boolean inDeadZone(double input) {
 		boolean inDeadZone;
-		if (Math.abs(input) < DEADZONE) {
+		if (Math.abs(input) < Constants.DEADZONE) {
 			inDeadZone = true;
 		} else {
 			inDeadZone = false;

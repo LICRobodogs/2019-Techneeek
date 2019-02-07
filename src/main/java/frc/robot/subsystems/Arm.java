@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -11,14 +9,20 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import frc.robot.*;
 import frc.robot.OI;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 import frc.robot.commands.JoystickArm;
+import frc.util.Constants;
 import frc.util.ControlLoopable;
 
 public class Arm extends Subsystem implements ControlLoopable {
+	private static Arm instance = null;
+
+	public static Arm getInstance() {
+		if (instance == null)
+			instance = new Arm();
+		return instance;
+	}
     public static enum ArmPistonState {
         BRAKE, RELEASE, SHOOT, RELOAD
     }
@@ -33,26 +37,17 @@ public class Arm extends Subsystem implements ControlLoopable {
 	private TalonSRX armTalon;
 	private VictorSPX armFollower;
 
-	private static final double NATIVE_TO_ANGLE_FACTOR = (80 / 12) * (60 / 14);
+	
 	private static double offset;
-	private static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 2.0 / 12.0;
+	
 	public double mAngle;
-	public final double SCALE_ANGLE_SETPOINT = 230;
-	public final double SWITCH_ANGLE_SETPOINT = 80;
-	public static double mArmOnTargetTolerance = 10;
-	public static double mArmKp = 1;// .45
-	public static double mArmKi = 0.0;
-	public static double mArmKd = 0.25;// .25
-	public static double mArmKf = 0.0;
-	public static int mArmIZone = (int) (1023.0 / mArmKp);
-	public static double mArmRampRate = .2;
-	public static int mArmAllowableError = 0;
+
 
 	private DigitalInput homeLimit;
 
-	public Arm() {
+	private Arm() {
 		try {
-			shootPiston = new DoubleSolenoid(RobotMap.SHOOT_IN_PCM_ID, RobotMap.SHOOT_OUT_PCM_ID);
+			shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
 
 			// armTalon = new TalonSRX(RobotMap.WRIST_TALON_ID);
 			// armFollower = new VictorSPX(RobotMap.WRIST_VICTOR_ID);
@@ -132,7 +127,7 @@ public class Arm extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSetpoint(double angle) {
-		mAngle = (angle) * NATIVE_TO_ANGLE_FACTOR;
+		mAngle = (angle) * Constants.NATIVE_TO_ANGLE_FACTOR;
 	}
 
 	public void moveWithJoystick() {
@@ -177,22 +172,22 @@ public class Arm extends Subsystem implements ControlLoopable {
 			return true;
 		else
 			return (armTalon.getControlMode() == ControlMode.Position
-					&& Math.abs(getAngleSetpoint() - Math.abs(getArmAngle())) < mArmOnTargetTolerance);
+					&& Math.abs(getAngleSetpoint() - Math.abs(getArmAngle())) < Constants.mArmOnTargetTolerance);
 	}
 
 	public double getAngleSetpoint() {
-		return armTalon.getClosedLoopTarget(0) / NATIVE_TO_ANGLE_FACTOR;
+		return armTalon.getClosedLoopTarget(0) / Constants.NATIVE_TO_ANGLE_FACTOR;
 	}
 
 	private double getArmAngle() {
 		// return
 		// ((double)armTalon.getSelectedSensorPosition(0))/NATIVE_TO_ANGLE_FACTOR;
-		double angle = Math.abs(armTalon.getSensorCollection().getPulseWidthPosition() / NATIVE_TO_ANGLE_FACTOR - offset);
+		double angle = Math.abs(armTalon.getSensorCollection().getPulseWidthPosition() / Constants.NATIVE_TO_ANGLE_FACTOR - offset);
 		return angle < 0.1 ? 0:angle;
 	}
 
 	public void resetArmEncoder() {
-		offset = armTalon.getSensorCollection().getPulseWidthPosition() / NATIVE_TO_ANGLE_FACTOR;
+		offset = armTalon.getSensorCollection().getPulseWidthPosition() / Constants.NATIVE_TO_ANGLE_FACTOR;
 		// mAngle=0;
 		armTalon.setSelectedSensorPosition(0, 0, 10);
 		// setSetpoint(0);
