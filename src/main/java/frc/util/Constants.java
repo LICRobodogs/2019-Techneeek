@@ -149,7 +149,19 @@ public class Constants {
 	public static final int LEFT_AXIS_UP_TRIGGER = 6;
 	public static final int LEFT_AXIS_DOWN_TRIGGER = 7;
 	public static final int LEFT_AXIS_RIGHT_TRIGGER = 8;
-    public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
+	public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
+	
+	//PS4 Controller
+	 //Controller
+	 public static final int leftTriggerAxis = 3;
+	 public static final int rightTriggerAxis = 4;
+	 public static final int leftAnalogAxis = 0;
+	 public static final int squareIndex = 1;
+	 public static final int xIndex = 2;
+	 public static final int circleIndex = 3;
+	 public static final int triangleIndex = 4;
+	 public static final int lbIndex = 5;
+	 public static final int rbIndex = 6;
     
 
     

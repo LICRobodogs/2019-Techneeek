@@ -30,15 +30,15 @@ public class Ps4_Controller extends Joystick {
     }
 
     public double getLeftTrigger() {
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.leftTriggerAxis));
     }
     public double getRightTrigger() {
         // System.out.print(this.getRawAxis(rightTriggerAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.RIGHT_TRIGGER_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.rightTriggerAxis));
     }
     public double getLeftAnalog() {
         // System.out.print(this.getRawAxis(leftAnalogAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_X_AXIS));
+        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.leftAnalogAxis));
     }
     private boolean inDeadZone(double input) {
 		boolean inDeadZone;
