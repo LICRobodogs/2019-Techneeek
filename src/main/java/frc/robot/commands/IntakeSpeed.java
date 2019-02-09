@@ -19,6 +19,7 @@ public class IntakeSpeed extends Command {
 	}
 
 	public IntakeSpeed(double speed1, double speed2) {
+		requires(Robot.intake);
 		this.mSpeed = speed1;
 		this.mSpeed2 = speed2;
 	}
@@ -29,13 +30,16 @@ public class IntakeSpeed extends Command {
 	}
 
 	protected void execute() {
-		if (mSpeed != 0 && mSpeed2 != 0) {
-			Robot.intake.setTopSpeed(mSpeed);
-			Robot.intake.setBottomSpeed(mSpeed2);
+		if (mSpeed == 0 && mSpeed2 != 0) {
+			Robot.intake.setTopSpeed(mSpeed2);
+			Robot.intake.setBottomSpeed(0);
 		} else if (mSpeed != 0) {
 			Robot.intake.setSpeed(mSpeed);
 		} else {
 			Robot.intake.setSpeed();
+		}
+		if(Robot.comp.enabled()){
+			Robot.comp.stop();
 		}
 		// SmartDashboard.putNumber("Intake Speed: ",mSpeed);
 	}
@@ -48,6 +52,9 @@ public class IntakeSpeed extends Command {
 
 	protected void end() {
 		// mSpeed = 0;
+		// if(!Robot.comp.enabled()){
+		// 	Robot.comp.start();
+		// }
 	}
 
 }

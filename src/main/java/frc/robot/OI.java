@@ -49,6 +49,10 @@ public class OI {
 		intakeIn.whileHeld(new IntakeSpeed());
 		intakeIn.whenReleased(new IntakeSpeedOff());
 
+		JoystickButton intakeHold = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
+		intakeHold.whileHeld(new IntakeSpeed(.275));
+		intakeHold.whenReleased(new IntakeSpeedOff());
+
 		JoystickButton suctionRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
