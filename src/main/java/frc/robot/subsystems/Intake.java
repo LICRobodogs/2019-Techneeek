@@ -9,30 +9,35 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 import frc.util.ControlLoopable;
+import frc.util.Constants;
 
 public class Intake extends Subsystem implements ControlLoopable {
+	private static Intake instance = null;
+	public static Intake getInstance() {
+		if (instance == null)
+			instance = new Intake();
+		return instance;
+	}
     public static enum IntakeState {
         SUCC_IN, SUCC_OUT
     };
 
-	public static final double INTAKE_LOAD_SPEED = 0.65;
-	public static final double INTAKE_EJECT_SPEED = -0.55;
+	
 
 	private static Solenoid leftSuctionSolenoid;
 	private static Solenoid rightSuctionSolenoid;
     private TalonSRX topIntake, leftSuction, rightSuction;
     private VictorSPX bottomIntake;
 
-	public Intake() {
+	private Intake() {
 		try {
-			topIntake = new TalonSRX(RobotMap.TOP_INTAKE_TALON_ID);
-            bottomIntake = new VictorSPX(RobotMap.BOTTOM_INTAKE_VICTOR_ID);
-            leftSuction = new TalonSRX(RobotMap.LEFT_SUCTION_TALON_ID);
-            rightSuction = new TalonSRX(RobotMap.RIGHT_SUCTION_TALON_ID);
-            leftSuctionSolenoid = new Solenoid(RobotMap.LEFT_SUCTION_PCM_ID);
-            rightSuctionSolenoid = new Solenoid(RobotMap.RIGHT_SUCTION_PCM_ID);
+			topIntake = new TalonSRX(Constants.TOP_INTAKE_TALON_ID);
+            bottomIntake = new VictorSPX(Constants.BOTTOM_INTAKE_VICTOR_ID);
+            leftSuction = new TalonSRX(Constants.LEFT_SUCTION_TALON_ID);
+            rightSuction = new TalonSRX(Constants.RIGHT_SUCTION_TALON_ID);
+            leftSuctionSolenoid = new Solenoid(Constants.LEFT_SUCTION_PCM_ID);
+            rightSuctionSolenoid = new Solenoid(Constants.RIGHT_SUCTION_PCM_ID);
 		} catch (Exception e) {
 			System.err.println("An error occurred in the Intake constructor");
 		}
@@ -51,13 +56,13 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSpeed() {
-		topIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
-		bottomIntake.set(ControlMode.PercentOutput, -0.5 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+		topIntake.set(ControlMode.PercentOutput, -0.75 * (getRightTriggerAxis() - getLeftTriggerAxis()));
+		bottomIntake.set(ControlMode.PercentOutput, 0.75 * (getRightTriggerAxis() - getLeftTriggerAxis()));
 	}
 
 	public void setSpeed(double speed) {
 		topIntake.set(ControlMode.PercentOutput, -speed);
-		bottomIntake.set(ControlMode.PercentOutput, -speed);
+		bottomIntake.set(ControlMode.PercentOutput, speed);
 	}
 
 	@Override

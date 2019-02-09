@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -18,17 +19,19 @@ import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Intake;
+import frc.util.Constants;
 import frc.util.ControlLooper;
 
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Intake intake;
-  public static Arm arm;
+	public static Arm arm;
+	public static Compressor comp;
 
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
 
-	public static final ControlLooper controlLoop = new ControlLooper("Main control loop", 10);
+	public static final ControlLooper controlLoop = new ControlLooper("Main control loop", Constants.loopMsTime);
 	public static OI oi;
 
 	@SuppressWarnings("unused")
@@ -46,14 +49,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    driveTrain = new DriveTrain();
-		intake = new Intake();
-		arm = new Arm();
-		oi = new OI();
+    driveTrain = DriveTrain.getInstance();
+		intake = Intake.getInstance();
+		arm = Arm.getInstance();
+		oi = OI.getInstance();
 		controlLoop.addLoopable(driveTrain);
-		controlLoop.addLoopable(arm);
+		// controlLoop.addLoopable(arm);
     controlLoop.addLoopable(intake);
-    
+    comp = new Compressor();
     setupAutonChooser();
   }
 
@@ -76,8 +79,8 @@ public class Robot extends TimedRobot {
 		//autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
 		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
-		arm.setControlMode(ArmControlMode.MANUAL);
-		driveTrain.setPeriodMs(10);
+		// arm.setControlMode(ArmControlMode.MANUAL);
+		driveTrain.setPeriodMs(Constants.loopMsTime);
 		controlLoop.start();
 	}
 
@@ -97,7 +100,7 @@ public class Robot extends TimedRobot {
   }
 
   public void updateStatus() {
-		arm.updateStatus(operationMode);
+		// arm.updateStatus(operationMode);
 		driveTrain.updateStatus(operationMode);
 	}
   

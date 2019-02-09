@@ -7,9 +7,9 @@ import frc.robot.subsystems.Intake.IntakeState;
 
 public class ScoreHatch extends CommandGroup {
 	public ScoreHatch() {
-		addSequential(new IntakeSuction(IntakeState.SUCC_OUT));
-        addSequential(new WaitCommand(0.45));
         addSequential(new ArmPistonPosition(ArmPistonState.SHOOT));
+        addSequential(new WaitCommand(0.4));
+		addSequential(new IntakeSuction(IntakeState.SUCC_OUT));
         addSequential(new WaitCommand(1));
         addSequential(new ArmPistonPosition(ArmPistonState.RELOAD));
 	}
