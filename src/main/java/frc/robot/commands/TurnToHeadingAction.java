@@ -4,7 +4,9 @@ import frc.robot.*;
 import frc.robot.subsystems.DriveBaseSubsystem;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class JoystickDrive extends Command {
+public class TurnToHeadingAction extends Action {
+
+
 
 	@Override
     protected boolean isFinished() {

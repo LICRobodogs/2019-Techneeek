@@ -32,6 +32,7 @@ import frc.util.CustomSubsystem;
 import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
 import frc.util.loops.Looper;
+import frc.robot.commands.JoystickDrive;
 import frc.util.loops.RobotStateEstimator;
 
 public class Robot extends TimedRobot { 
@@ -44,11 +45,12 @@ public class Robot extends TimedRobot {
 	
 	private ArrayList<CustomSubsystem> subsystemVector; //use so we can instantiate everything in a forloop and then for every subsystem in here, register its loop  in the looper
 	private Looper mLooper;
-	public DriveBaseSubsystem driveBaseSubsystem;
+	public static DriveBaseSubsystem driveBaseSubsystem;
 	private RobotStateEstimator robotStateEstimator;
 	private ThreadRateControl threadRateControl = new ThreadRateControl();
 	private AutoModeExecuter autoModeExecuter;
-	private Ps4_Controller ps_controller;	
+	private static Ps4_Controller ps_controller;	
+	private static JoystickDrive driveCommand;
 
 	//can delete below
 	public DifferentialDrive myDrive;
@@ -97,10 +99,13 @@ public class Robot extends TimedRobot {
 		// driveBaseSubsystem.init();
 		// driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
 		robotStateEstimator = RobotStateEstimator.getInstance();
+		driveCommand = new JoystickDrive();
 		// mLooper.register(robotStateEstimator); 
 
 	}
-
+	public static Ps4_Controller getPsController() {
+		return ps_controller;
+	}
   @Override
   public void robotPeriodic() {
   }
@@ -129,7 +134,8 @@ public class Robot extends TimedRobot {
   @Override
 	public void teleopInit() {
 		driveBaseSubsystem.subsystemHome();
-
+		
+		driveCommand.start();
 		// autonomousCommand.cancel();
 		// Scheduler.getInstance().removeAll();
 		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
@@ -146,7 +152,11 @@ public class Robot extends TimedRobot {
 //   }
   @Override
   public void teleopPeriodic() {
-    
+		Scheduler.getInstance().run();
+			// double move = oi.getMoveInput();
+        // double steer = oi.getSteerInput();
+        // driveBaseSubsystem.drive(move,steer);
+    /*
     driveBaseSubsystem.m_drive.curvatureDrive(ps_controller.xSpeed(), ps_controller.zRotation(), true);
     if (ps_controller.isButtonPressed("SQUARE")) {
       System.out.println("Left Sensor Vel:" + driveBaseSubsystem.getLeftVelocityInchesPerSec());
@@ -172,7 +182,8 @@ public class Robot extends TimedRobot {
       base.suctionSolenoid.set(false);
     }
     */
-  }
+	}
+
 
   public void disabledInit() {
 		// arm.resetArmEncoder();

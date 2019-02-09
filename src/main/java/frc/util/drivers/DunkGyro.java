@@ -68,6 +68,9 @@ public class DunkGyro {
     public Rotation2d getYaw() {
         return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(getRawYawDegrees()));
     }
+    public AHRS getAHRS() {
+        return mAHRS;
+    }
 
     public double getYawRateDegreesPerSec() {
         return mYawRateDegreesPerSecond;

@@ -26,8 +26,12 @@ import frc.util.loops.Loop;
 import frc.util.math.RigidTransform2d;
 import frc.util.math.Rotation2d;
 import frc.util.math.Twist2d;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
 
-public class DriveBaseSubsystem extends Subsystem {
+
+
+public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      private static DriveBaseSubsystem instance = null;
      private DunkTalonSRX leftMaster, leftSlave, rightMaster;
      private DunkVictorSPX rightSlave;
@@ -41,6 +45,11 @@ public class DriveBaseSubsystem extends Subsystem {
      private PathFollowerRobotState robotState = PathFollowerRobotState.getInstance();
      public DifferentialDrive m_drive;
 
+     public PIDController turnController;
+     private final double kp = 0.0;
+     private final double ki = 0.0;
+     private final double kd = 0.0;
+     private final double kf = 0.0;
      public static DriveBaseSubsystem getInstance() {
           if (instance == null) 
                instance = new DriveBaseSubsystem();
@@ -65,6 +74,12 @@ public class DriveBaseSubsystem extends Subsystem {
           // setBrakeMode(true);
 
           // controlMode = DriveControlState.PATH_FOLLOWING; //because we start match on auton
+          turnController = new PIDController(kp,ki,kd,gyro.getAHRS(),this);
+          turnController.setInputRange(-180,180);
+          turnController.setOutputRange(-0.45,0.45);
+          turnController.setAbsoluteTolerance(2.0f);
+          turnController.setContinuous(true);
+
      }
 
      private final Loop mLoop = new Loop() {
@@ -110,7 +125,14 @@ public class DriveBaseSubsystem extends Subsystem {
      public void drive(double move, double steer) {
 		m_drive.curvatureDrive(move, steer, true);
 	}
-     
+     	
+	public void rotateDegrees(double angle) {
+		gyro.reset();
+		turnController.reset();
+		turnController.setPID(kp, ki, kd);
+		turnController.setSetpoint(angle);
+		turnController.enable();
+	}
      public void subsystemHome() {
           gyro.zeroYaw();
           boolean setSucceeded;
@@ -298,6 +320,13 @@ public class DriveBaseSubsystem extends Subsystem {
      protected void initDefaultCommand() {
          setDefaultCommand(new JoystickDrive());
      }
+
+	@Override
+	public void pidWrite(double output) {
+          setControlMode(DriveControlState.OPEN_LOOP);
+          leftMaster.set(ControlMode.PercentOutput, -output);
+          rightMaster.set(ControlMode.PercentOutput, output);
+	}
 
      // public void init() {
      //      //this is where we invert and set phase of motors if needed
