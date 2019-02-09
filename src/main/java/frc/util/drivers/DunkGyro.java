@@ -40,7 +40,11 @@ public class DunkGyro {
         resetState();
         mAHRS.registerCallback(new Callback(), null);
     }
-
+    public AHRS getAHRS() {
+        if (mAHRS == null)
+            System.err.println("gyro not initialized?");
+        return mAHRS;
+    }
     public synchronized void reset() {
         mAHRS.reset();
         resetState();

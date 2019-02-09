@@ -199,7 +199,7 @@ public class Robot extends TimedRobot {
 		driveBaseSubsystem.setBrakeMode(true);
 		autoModeExecuter = new AutoModeExecuter();
 
-
+		
 		AutoModeBase autoMode = new BasicMode();
 		
 		if (autoMode != null)

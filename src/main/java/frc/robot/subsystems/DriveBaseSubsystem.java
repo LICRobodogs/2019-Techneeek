@@ -8,6 +8,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+
 import frc.robot.Kinematics;
 import frc.util.Constants;
 import frc.util.CustomSubsystem;
@@ -29,7 +33,7 @@ import frc.util.math.RigidTransform2d;
 import frc.util.math.Rotation2d;
 import frc.util.math.Twist2d;
 
-public class DriveBaseSubsystem implements CustomSubsystem {
+public class DriveBaseSubsystem extends Subsystem implements PIDOutput, CustomSubsystem {
      private static DriveBaseSubsystem instance = null;
      private DunkTalonSRX leftMaster, leftSlave, rightMaster;
      private DunkVictorSPX rightSlave;
@@ -41,6 +45,12 @@ public class DriveBaseSubsystem implements CustomSubsystem {
      private Path mCurrentPath = null;
      private PathFollower mPathFollower;
      private PathFollowerRobotState robotState = PathFollowerRobotState.getInstance();
+     public PIDController turnController;
+
+     private final double Kp = 0.0;
+     private final double Ki = 0.0;
+     private final double Kd = 0.0;
+     private final double Kf = 0.0;
 
      public static DriveBaseSubsystem getInstance() {
           if (instance == null) 
@@ -63,6 +73,18 @@ public class DriveBaseSubsystem implements CustomSubsystem {
           // setBrakeMode(true);
 
           controlMode = DriveControlState.PATH_FOLLOWING; //because we start match on auton
+          turnController = new PIDController(Kp, Ki, Kd, gyro.getAHRS(), this);
+          turnController.setInputRange(-180, 180);
+          turnController.setOutputRange(-0.45, 0.45); //45% power
+          turnController.setAbsoluteTolerance(2.0f); //2 degree of error
+          turnController.setContinuous();
+     }
+     public void rotateDegrees(double angle) {
+          gyro.reset();
+          turnController.reset();
+          turnController.setPID(Kp, Ki, Kd);
+          turnController.setSetpoint(angle);
+          turnController.enable();
      }
 
      private final Loop mLoop = new Loop() {
@@ -328,5 +350,18 @@ public class DriveBaseSubsystem implements CustomSubsystem {
      @Override
      public void registerEnabledLoops(Looper in) {
           in.register(mLoop);
+     }
+
+     @Override
+     protected void initDefaultCommand() {
+     }
+
+     @Override
+     public void pidWrite(double output) {
+          setControlMode(DriveControlState.OPEN_LOOP);
+          //should cause to start turning
+          leftMaster.set(ControlMode.PercentOutput, -output);
+          rightMaster.set(ControlMode.PercentOutput, output);
+
      }
 }
