@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.*;
-
+import frc.robot.subsystems.DriveBaseSubsystem;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class JoystickDrive extends Command {
@@ -12,7 +12,7 @@ public class JoystickDrive extends Command {
     }
 
     public JoystickDrive(){
-        requires(Robot.driveTrain);
+        requires(DriveBaseSubsystem.getInstance());
     }
     
 
@@ -23,8 +23,7 @@ public class JoystickDrive extends Command {
     public void execute() {
         double move = Robot.oi.getMoveInput();
         double steer = Robot.oi.getSteerInput();
-
-        Robot.driveTrain.drive(move, steer);
+        DriveBaseSubsystem.getInstance().drive(move,steer);
     }
 
 }

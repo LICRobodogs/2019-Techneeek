@@ -35,7 +35,7 @@ import frc.util.loops.Looper;
 import frc.util.loops.RobotStateEstimator;
 
 public class Robot extends TimedRobot { 
-  public static DriveTrain driveTrain;
+  // public static DriveTrain driveTrain;
   public static Intake intake;
 	public static Arm arm;
 
@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 	
 	private ArrayList<CustomSubsystem> subsystemVector; //use so we can instantiate everything in a forloop and then for every subsystem in here, register its loop  in the looper
 	private Looper mLooper;
-	private DriveBaseSubsystem driveBaseSubsystem;
+	public DriveBaseSubsystem driveBaseSubsystem;
 	private RobotStateEstimator robotStateEstimator;
 	private ThreadRateControl threadRateControl = new ThreadRateControl();
 	private AutoModeExecuter autoModeExecuter;
@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
 
-	public static final ControlLooper controlLoop = new ControlLooper("Main control loop", 10);
+	// public static final ControlLooper controlLoop = new ControlLooper("Main control loop", 10);
 	public static OI oi;
 
 	@SuppressWarnings("unused")
@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 		TEST, COMPETITION
 	};
 
-	public static OperationMode operationMode = OperationMode.COMPETITION;
+	// public static OperationMode operationMode = OperationMode.TEST;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -91,13 +91,13 @@ public class Robot extends TimedRobot {
 	@Override
   public void robotInit() {
     robotControllers = Controllers.getInstance(); //want to spawn asap 
-		mLooper = new Looper();
+		// mLooper = new Looper();
 		ps_controller = new Ps4_Controller(0);
 		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
-		driveBaseSubsystem.init();
-		driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
+		// driveBaseSubsystem.init();
+		// driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
 		robotStateEstimator = RobotStateEstimator.getInstance();
-		mLooper.register(robotStateEstimator); 
+		// mLooper.register(robotStateEstimator); 
 
 	}
 
@@ -128,13 +128,15 @@ public class Robot extends TimedRobot {
 
   @Override
 	public void teleopInit() {
-		autonomousCommand.cancel();
-		Scheduler.getInstance().removeAll();
-		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
+		driveBaseSubsystem.subsystemHome();
+
+		// autonomousCommand.cancel();
+		// Scheduler.getInstance().removeAll();
+		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
 		// arm.setControlMode(ArmControlMode.MANUAL);
-		driveTrain.setPeriodMs(10);
+		// driveTrain.setPeriodMs(10);
 		// controlLoop.start();
-		myDrive = new DifferentialDrive(driveBaseSubsystem.getLeftMaster(), driveBaseSubsystem.getRightMaster());
+		// myDrive = new DifferentialDrive(driveBaseSubsystem.getLeftMaster(), driveBaseSubsystem.getRightMaster());
 	}
 
 //   @Override
@@ -145,7 +147,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     
-    myDrive.curvatureDrive(ps_controller.xSpeed(), ps_controller.zRotation(), true);
+    driveBaseSubsystem.m_drive.curvatureDrive(ps_controller.xSpeed(), ps_controller.zRotation(), true);
     if (ps_controller.isButtonPressed("SQUARE")) {
       System.out.println("Left Sensor Vel:" + driveBaseSubsystem.getLeftVelocityInchesPerSec());
       System.out.println("Sensor Pos:" + driveBaseSubsystem.getLeftDistanceInches());
@@ -182,8 +184,8 @@ public class Robot extends TimedRobot {
   }
 
   public void updateStatus() {
-		arm.updateStatus(operationMode);
-		driveTrain.updateStatus(operationMode);
+		// arm.updateStatus(operationMode);
+		// driveTrain.updateStatus(operationMode);
 	}
   
   public void setupAutonChooser() {

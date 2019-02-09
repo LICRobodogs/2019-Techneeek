@@ -4,13 +4,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.Kinematics;
+import frc.robot.commands.JoystickDrive;
 import frc.util.Constants;
-import frc.util.CustomSubsystem;
 import frc.util.Util;
 import frc.util.TrajectoryFollowingMotion.Lookahead;
 import frc.util.TrajectoryFollowingMotion.Path;
@@ -22,14 +22,12 @@ import frc.util.drivers.DriveMotorValues;
 import frc.util.drivers.DunkGyro;
 import frc.util.drivers.DunkTalonSRX;
 import frc.util.drivers.DunkVictorSPX;
-import frc.util.drivers.TalonHelper;
 import frc.util.loops.Loop;
-import frc.util.loops.Looper;
 import frc.util.math.RigidTransform2d;
 import frc.util.math.Rotation2d;
 import frc.util.math.Twist2d;
 
-public class DriveBaseSubsystem implements CustomSubsystem {
+public class DriveBaseSubsystem extends Subsystem {
      private static DriveBaseSubsystem instance = null;
      private DunkTalonSRX leftMaster, leftSlave, rightMaster;
      private DunkVictorSPX rightSlave;
@@ -41,6 +39,7 @@ public class DriveBaseSubsystem implements CustomSubsystem {
      private Path mCurrentPath = null;
      private PathFollower mPathFollower;
      private PathFollowerRobotState robotState = PathFollowerRobotState.getInstance();
+     public DifferentialDrive m_drive;
 
      public static DriveBaseSubsystem getInstance() {
           if (instance == null) 
@@ -49,6 +48,7 @@ public class DriveBaseSubsystem implements CustomSubsystem {
      }
 
      private DriveBaseSubsystem() {
+          
           Controllers robotControllers = Controllers.getInstance();
           leftMaster = robotControllers.getLeftDrive1();
           leftSlave = robotControllers.getLeftDrive2();
@@ -56,13 +56,15 @@ public class DriveBaseSubsystem implements CustomSubsystem {
           rightSlave = robotControllers.getRightDrive2();
           leftSlave.follow(leftMaster);
           rightSlave.follow(rightMaster);
+          m_drive = new DifferentialDrive(leftMaster, rightMaster);
+          m_drive.setSafetyEnabled(false);
           
           gyro = robotControllers.getGyro();
           
           previousBrakeModeVal = false;
           // setBrakeMode(true);
 
-          controlMode = DriveControlState.PATH_FOLLOWING; //because we start match on auton
+          // controlMode = DriveControlState.PATH_FOLLOWING; //because we start match on auton
      }
 
      private final Loop mLoop = new Loop() {
@@ -105,6 +107,9 @@ public class DriveBaseSubsystem implements CustomSubsystem {
                }
           }
      };
+     public void drive(double move, double steer) {
+		m_drive.curvatureDrive(move, steer, true);
+	}
      
      public void subsystemHome() {
           gyro.zeroYaw();
@@ -130,6 +135,7 @@ public class DriveBaseSubsystem implements CustomSubsystem {
                     this.controlMode = controlMode;
                     
                } catch(Exception e) {
+                    System.err.println("Error with setting drice control mode");
                } finally {
                     _subsystemMutex.unlock();
                }
@@ -286,47 +292,43 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 				return true;
 			}
 		}
-	}
-
-
-
+     }
+     
      @Override
-     public void init() {
-          //this is where we invert and set phase of motors if needed
-          setBrakeMode(true);
-
-          boolean setSucceeded;
-		int retryCounter = 0;
-
-		do {
-			setSucceeded = true;
-
-			setSucceeded &= leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs) == ErrorCode.OK;
-			setSucceeded &= leftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs) == ErrorCode.OK;
-			setSucceeded &= leftMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs) == ErrorCode.OK;
-
-			setSucceeded &= rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs) == ErrorCode.OK;
-			setSucceeded &= rightMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs) == ErrorCode.OK;
-			setSucceeded &= rightMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs) == ErrorCode.OK;
-
-		} while(!setSucceeded && retryCounter++ < Constants.kTalonRetryCount);
-
-     //TalonHelper is just so you don't have to type out config ki, config kp, config kd that the talon library uses
-     //Not shifting so assign same gear
-     //Set same gains and use slots 0 & 1 
-     // Make sure we set the gains on both sides - left and irght - use slots 0 & 1 just sl that everything has the same gains and we don't get confused betweeen gain scheduling slots in the talons
-		setSucceeded &= TalonHelper.setPIDGains(leftMaster, 0, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
-		setSucceeded &= TalonHelper.setPIDGains(rightMaster, 0, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
-		setSucceeded &= TalonHelper.setPIDGains(rightMaster, 1, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
-		setSucceeded &= TalonHelper.setPIDGains(leftMaster, 1, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
-		
-
-		leftMaster.selectProfileSlot(0, 0);
-		rightMaster.selectProfileSlot(0, 0);
+     protected void initDefaultCommand() {
+         setDefaultCommand(new JoystickDrive());
      }
 
-     @Override
-     public void registerEnabledLoops(Looper in) {
-          in.register(mLoop);
-     }
+     // public void init() {
+     //      //this is where we invert and set phase of motors if needed
+     //      setBrakeMode(true);
+
+     //      boolean setSucceeded;
+	// 	int retryCounter = 0;
+
+	// 	do {
+	// 		setSucceeded = true;
+
+	// 		setSucceeded &= leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs) == ErrorCode.OK;
+	// 		setSucceeded &= leftMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs) == ErrorCode.OK;
+	// 		setSucceeded &= leftMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs) == ErrorCode.OK;
+
+	// 		setSucceeded &= rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, Constants.kTimeoutMs) == ErrorCode.OK;
+	// 		setSucceeded &= rightMaster.configVelocityMeasurementPeriod(VelocityMeasPeriod.Period_10Ms, Constants.kTimeoutMs) == ErrorCode.OK;
+	// 		setSucceeded &= rightMaster.configVelocityMeasurementWindow(32, Constants.kTimeoutMs) == ErrorCode.OK;
+
+	// 	} while(!setSucceeded && retryCounter++ < Constants.kTalonRetryCount);
+
+     // //TalonHelper is just so you don't have to type out config ki, config kp, config kd that the talon library uses
+     // //Not shifting so assign same gear
+     // //Set same gains and use slots 0 & 1 
+     // // Make sure we set the gains on both sides - left and irght - use slots 0 & 1 just sl that everything has the same gains and we don't get confused betweeen gain scheduling slots in the talons
+	// 	// setSucceeded &= TalonHelper.setPIDGains(leftMaster, 0, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
+	// 	// setSucceeded &= TalonHelper.setPIDGains(rightMaster, 0, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
+	// 	// setSucceeded &= TalonHelper.setPIDGains(rightMaster, 1, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
+	// 	// setSucceeded &= TalonHelper.setPIDGains(leftMaster, 1, Constants.kDriveHighGearVelocityKp, Constants.kDriveHighGearVelocityKi, Constants.kDriveHighGearVelocityKd, Constants.kDriveHighGearVelocityKf, Constants.kDriveHighGearVelocityRampRate, Constants.kDriveHighGearVelocityIZone);
+
+	// 	leftMaster.selectProfileSlot(0, 0);
+	// 	rightMaster.selectProfileSlot(0, 0);
+     // }
 }
