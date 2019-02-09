@@ -48,7 +48,7 @@ public class Constants {
     
 
     //Loops
-    public static final int loopMsTime = 10;
+    public static final int loopMsTime = 20;
 
     //Intake -- need units
     public static final double INTAKE_LOAD_SPEED = 0.65;
@@ -71,7 +71,7 @@ public class Constants {
 
 
     //DT PID
-    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 4.0;
+    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
 	public static final int DRIVE_TICKS_PER_FOOT = 3978; //Move robot 10 feet, get position from sensor, divide by 10
 
 	public static final double LEFT_P = 1.0;
