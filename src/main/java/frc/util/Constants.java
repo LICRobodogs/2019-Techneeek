@@ -22,8 +22,8 @@ public class Constants {
 	public static final int TOP_INTAKE_TALON_ID = 1;
 	public static final int BOTTOM_INTAKE_VICTOR_ID = 7;
 
-	public static final int ELEVATOR_TALON1_ID = 1;
-	public static final int ELEVATOR_TALON2_ID = 2;
+	public static final int ELEVATOR_TALON1_ID = 5;
+	public static final int ELEVATOR_TALON2_ID = 6;
     public static final int ELEVATOR_VICTOR1_ID = 8;
     
 	public static final int WRIST_TALON_ID = 3;
@@ -104,6 +104,8 @@ public class Constants {
     public static final int LEFT_X_AXIS = 0;
 	public static final int LEFT_Y_AXIS = 1;
 	public static final int LEFT_TRIGGER_AXIS = 2;
+	public static final int LEFT_PS4_TRIGGER_AXIS = 3;
+	public static final int RIGHT_PS4_TRIGGER_AXIS = 4;
 	public static final int RIGHT_TRIGGER_AXIS = 3;
 	public static final int RIGHT_X_AXIS = 4;
 	public static final int RIGHT_Y_AXIS = 5;

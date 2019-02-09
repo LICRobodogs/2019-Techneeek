@@ -26,11 +26,11 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 
 	public DunkTalonSRX(int deviceNumber) {
 		super(deviceNumber);
-		this.configNominalOutputForward(0.0);
-		this.configNominalOutputReverse(0.0);
-		this.configPeakOutputForward(1);
-		this.configPeakOutputReverse(-1);
-		this.configMotionProfileTrajectoryPeriod(0);
+		// this.configNominalOutputForward(0.0);
+		// this.configNominalOutputReverse(0.0);
+		// this.configPeakOutputForward(1);
+		// this.configPeakOutputReverse(-1);
+		// this.configMotionProfileTrajectoryPeriod(0);
 	}
 
 	public int getPrimaryPidIndex() {

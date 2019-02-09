@@ -8,6 +8,7 @@ import frc.controller.GamePad;
 import frc.controller.GamePadTriggerButton;
 import frc.controller.Ps4_Controller;
 import frc.robot.commands.arm.ArmPistonPosition;
+import frc.robot.commands.elevator.ElevatorStop;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
@@ -62,8 +63,8 @@ public class OI {
 		// JoystickButton armBrake = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);
 		// armBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
 
-		// JoystickButton armRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.X_BUTTON);
-		// armRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
+		JoystickButton stopElevator = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.X_BUTTON);
+		stopElevator.whenPressed(new ElevatorStop());
 
 		// Pneumatics Diagonostics
 

@@ -64,19 +64,23 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private MotionParameters upMotionParameters = new MotionParameters(2600, 2000, upGains);
 	private MotionParameters downMotionParameters = new MotionParameters(2600, 1000, downGains);	
 	
-	public final LeaderDunkTalonSRX elevatorLead = new LeaderDunkTalonSRX(Constants.ELEVATOR_TALON1_ID, new DunkTalonSRX(Constants.ELEVATOR_TALON2_ID), new DunkVictorSPX(Constants.ELEVATOR_VICTOR1_ID));
+	public final DunkVictorSPX elevatorVictorFollower = new DunkVictorSPX(Constants.ELEVATOR_VICTOR1_ID);
+	public final DunkTalonSRX elevatorTalonFollower = new DunkTalonSRX(Constants.ELEVATOR_TALON2_ID);
+	public final LeaderDunkTalonSRX elevatorLead = new LeaderDunkTalonSRX(Constants.ELEVATOR_TALON1_ID, elevatorTalonFollower, elevatorVictorFollower);
 
 	public Elevator() {
 		this.elevatorLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-		this.elevatorLead.configForwardSoftLimitEnable(true);
-		this.elevatorLead.configForwardSoftLimitThreshold(upPositionLimit);
+		// this.elevatorLead.configForwardSoftLimitEnable(true);
+		// this.elevatorLead.configForwardSoftLimitThreshold(upPositionLimit);
 
-		this.elevatorLead.configReverseSoftLimitEnable(true);
-		this.elevatorLead.configReverseSoftLimitThreshold(downPositionLimit);
+		// this.elevatorLead.configReverseSoftLimitEnable(true);
+		// this.elevatorLead.configReverseSoftLimitThreshold(downPositionLimit);
 
 		this.elevatorLead.setInverted(false);
 		this.elevatorLead.setSensorPhase(false);
+
+		this.elevatorTalonFollower.setInverted(true);
 
 		this.elevatorLead.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
 		this.elevatorLead.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
@@ -90,7 +94,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		this.elevatorLead.configVoltageCompSaturation(11.5);
 		this.elevatorLead.enableVoltageCompensation(true);
 
-		this.elevatorLead.configPeakOutputReverse(-1.0);
+		// this.elevatorLead.configPeakOutputReverse(-0.2);
+		// this.elevatorLead.configPeakOutputForward(0.2);
 	}
 
 	public void initDefaultCommand() {
@@ -99,9 +104,9 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
 	//sets control mode to motion magic
 	public void setElevator(ControlMode controlMode, double signal) {
-		if (controlMode == ControlMode.MotionMagic) {
-			this.manageMotion(signal);
-		}
+		// if (controlMode == ControlMode.MotionMagic) {
+		// 	this.manageMotion(signal);
+		// }
 		elevatorLead.set(controlMode, signal);
 	}
 
