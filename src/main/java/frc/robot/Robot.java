@@ -106,8 +106,9 @@ public class Robot extends TimedRobot {
   }
 
 
-  @Override
+  // @Override
   public void autonomousInit() {
+		autonomous();
   }
 
   @Override
@@ -127,7 +128,7 @@ public class Robot extends TimedRobot {
 
   @Override
 	public void teleopInit() {
-		//autonomousCommand.cancel();
+		autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
 		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
 		// arm.setControlMode(ArmControlMode.MANUAL);
@@ -188,6 +189,7 @@ public class Robot extends TimedRobot {
   public void setupAutonChooser() {
 		autonChooser = new SendableChooser<>();
 		// autonChooser.addDefault("Straight Only", new StraightOnly());
+		// autonChooser.addDefault("Straight Only", new BasicMode());
 		autonChooser.addOption("Do Nothing", new CommandGroup());
 		SmartDashboard.putData("Auton Setting", autonChooser);
 	}
@@ -199,9 +201,9 @@ public class Robot extends TimedRobot {
 		driveBaseSubsystem.setBrakeMode(true);
 		autoModeExecuter = new AutoModeExecuter();
 
-
+		System.out.println("Pre basic mode");
 		AutoModeBase autoMode = new BasicMode();
-		
+		System.out.println("Post basic mode");
 		if (autoMode != null)
 			autoModeExecuter.setAutoMode(autoMode);
 		else
