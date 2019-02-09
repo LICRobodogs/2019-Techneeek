@@ -24,7 +24,7 @@ public class Constants {
 
 	public static final int ELEVATOR_TALON1_ID = 1;
 	public static final int ELEVATOR_TALON2_ID = 2;
-    public static final int ELEVATOR_VICTOR1_ID = 1;
+    public static final int ELEVATOR_VICTOR1_ID = 8;
     
 	public static final int WRIST_TALON_ID = 3;
 	public static final int WRIST_VICTOR_ID = 2;
@@ -48,12 +48,18 @@ public class Constants {
     
 
     //Loops
-    public static final int loopMsTime = 20;
+	public static final int kTimeoutMs = 20;    
+	public static final int kTalonRetryCount = 3;
+
 
     //Intake -- need units
     public static final double INTAKE_LOAD_SPEED = 0.65;
     public static final double INTAKE_EJECT_SPEED = -0.55;
-    
+	
+	
+	//Kinematics
+	public static final double kSensorUnitsPerRotation = 4096.0;
+    public static final double k100msPerMinute = 600.0;
 
     //Arm
     public final double SCALE_ANGLE_SETPOINT = 230;
@@ -135,7 +141,7 @@ public class Constants {
 	public static final double LEFT_AXIS_RIGHT_TOLERANCE = 0.9;
 	public static final double LEFT_AXIS_LEFT_TOLERANCE = -0.9;
 
-    public static final double DEADZONE = 0.10;
+    public static final double DEADZONE = 0.20;
     
 
     //Gamepad Trigger

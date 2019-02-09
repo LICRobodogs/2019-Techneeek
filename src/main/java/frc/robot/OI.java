@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.controller.GamePad;
 import frc.controller.GamePadTriggerButton;
 import frc.controller.Ps4_Controller;
-import frc.robot.commands.ArmPistonPosition;
+import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
