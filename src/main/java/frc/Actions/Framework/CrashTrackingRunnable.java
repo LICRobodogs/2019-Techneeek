@@ -10,7 +10,7 @@ public abstract class CrashTrackingRunnable implements Runnable {
         try {
             runCrashTracked();
         } catch (Throwable t) {
-            // ConsoleReporter.report(t);
+            System.err.println(t);
         }
     }
 

@@ -38,7 +38,7 @@ public class ParallelAction implements Action {
         for (Action action : mActions) {
             if (!action.isFinished()) {
                 action.update();
-                // ConsoleReporter.report(action.getClass().getName());
+                System.out.println(action.getClass().getName());
             }
         }
     }

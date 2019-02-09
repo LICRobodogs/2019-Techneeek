@@ -18,7 +18,7 @@ public class DrivePathAction implements Action {
     public DrivePathAction(PathContainer p) {
         mPathContainer = p;
         mPath = mPathContainer.buildPath();
-        // ConsoleReporter.report(p.getClass().getName());
+        System.out.println(p.getClass().getName());
     }
 
     @Override

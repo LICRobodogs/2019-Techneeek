@@ -25,8 +25,8 @@ public class SeriesAction implements Action {
 
     @Override
     public boolean isFinished() {
-        // ConsoleReporter.report("Series queue empty: " + mRemainingActions.isEmpty());
-        // ConsoleReporter.report("Series inner action null: " + (mCurAction == null));
+        System.out.println("Series queue empty: " + mRemainingActions.isEmpty());
+        System.out.println("Series inner action null: " + (mCurAction == null));
         return mRemainingActions.isEmpty() && mCurAction == null;
     }
 
@@ -47,7 +47,7 @@ public class SeriesAction implements Action {
 
         mCurAction.update();
 
-        // ConsoleReporter.report(mCurAction.getClass().getName());
+        System.out.println(mCurAction.getClass().getName());
 
         if (mCurAction.isFinished()) {
             mCurAction.done();

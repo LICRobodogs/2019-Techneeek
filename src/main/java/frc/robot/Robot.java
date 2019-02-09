@@ -238,7 +238,7 @@ public class Robot extends TimedRobot {
 
 			autoModeExecuter = null;
 		} catch (Throwable t) {
-			// ConsoleReporter.report(t, MessageLevel.ERROR);
+			System.err.println("Error"+t);
 		}
 	}
 }

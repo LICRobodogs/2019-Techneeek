@@ -57,7 +57,7 @@ public abstract class AutoModeBase {
                 e.printStackTrace();
             }
 
-            // ConsoleReporter.report(action.getClass().getName());
+            System.out.println(action.getClass().getName());
         }
 
         action.done();

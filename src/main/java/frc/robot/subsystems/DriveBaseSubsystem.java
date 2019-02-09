@@ -169,12 +169,12 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 			Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
 			updatePathVelocitySetpoint(setpoint.left, setpoint.right);
 
-			//ConsoleReporter.report(mPathFollower.getDebug());
-			//ConsoleReporter.report("Left2Cube: " + inchesPerSecondToRpm(setpoint.left) + ", Right2Cube: " + inchesPerSecondToRpm(setpoint.right));
-			//ConsoleReporter.report("Left2Cube Actual: " + Util.convertNativeUnitsToRPM(mLeftMaster.getSelectedSensorVelocity(0)) + ", Right2Cube Actual: " + Util.convertNativeUnitsToRPM(mRightMaster.getSelectedSensorVelocity(0)));
+			System.out.println(mPathFollower.getDebug());
+			System.out.println("Left2Cube: " + inchesPerSecondToRpm(setpoint.left) + ", Right2Cube: " + inchesPerSecondToRpm(setpoint.right));
+			System.out.println("Left2Cube Actual: " + Util.convertNativeUnitsToRPM(leftMaster.getSelectedSensorVelocity(0)) + ", Right2Cube Actual: " + Util.convertNativeUnitsToRPM(rightMaster.getSelectedSensorVelocity(0)));
 		} else {
 			updatePathVelocitySetpoint(0, 0);
-			// ConsoleReporter.report("Completed path!");
+			System.out.println("Completed path!");
 			setControlMode(DriveControlState.VELOCITY);
 		}
      }
@@ -185,8 +185,8 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 		leftMaster.set(ControlMode.Velocity, Util.convertRPMToNativeUnits(inchesPerSecondToRpm(left_inches_per_sec * scale)));
 		rightMaster.set(ControlMode.Velocity, Util.convertRPMToNativeUnits(inchesPerSecondToRpm(right_inches_per_sec * scale)));
 
-		//ConsoleReporter.report("Requested Drive Velocity Left2Cube/Right2Cube: " + left_inches_per_sec + "/" + right_inches_per_sec);
-		//ConsoleReporter.report("Actual Drive Velocity Left2Cube/Right2Cube: " + getLeftVelocityInchesPerSec() + "/" + getRightVelocityInchesPerSec());
+		System.out.println("Requested Drive Velocity Left2Cube/Right2Cube: " + left_inches_per_sec + "/" + right_inches_per_sec);
+		System.out.println("Actual Drive Velocity Left2Cube/Right2Cube: " + getLeftVelocityInchesPerSec() + "/" + getRightVelocityInchesPerSec());
      }
      private static double inchesPerSecondToRpm(double inches_per_second) {
 		return inchesToRotations(inches_per_second) * 60;
@@ -248,16 +248,16 @@ public class DriveBaseSubsystem implements CustomSubsystem {
 
 			mCurrentPath = path;
 		} else {
-			// ConsoleReporter.report("Error setting path for drive!", MessageLevel.ERROR);
+
 			System.err.println("Error setting path for drive!"); 
 		}
      }
      public synchronized boolean isDoneWithPath() {
 		if (controlMode == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
-			// ConsoleReporter.report("Robot has completed the path");
+			System.out.println("Robot has completed the path");
 			return mPathFollower.isFinished();
 		} else {
-			// ConsoleReporter.report("Robot is not in path following mode");
+			System.out.println("Robot is not in path following mode");
 			if (mPathFollower != null)
 				return mPathFollower.isFinished();
 			else
@@ -266,19 +266,19 @@ public class DriveBaseSubsystem implements CustomSubsystem {
      }
      public synchronized void forceDoneWithPath() {
 		if (controlMode == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
-			// ConsoleReporter.report("Forcing robot to stop the path");
+			System.out.println("Forcing robot to stop the path");
 			mPathFollower.forceFinish();
 		} else {
-			// ConsoleReporter.report("Robot is not in path following mode");
+			System.out.println("Robot is not in path following mode");
 		}
 	}
 
 	public synchronized boolean hasPassedMarker(String marker) {
 		if (controlMode == DriveControlState.PATH_FOLLOWING && mPathFollower != null) {
-			// ConsoleReporter.report("Robot has passed marker " + marker);
+			System.out.println("Robot has passed marker " + marker);
 			return mPathFollower.hasPassedMarker(marker);
 		} else {
-			// ConsoleReporter.report("Robot is not in path following mode");
+			System.out.println("Robot is not in path following mode");
 			if (mPathFollower != null)
 				return (mPathFollower.isFinished() || mPathFollower.hasPassedMarker(marker));
 			else {
