@@ -64,11 +64,11 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           leftSlave = robotControllers.getLeftDrive2();
           rightMaster = robotControllers.getRightDrive1();
           rightSlave = robotControllers.getRightDrive2();
-          leftSlave.setInverted(true);
-          leftMaster.setInverted(true);
+          // leftSlave.setInverted(true);
+          // leftMaster.setInverted(true);
           leftSlave.follow(leftMaster);
           rightSlave.follow(rightMaster);
-          // leftMaster.setSensorPhase(true);
+          leftMaster.setSensorPhase(true);
           // rightMaster.setSensorPhase(true);
           m_drive = new DifferentialDrive(leftMaster, rightMaster);
           m_drive.setSafetyEnabled(false);
@@ -140,6 +140,7 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 	}
      public void subsystemHome() {
           gyro.zeroYaw();
+          gyro.reset();
           boolean setSucceeded;
           int retryCounter = 0;
           do {
@@ -285,11 +286,14 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           return rightMaster;
      }
      public void dashUpdate() {
+          
+          SmartDashboard.putNumber("\nLeft Velocity (in/sec)",getLeftVelocityInchesPerSec());
+          SmartDashboard.putNumber("\nRight Velocity (in/sec)",getRightVelocityInchesPerSec());
           SmartDashboard.putNumber("\nGyro Angle in Degrees",getGyroAngle().getDegrees());
           SmartDashboard.putNumber("\nLeft Distance (in)",getLeftDistanceInches());
           SmartDashboard.putNumber("\nRight Distance (in)",getRightDistanceInches());
-          SmartDashboard.putNumber("\nLeft Velocity (in/sec)",getLeftVelocityInchesPerSec());
-          SmartDashboard.putNumber("\nRight Velocity (in/sec)",getRightVelocityInchesPerSec());
+          
+          
 
      }
      /**

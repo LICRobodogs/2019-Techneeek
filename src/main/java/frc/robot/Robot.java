@@ -8,9 +8,11 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.io.File;
+import java.io.*;
+import java.util.*;
 
-import jaci.pathfinder.*;
-
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -35,9 +37,11 @@ import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
 import frc.util.loops.Looper;
 import frc.util.loops.RobotStateEstimator;
+import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.PathfinderFRC;
 import jaci.pathfinder.Trajectory;
 import jaci.pathfinder.followers.EncoderFollower;
+
 
 public class Robot extends TimedRobot { 
   // public static DriveTrain driveTrain;
@@ -122,21 +126,59 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
 	driveBaseSubsystem.dashUpdate();
   }
-
+	public void startFileSearch() {	
+			String name = "Straight_Line.left.pf1.csv";
+			String directory = Filesystem.getDeployDirectory().toString();
+			findFile(name,new File(directory));
+	}
+	public void findFile(String name,File file)
+	{
+			File[] list = file.listFiles();
+			if(list!=null)
+			for (File fil : list)
+			{
+					if (fil.isDirectory())
+					{
+							findFile(name,fil);
+					}
+					else if (name.equalsIgnoreCase(fil.getName()))
+					{
+							System.out.println(fil.getParentFile());
+					}
+			}
+	}
 
   // @Override
   public void autonomousInit() {
 		// autonomous();
 		// turnCommand.start();
+		System.out.println("Starting Search");
+		startFileSearch();
+		System.out.println("Ending Search");
 		driveBaseSubsystem.subsystemHome();
+	
 		// straightPercent.start();
 		// turnCommand.start();
 		//Path is in Feet/ probably not ideal
 		SmartDashboard.putBoolean("\nStarted Auton",true);
-		Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".left");
-		System.out.println(left_trajectory);
-		SmartDashboard.putString("\nLeft trajectory",left_trajectory.toString());
-     Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".right");
+		// SmartDashboard.putString("\nDeploy Directory",Filesystem.getDeployDirectory().toString());
+		
+		String name = "Straight_Line";
+		// String lFilePath = Filesystem.getDeployDirectory().toString()+"/paths/"+name+".left.pdf1.csv";
+		String lFilePath = "/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv";
+		String rFilePath = "/home/lvuser/deploy/paths/Straight_Line.right.pf1.csv";
+		SmartDashboard.putString("\nLeft File Path",lFilePath);
+
+		File myLFile = new File(lFilePath);
+		Trajectory left_trajectory = Pathfinder.readFromCSV(myLFile);
+		File myRFile = new File(rFilePath);
+		Trajectory right_trajectory = Pathfinder.readFromCSV(myRFile);
+
+		// Trajectory left_trajectory = PathfinderFRC.getTrajectory(Filesystem.getDeployDirectory().toString()+ "/Paths/" + name + ".left.pf1.csv");
+		// Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/paths/Straight_Line.left.pf1.csv");
+		// System.out.println(left_trajectory);
+		SmartDashboard.putBoolean("\nLeft trajectory loaded",true);
+    //  Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/paths/Straight_Line.left.pf1.csv");
      m_left_follower = new EncoderFollower(left_trajectory);
 		 m_right_follower = new EncoderFollower(right_trajectory);
 		 m_left_follower.configureEncoder((int)driveBaseSubsystem.getLeftDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
@@ -153,7 +195,7 @@ public class Robot extends TimedRobot {
 		} else {
 			double left_speed = m_left_follower.calculate(driveBaseSubsystem.getLeftPositionRaw());
 			double right_speed = m_right_follower.calculate(driveBaseSubsystem.getRightPositionRaw());
-			double heading = driveBaseSubsystem.getGyroAngle().getDegrees();
+			double heading = Controllers.getInstance().getGyro().getYaw();
 			double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
 			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
 			double turn =  0.8 * (-1.0/80.0) * heading_difference;
@@ -166,7 +208,8 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
 	driveBaseSubsystem.dashUpdate();
     // Scheduler.getInstance().run();
-  }
+	}
+
 
 //   @Override
 // 	public void teleopInit() {
@@ -181,9 +224,9 @@ public class Robot extends TimedRobot {
   @Override
 	public void teleopInit() {
 		driveBaseSubsystem.subsystemHome();
-		m_follower_notifier.stop();
+		// m_follower_notifier.stop();
      driveBaseSubsystem.setSpeed(0, 0);
-		driveBaseSubsystem.subsystemHome();
+		// driveBaseSubsystem.subsystemHome();
 		
 		driveCommand.start();
 		// autonomousCommand.cancel();
@@ -237,6 +280,7 @@ public class Robot extends TimedRobot {
 
 
   public void disabledInit() {
+		SmartDashboard.putBoolean("\nStarted Auton",true);
 		// arm.resetArmEncoder();
 		System.out.println("LEFT DISTANCE" + driveBaseSubsystem.getLeftDistanceInches());
 		System.out.println("RIGHT DISTANCE" + driveBaseSubsystem.getRightDistanceInches());
