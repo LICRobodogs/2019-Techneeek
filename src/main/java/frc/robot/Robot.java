@@ -14,27 +14,22 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Autonomous.Framework.AutoModeBase;
 import frc.Autonomous.Framework.AutoModeExecuter;
 import frc.Autonomous.Modes.BasicMode;
 import frc.controller.Ps4_Controller;
+import frc.robot.commands.GoStraightAtPercent;
+import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.TurnToHeading;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.DriveBaseSubsystem;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Intake;
-import frc.util.ControlLooper;
 import frc.util.CustomSubsystem;
 import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
 import frc.util.loops.Looper;
-import frc.robot.commands.GoStraightAtPercent;
-import frc.robot.commands.JoystickDrive;
-import frc.robot.commands.TurnToHeading;
 import frc.util.loops.RobotStateEstimator;
 
 public class Robot extends TimedRobot { 
@@ -43,19 +38,22 @@ public class Robot extends TimedRobot {
 	public static Arm arm;
 
 
-	private Controllers robotControllers;
+	rivate Controllers robotControllers;
 	
-	private ArrayList<CustomSubsystem> subsystemVector; //use so we can instantiate everything in a forloop and then for every subsystem in here, register its loop  in the looper
-	private Looper mLooper;
-	public static DriveBaseSubsystem driveBaseSubsystem;
-	private RobotStateEstimator robotStateEstimator;
-	private ThreadRateControl threadRateControl = new ThreadRateControl();
+	private ArrayList<Cust
+
+	private RobotStateEstimator robotStat
+
 	private AutoModeExecuter autoModeExecuter;
 	private static Ps4_Controller ps_controller;	
 	private static JoystickDrive driveCommand;
 	private static TurnToHeading turnCommand;
 	private static GoStraightAtPercent straightPercent;
 
+	private EncoderFollower m_left_follower;
+	private EncoderFollower m_right_follower;
+
+	private Notifier m_follower_notifier;
 	//can delete below
 	public DifferentialDrive myDrive;
 
@@ -119,13 +117,19 @@ public class Robot extends TimedRobot {
   }
 
 
-  // @Override
+  @Override
   public void autonomousInit() {
 		// autonomous();
 		// turnCommand.start();
 		driveBaseSubsystem.subsystemHome();
 		// straightPercent.start();
-		turnCommand.start();
+		// turnCommand.start();
+		Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv"+".left")
+		Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.right.pf1.csv"+".left")
+
+		m_left_follower = new EncoderFollower(left_trajectory);
+		m_right_follow = new EncoderFollow(right_trajectory);
+		m_left_follower.configureEncoder()
   }
 
   @Override
