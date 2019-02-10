@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Kinematics;
 import frc.robot.commands.JoystickDrive;
 import frc.util.Constants;
@@ -63,8 +64,12 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           leftSlave = robotControllers.getLeftDrive2();
           rightMaster = robotControllers.getRightDrive1();
           rightSlave = robotControllers.getRightDrive2();
+          leftSlave.setInverted(true);
+          leftMaster.setInverted(true);
           leftSlave.follow(leftMaster);
           rightSlave.follow(rightMaster);
+          // leftMaster.setSensorPhase(true);
+          // rightMaster.setSensorPhase(true);
           m_drive = new DifferentialDrive(leftMaster, rightMaster);
           m_drive.setSafetyEnabled(false);
           
@@ -165,6 +170,23 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           }
 
      }
+     public void setSpeed(double speed1, double speed2) {
+		// if (speed == 0) {
+		/*
+		 * } else { setControlMode(DriveTrainControlMode.TEST); rightDrive1.set(speed);
+		 * leftDrive1.set(speed); }
+		 */
+          
+		leftMaster.set(speed1);
+		rightMaster.set(speed2);
+	}
+     public void setPercentSpeed(double percent) {
+		setPercentSpeed(percent, percent);
+	}
+     public void setPercentSpeed(double percentL, double percentR) {
+		leftMaster.set(ControlMode.PercentOutput, percentL);
+		rightMaster.set(ControlMode.PercentOutput, percentR);
+	}
      public void setBrakeMode(boolean brakeMode){
           if (previousBrakeModeVal != brakeMode) {
                _subsystemMutex.lock();
@@ -241,8 +263,10 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 	public double getRightVelocityInchesPerSec() { return rpmToInchesPerSecond(Util.convertNativeUnitsToRPM(rightMaster.getSelectedSensorVelocity(0))); }
     
      public Rotation2d getGyroAngle() {
-          return gyro.getYaw();
+          return gyro.getMyYaw();
      }
+
+
      public synchronized void setGyroAngle(Rotation2d angle) {
 		gyro.reset();
 		gyro.setAngleAdjustment(angle);
@@ -253,7 +277,14 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      public DunkTalonSRX getRightMaster() {
           return rightMaster;
      }
-     
+     public void dashUpdate() {
+          SmartDashboard.putNumber("\nGyro Angle in Degrees",getGyroAngle().getDegrees());
+          SmartDashboard.putNumber("\nLeft Distance (in)",getLeftDistanceInches());
+          SmartDashboard.putNumber("\nRight Distance (in)",getRightDistanceInches());
+          SmartDashboard.putNumber("\nLeft Velocity (in/sec)",getLeftVelocityInchesPerSec());
+          SmartDashboard.putNumber("\nRight Velocity (in/sec)",getRightVelocityInchesPerSec());
+
+     }
      /**
 	 * Configures the drivebase to drive a path. Used for autonomous driving
 	 *

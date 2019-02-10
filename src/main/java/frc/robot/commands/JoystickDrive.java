@@ -20,7 +20,9 @@ public class JoystickDrive extends Command {
     }
 
     public void execute() {
-        Robot.driveBaseSubsystem.drive(Robot.getPsController().xSpeed(), Robot.getPsController().zRotation());
+        // Robot.driveBaseSubsystem.drive(Robot.getPsController().xSpeed(), Robot.getPsController().zRotation());
+        
+        Robot.driveBaseSubsystem.setSpeed(Robot.getPsController().xSpeed(), Robot.getPsController().xSpeed());
     }
 
 }

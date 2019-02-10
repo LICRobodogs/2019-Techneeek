@@ -32,7 +32,9 @@ import frc.util.CustomSubsystem;
 import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
 import frc.util.loops.Looper;
+import frc.robot.commands.GoStraightAtPercent;
 import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.TurnToHeading;
 import frc.util.loops.RobotStateEstimator;
 
 public class Robot extends TimedRobot { 
@@ -51,6 +53,8 @@ public class Robot extends TimedRobot {
 	private AutoModeExecuter autoModeExecuter;
 	private static Ps4_Controller ps_controller;	
 	private static JoystickDrive driveCommand;
+	private static TurnToHeading turnCommand;
+	private static GoStraightAtPercent straightPercent;
 
 	//can delete below
 	public DifferentialDrive myDrive;
@@ -98,8 +102,11 @@ public class Robot extends TimedRobot {
 		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
 		// driveBaseSubsystem.init();
 		// driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
+		driveBaseSubsystem.subsystemHome();
 		robotStateEstimator = RobotStateEstimator.getInstance();
 		driveCommand = new JoystickDrive();
+		// turnCommand = new TurnToHeading(45);
+		straightPercent = new GoStraightAtPercent(0.5);
 		// mLooper.register(robotStateEstimator); 
 
 	}
@@ -108,16 +115,22 @@ public class Robot extends TimedRobot {
 	}
   @Override
   public void robotPeriodic() {
+	driveBaseSubsystem.dashUpdate();
   }
 
 
   // @Override
   public void autonomousInit() {
-		autonomous();
+		// autonomous();
+		// turnCommand.start();
+		driveBaseSubsystem.subsystemHome();
+		// straightPercent.start();
+		turnCommand.start();
   }
 
   @Override
   public void autonomousPeriodic() {
+	driveBaseSubsystem.dashUpdate();
     Scheduler.getInstance().run();
   }
 
@@ -152,6 +165,7 @@ public class Robot extends TimedRobot {
 //   }
   @Override
   public void teleopPeriodic() {
+	driveBaseSubsystem.dashUpdate();
 		Scheduler.getInstance().run();
 			// double move = oi.getMoveInput();
         // double steer = oi.getSteerInput();
@@ -187,6 +201,8 @@ public class Robot extends TimedRobot {
 
   public void disabledInit() {
 		// arm.resetArmEncoder();
+		System.out.println("LEFT DISTANCE" + driveBaseSubsystem.getLeftDistanceInches());
+		System.out.println("RIGHT DISTANCE" + driveBaseSubsystem.getRightDistanceInches());
 		Scheduler.getInstance().removeAll();
 	}
 

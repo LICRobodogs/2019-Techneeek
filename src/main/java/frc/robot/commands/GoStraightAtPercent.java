@@ -4,16 +4,15 @@ import frc.robot.*;
 import frc.robot.subsystems.DriveBaseSubsystem;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class TurnToHeadingAction extends Action {
-
-
-
+public class GoStraightAtPercent extends Command {
+    private double percent;
 	@Override
     protected boolean isFinished() {
         return false;
     }
 
-    public JoystickDrive(){
+    public GoStraightAtPercent(double percent){
+        this.percent = percent;
         requires(Robot.driveBaseSubsystem);
     }
     
@@ -22,7 +21,9 @@ public class TurnToHeadingAction extends Action {
     }
 
     public void execute() {
-        Robot.driveBaseSubsystem.drive(Robot.getPsController().xSpeed(), Robot.getPsController().zRotation());
+        // Robot.driveBaseSubsystem.drive(Robot.getPsController().xSpeed(), Robot.getPsController().zRotation());
+        
+        Robot.driveBaseSubsystem.setPercentSpeed(percent);
     }
 
 }

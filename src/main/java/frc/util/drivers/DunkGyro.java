@@ -10,7 +10,7 @@ import frc.util.math.Rotation2d;
 /**
  * Driver for a NavX board. Basically a wrapper for the {@link AHRS} class
  */
-public class DunkGyro {
+public class DunkGyro extends AHRS{
     protected class Callback implements ITimestampedDataSubscriber {
         @Override
         public void timestampedDataReceived(long system_timestamp, long sensor_timestamp, AHRSUpdateBase update,
@@ -35,19 +35,21 @@ public class DunkGyro {
     protected final long kInvalidTimestamp = -1;
     protected long mLastSensorTimestampMs;
 
+    
     public DunkGyro(SPI.Port spi_port_id) {
+        super(spi_port_id);
         mAHRS = new AHRS(spi_port_id, (byte) 200);
         resetState();
         mAHRS.registerCallback(new Callback(), null);
     }
 
     public synchronized void reset() {
-        mAHRS.reset();
+        super.reset();
         resetState();
     }
 
     public synchronized void zeroYaw() {
-        mAHRS.zeroYaw();
+        super.zeroYaw();
         resetState();
     }
 
@@ -65,7 +67,8 @@ public class DunkGyro {
         return mYawDegrees;
     }
 
-    public Rotation2d getYaw() {
+
+    public Rotation2d getMyYaw() {
         return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(getRawYawDegrees()));
     }
     public AHRS getAHRS() {
@@ -78,9 +81,5 @@ public class DunkGyro {
 
     public double getYawRateRadiansPerSec() {
         return 180.0 / Math.PI * getYawRateDegreesPerSec();
-    }
-
-    public double getRawAccelX() {
-        return mAHRS.getRawAccelX();
     }
 }
