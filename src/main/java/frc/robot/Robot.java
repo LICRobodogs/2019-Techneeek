@@ -132,7 +132,10 @@ public class Robot extends TimedRobot {
 		// straightPercent.start();
 		// turnCommand.start();
 		//Path is in Feet/ probably not ideal
+		SmartDashboard.putBoolean("\nStarted Auton",true);
 		Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".left");
+		System.out.println(left_trajectory);
+		SmartDashboard.putString("\nLeft trajectory",left_trajectory.toString());
      Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".right");
      m_left_follower = new EncoderFollower(left_trajectory);
 		 m_right_follower = new EncoderFollower(right_trajectory);
@@ -177,6 +180,7 @@ public class Robot extends TimedRobot {
 
   @Override
 	public void teleopInit() {
+		driveBaseSubsystem.subsystemHome();
 		m_follower_notifier.stop();
      driveBaseSubsystem.setSpeed(0, 0);
 		driveBaseSubsystem.subsystemHome();
