@@ -9,33 +9,35 @@ package frc.robot;
 
 import java.util.ArrayList;
 
+import jaci.pathfinder.*;
+
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Autonomous.Framework.AutoModeBase;
 import frc.Autonomous.Framework.AutoModeExecuter;
 import frc.Autonomous.Modes.BasicMode;
 import frc.controller.Ps4_Controller;
+import frc.robot.commands.GoStraightAtPercent;
+import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.TurnToHeading;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.DriveBaseSubsystem;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Intake;
-import frc.util.ControlLooper;
+import frc.util.Constants;
 import frc.util.CustomSubsystem;
 import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
 import frc.util.loops.Looper;
-import frc.robot.commands.GoStraightAtPercent;
-import frc.robot.commands.JoystickDrive;
-import frc.robot.commands.TurnToHeading;
 import frc.util.loops.RobotStateEstimator;
+import jaci.pathfinder.PathfinderFRC;
+import jaci.pathfinder.Trajectory;
+import jaci.pathfinder.followers.EncoderFollower;
 
 public class Robot extends TimedRobot { 
   // public static DriveTrain driveTrain;
@@ -55,6 +57,9 @@ public class Robot extends TimedRobot {
 	private static JoystickDrive driveCommand;
 	private static TurnToHeading turnCommand;
 	private static GoStraightAtPercent straightPercent;
+	private EncoderFollower m_left_follower;
+   private EncoderFollower m_right_follower;
+   private Notifier m_follower_notifier;
 
 	//can delete below
 	public DifferentialDrive myDrive;
@@ -125,13 +130,39 @@ public class Robot extends TimedRobot {
 		// turnCommand.start();
 		driveBaseSubsystem.subsystemHome();
 		// straightPercent.start();
-		turnCommand.start();
-  }
+		// turnCommand.start();
+		//Path is in Feet/ probably not ideal
+		Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".left");
+     Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv" + ".right");
+     m_left_follower = new EncoderFollower(left_trajectory);
+		 m_right_follower = new EncoderFollower(right_trajectory);
+		 m_left_follower.configureEncoder((int)driveBaseSubsystem.getLeftDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
+		 m_left_follower.configurePIDVA(1.0, 0.0, 0.0, 1 / Constants.kPathFollowingMaxVelSlow, 0);
+		 m_right_follower.configureEncoder((int)driveBaseSubsystem.getRightDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
+		 m_right_follower.configurePIDVA(1.0, 0.0, 0.0, 1 / Constants.kPathFollowingMaxVelSlow, 0);
+
+		 m_follower_notifier = new Notifier(this::followPath);
+     m_follower_notifier.startPeriodic(left_trajectory.get(0).dt);
+	}
+	private void followPath() {
+		if (m_left_follower.isFinished() || m_right_follower.isFinished()) {
+			m_follower_notifier.stop();
+		} else {
+			double left_speed = m_left_follower.calculate(driveBaseSubsystem.getLeftPositionRaw());
+			double right_speed = m_right_follower.calculate(driveBaseSubsystem.getRightPositionRaw());
+			double heading = driveBaseSubsystem.getGyroAngle().getDegrees();
+			double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
+			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
+			double turn =  0.8 * (-1.0/80.0) * heading_difference;
+			driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
+			
+		}
+}
 
   @Override
   public void autonomousPeriodic() {
 	driveBaseSubsystem.dashUpdate();
-    Scheduler.getInstance().run();
+    // Scheduler.getInstance().run();
   }
 
 //   @Override
@@ -146,6 +177,8 @@ public class Robot extends TimedRobot {
 
   @Override
 	public void teleopInit() {
+		m_follower_notifier.stop();
+     driveBaseSubsystem.setSpeed(0, 0);
 		driveBaseSubsystem.subsystemHome();
 		
 		driveCommand.start();

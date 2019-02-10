@@ -256,7 +256,14 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 
 	public double getRightDistanceInches() {
 		return rotationsToInches(rightMaster.getSelectedSensorPosition(0)/Constants.kSensorUnitsPerRotation);
-	}
+     }
+     public int getRightPositionRaw() {
+          return rightMaster.getSelectedSensorPosition(0);
+     }
+     
+     public int getLeftPositionRaw() {
+          return leftMaster.getSelectedSensorPosition(0);
+     }
 
 	public double getLeftVelocityInchesPerSec() { return rpmToInchesPerSecond(Util.convertNativeUnitsToRPM(leftMaster.getSelectedSensorVelocity(0))); }
 
@@ -301,7 +308,7 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 							Constants.kInertiaSteeringGain, Constants.kPathFollowingProfileKp,
 							Constants.kPathFollowingProfileKi, Constants.kPathFollowingProfileKv,
 							Constants.kPathFollowingProfileKffv, Constants.kPathFollowingProfileKffa,
-							Constants.kPathFollowingMaxVel, Constants.kPathFollowingMaxAccel,
+							Constants.kPathFollowingMaxVelSlow, Constants.kPathFollowingMaxAccel,
 							Constants.kPathFollowingGoalPosTolerance, Constants.kPathFollowingGoalVelTolerance,
 							Constants.kPathStopSteeringDistance));
 
