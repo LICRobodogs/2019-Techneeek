@@ -198,6 +198,11 @@ public class Robot extends TimedRobot {
 			double heading = Controllers.getInstance().getGyro().getYaw();
 			double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
 			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
+			
+			SmartDashboard.putNumber("Heading", heading);
+			SmartDashboard.putNumber("Heading Desired", desired_heading);
+			SmartDashboard.putNumber("Heading Difference", heading_difference);
+
 			double turn =  0.8 * (-1.0/80.0) * heading_difference;
 			driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
 			
