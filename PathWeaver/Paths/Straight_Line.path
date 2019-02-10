@@ -1,3 +1,3 @@
 X,Y,Tangent X,Tangent Y,Fixed Theta,Name
-0.0,0.0,10.0,0.0,true,
-10.0,10.0,0.0,10.0,true,
+1.0,40.0,10.0,0.0,true,Start_Staight_line
+25.0,40.0,27.160375231085325,0.0,true,End_Straight_Line
