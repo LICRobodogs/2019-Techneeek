@@ -31,7 +31,7 @@ public class JoystickElevator extends Command {
 		if(Robot.oi.getOperatorGamepad().getLeftYAxis()>0){
 			signal = -0.3*Robot.oi.getOperatorGamepad().getLeftYAxis();
 		}else{
-			signal = -0.6*Robot.oi.getOperatorGamepad().getLeftYAxis();
+			signal = -0.9*Robot.oi.getOperatorGamepad().getLeftYAxis();
 
 		}
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));

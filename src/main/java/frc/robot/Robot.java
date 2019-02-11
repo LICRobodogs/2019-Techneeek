@@ -55,8 +55,8 @@ public class Robot extends TimedRobot {
 		arm = Arm.getInstance();
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
-		controlLoop.addLoopable(driveTrain);
-		// controlLoop.addLoopable(arm);
+		// controlLoop.addLoopable(driveTrain);
+		controlLoop.addLoopable(arm);
 		controlLoop.addLoopable(intake);
 		comp = new Compressor();
 		setupAutonChooser();
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void updateStatus() {
-		// arm.updateStatus(operationMode);
+		arm.updateStatus(operationMode);
 		driveTrain.updateStatus(operationMode);
 	}
 

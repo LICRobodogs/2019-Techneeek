@@ -19,15 +19,15 @@ public class Constants {
 	public static final int DRIVETRAIN_RIGHT_MOTOR1_ID = 4;
 	public static final int DRIVETRAIN_RIGHT_MOTOR2_ID = 5;
 
-	public static final int TOP_INTAKE_TALON_ID = 1;
+	public static final int TOP_INTAKE_TALON_ID = 2;
 	public static final int BOTTOM_INTAKE_VICTOR_ID = 7;
 
 	public static final int ELEVATOR_TALON1_ID = 5;
 	public static final int ELEVATOR_TALON2_ID = 6;
     public static final int ELEVATOR_VICTOR1_ID = 8;
     
-	public static final int WRIST_TALON_ID = 3;
-	public static final int WRIST_VICTOR_ID = 2;
+	public static final int WRIST_TALON_ID = 1;
+	public static final int WRIST_VICTOR_ID = 9;
 
 	public static final int LEFT_SUCTION_TALON_ID = 3;
 	public static final int RIGHT_SUCTION_TALON_ID = 4;

@@ -32,7 +32,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
     private boolean isHoldingPosition = false;
     private boolean atScale = false;
 
-    private int homePosition = 0;
+    private int homePosition = 5000;
 	private int collectPosition = 1000;
 	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
@@ -40,7 +40,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int minimumDunkHeight = 26500;
 	private int dunkPosition = 33500;
 	private int climbPosition = 48000;
-	private int maxUpTravelPosition = 52000;
+	private int maxUpTravelPosition = 40000;
 
 	private int scaleMiddlePosition = 38500;
 	private int scaleBottomPosition = 35000;
@@ -71,11 +71,11 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public Elevator() {
 		this.elevatorLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-		// this.elevatorLead.configForwardSoftLimitEnable(true);
-		// this.elevatorLead.configForwardSoftLimitThreshold(upPositionLimit);
+		this.elevatorLead.configForwardSoftLimitEnable(true);
+		this.elevatorLead.configForwardSoftLimitThreshold(upPositionLimit);
 
-		// this.elevatorLead.configReverseSoftLimitEnable(true);
-		// this.elevatorLead.configReverseSoftLimitThreshold(downPositionLimit);
+		this.elevatorLead.configReverseSoftLimitEnable(true);
+		this.elevatorLead.configReverseSoftLimitThreshold(downPositionLimit);
 
 		this.elevatorLead.setInverted(false);
 		this.elevatorLead.setSensorPhase(false);

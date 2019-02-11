@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
@@ -11,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.commands.JoystickArm;
 import frc.util.Constants;
 import frc.util.ControlLoopable;
 
@@ -49,13 +49,13 @@ public class Arm extends Subsystem implements ControlLoopable {
 		try {
 			shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
 
-			// armTalon = new TalonSRX(RobotMap.WRIST_TALON_ID);
-			// armFollower = new VictorSPX(RobotMap.WRIST_VICTOR_ID);
+			armTalon = new TalonSRX(Constants.WRIST_TALON_ID);
+			armFollower = new VictorSPX(Constants.WRIST_VICTOR_ID);
 
 			// armFollower.follow(armTalon);
 
 			// armTalon.setNeutralMode(NeutralMode.Brake);
-			// armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+			armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 			// armTalon.setSensorPhase(true);
 			// armTalon.config_kP(0, mArmKp, 10);
 			// armTalon.config_kI(0, mArmKi, 10);
@@ -116,7 +116,7 @@ public class Arm extends Subsystem implements ControlLoopable {
 	}
 
 	public void controlLoopUpdate() {
-		moveWithJoystick();
+		// moveWithJoystick();
 		/*
 		 * }else if (controlMode == ArmControlMode.SENSORED) { //moveWithFeedBack(); //}
 		 */
@@ -146,17 +146,17 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new JoystickArm());
+		// setDefaultCommand(new JoystickArm());
 	}
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
 		SmartDashboard.putNumber("Arm Setpoint", getAngleSetpoint());
 		SmartDashboard.putNumber("isOnTarget result", Math.abs(getArmAngle() - Math.abs(getAngleSetpoint())));
-		SmartDashboard.putBoolean("onTarget", isOnTarget());
+		// SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());
 		SmartDashboard.putNumber("PWM:", armTalon.getMotorOutputVoltage());
-		SmartDashboard.putBoolean("isHome", isHome());
+		// SmartDashboard.putBoolean("isHome", isHome());
 		SmartDashboard.putBoolean("isShot", isShot());
 		SmartDashboard.putBoolean("isBrakeEngaged", isBrakeEngaged());
 		SmartDashboard.putString("TALON MODE: ", armTalon.getControlMode().toString());
