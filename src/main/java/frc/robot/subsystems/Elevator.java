@@ -52,13 +52,13 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public int upPositionLimit = maxUpTravelPosition;
 	public int downPositionLimit = homePosition;
 	private int targetPosition = 0;
-	private double arbitraryFeedForward = 0.0;
+	private double arbitraryFeedForward = 0.09;
 
 	private final static int onTargetThreshold = 1000; // changed to 500 from 100 for testing on practice field
     
     //                                            slot          p      i     d      f    izone
-	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.0, 0.0, 0.0, 0.620, 0);
-	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.0, 0.0, 0.0, 0.427, 0);
+	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.0, 0.0, 0.0, 0.0, 0);
+	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.0, 0.0, 0.0, 0.0, 0);
 	
 	//Uses PID values to go to a position                              accel velo  gains
 	private MotionParameters upMotionParameters = new MotionParameters(2600, 2000, upGains);

@@ -44,11 +44,12 @@ public class JoystickElevator extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return false;
+		return Math.abs(Robot.oi.getOperatorGamepad().getLeftYAxis())<0.1;
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
+		Robot.elevator.setElevator(ControlMode.Position, Robot.elevator.getCurrentPosition(),DemandType.ArbitraryFeedForward,Robot.elevator.getArbitraryFeedForward());
 	}
 
 	// Called when another command which requires one or more of the same

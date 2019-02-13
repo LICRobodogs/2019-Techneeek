@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
 		comp = new Compressor();
 		setupAutonChooser();
 		
+		elevator.elevatorLead.setSelectedSensorPosition(0);
 		// arm.setStartConfigAngle();
 	}
 
