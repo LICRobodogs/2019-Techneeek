@@ -9,8 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Sendable;
-import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,6 +41,10 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 	
 	private static double offset;
+	private int homePosition = 50;
+	private int maxUpTravelPosition = 1200;
+	public int upPositionLimit = maxUpTravelPosition;
+	public int downPositionLimit = homePosition;
 	
 	public double mAngle;
 
@@ -55,6 +57,12 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 			armTalon = new TalonSRX(Constants.WRIST_TALON_ID);
 			armFollower = new VictorSPX(Constants.WRIST_VICTOR_ID);
+
+			this.armTalon.configForwardSoftLimitEnable(true);
+			this.armTalon.configForwardSoftLimitThreshold(upPositionLimit);
+
+			this.armTalon.configReverseSoftLimitEnable(true);
+			this.armTalon.configReverseSoftLimitThreshold(downPositionLimit);
 
 			armFollower.follow(armTalon);
 			armFollower.setInverted(true);
@@ -108,15 +116,19 @@ public class Arm extends Subsystem implements ControlLoopable {
 		// this.mAngle = angle-offset;
 		if(controlMode == ArmControlMode.MANUAL && Math.abs(angle) < Constants.ARM_HOLDING_PWM){
 			setControlMode(ArmControlMode.HOLD);
-			System.out.println("Should've changed control modes");
 		}
-		if (this.controlMode == ArmControlMode.MANUAL) {
+		if (this.controlMode == ArmControlMode.MANUAL && Math.abs(angle) > Constants.ARM_HOLDING_PWM) {
 			armTalon.set(ControlMode.PercentOutput, angle, DemandType.ArbitraryFeedForward,getFeedForward());
-			System.out.println("In this for some reason");
 		} else if (this.controlMode == ArmControlMode.TEST) {
 
 		} else if (this.controlMode == ArmControlMode.HOLD) {
-			armTalon.set(ControlMode.Position, armTalon.getSelectedSensorPosition(0), DemandType.ArbitraryFeedForward,getFeedForward());
+			if(getRawAngle()<homePosition){
+				armTalon.set(ControlMode.Position, homePosition, DemandType.ArbitraryFeedForward,getFeedForward());
+			}else if(getRawAngle()>maxUpTravelPosition){
+				armTalon.set(ControlMode.Position, maxUpTravelPosition, DemandType.ArbitraryFeedForward,getFeedForward());
+			}else{
+				armTalon.set(ControlMode.Position, armTalon.getSelectedSensorPosition(0), DemandType.ArbitraryFeedForward,getFeedForward());
+			}
 		} else if (this.controlMode == ArmControlMode.SENSORED) {
 			armTalon.set(ControlMode.Position, (mAngle != 0 ? mAngle : 0));
 		}
@@ -158,9 +170,7 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
-		SmartDashboard.putNumber("Arm RAW Angle: ", armTalon.getSelectedSensorPosition());
-		SmartDashboard.putNumber("Arm Setpoint", getAngleSetpoint());
-		SmartDashboard.putNumber("isOnTarget result", Math.abs(getArmAngle() - Math.abs(getAngleSetpoint())));
+		SmartDashboard.putNumber("Arm RAW Angle: ", getRawAngle());
 		// SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());
 		SmartDashboard.putNumber("PWM:", armTalon.getMotorOutputVoltage());
@@ -171,7 +181,12 @@ public class Arm extends Subsystem implements ControlLoopable {
 		SmartDashboard.putString("TALON MODE: ", armTalon.getControlMode().toString());
 		SmartDashboard.putString("ARM CONTROL MODE: ", controlMode.toString());
 		// SmartDashboard.putNumber("mAngle: ", mAngle);
-		SmartDashboard.putNumber("Right Y axis", Robot.oi.getOperatorGamepad().getRightYAxis());
+		if(this.controlMode == ArmControlMode.MANUAL){
+			SmartDashboard.putNumber("Right Y axis", Robot.oi.getOperatorGamepad().getRightYAxis());
+		}else if(this.controlMode == ArmControlMode.SENSORED){
+			SmartDashboard.putNumber("isOnTarget result", Math.abs(getArmAngle() - Math.abs(getAngleSetpoint())));
+			SmartDashboard.putNumber("Arm Setpoint", getAngleSetpoint());
+		}
 		if (operationMode == Robot.OperationMode.TEST) {
 		}
 	}
@@ -197,6 +212,14 @@ public class Arm extends Subsystem implements ControlLoopable {
 		// return angle < 0.1 ? 0:angle;
 	}
 
+	private double getRawAngle() {
+		int rawAngle = armTalon.getSelectedSensorPosition(0);
+		// return
+		// ((double)armTalon.getSelectedSensorPosition(0))/NATIVE_TO_ANGLE_FACTOR;
+		return rawAngle;
+		// return angle < 0.1 ? 0:angle;
+	}
+
 	private double getFeedForward() {
 		double theta = Math.toRadians(getArmAngle());
 
@@ -205,6 +228,19 @@ public class Arm extends Subsystem implements ControlLoopable {
 		SmartDashboard.putNumber("Gravity Comp", gravityCompensation);
 
 		return gravityCompensation * Constants.ARM_HOLDING_PWM;
+	}
+
+	public boolean isValidPosition(double signal){
+		if(signal>0 && (getRawAngle()>=maxUpTravelPosition)){
+			return false;
+		}
+		if(signal<0 && (getRawAngle()<=homePosition)){
+			return false;
+		}
+		if(signal>0 && (getRawAngle()>900 && Robot.elevator.getCurrentPosition()<13000)){
+			return false;
+		}
+		return true;
 	}
 
 	public void resetArmEncoder() {

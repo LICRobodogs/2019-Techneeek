@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.*;
 import frc.robot.subsystems.Arm.ArmControlMode;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class JoystickArm extends Command {
 	private double signal = 0;
@@ -28,10 +29,13 @@ public class JoystickArm extends Command {
 		}else{
 			signal = -0.95*Robot.oi.getOperatorGamepad().getRightYAxis();
 
-		}
+        }
+        SmartDashboard.putNumber("signal", signal);
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
-		// Robot.elevator.motionMagicControl();
-		Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
+        // Robot.elevator.motionMagicControl();
+        if(Robot.arm.isValidPosition(signal)){
+            Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
+        }
     }
 
 }

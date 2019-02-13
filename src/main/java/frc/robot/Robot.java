@@ -50,18 +50,18 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		driveTrain = DriveTrain.getInstance();
+		// driveTrain = DriveTrain.getInstance();
 		intake = Intake.getInstance();
 		arm = Arm.getInstance();
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
 		// controlLoop.addLoopable(driveTrain);
-		controlLoop.addLoopable(arm);
+		// controlLoop.addLoopable(arm);
 		controlLoop.addLoopable(intake);
 		comp = new Compressor();
 		setupAutonChooser();
 		
-		arm.setStartConfigAngle();
+		// arm.setStartConfigAngle();
 	}
 
 	@Override
@@ -82,10 +82,10 @@ public class Robot extends TimedRobot {
 		comp.stop();
 		// autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
-		Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
+		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
 		// arm.setControlMode(ArmControlMode.MANUAL);
-		driveTrain.setPeriodMs(Constants.kTimeoutMs);
-		controlLoop.start();
+		// driveTrain.setPeriodMs(Constants.kTimeoutMs);
+		// controlLoop.start();
 		System.out.println("test");
 	}
 
@@ -103,6 +103,7 @@ public class Robot extends TimedRobot {
 
 	public void disabledPeriodic() {
 		updateStatus();
+
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class Robot extends TimedRobot {
 
 	public void updateStatus() {
 		arm.updateStatus(operationMode);
-		driveTrain.updateStatus(operationMode);
+		// driveTrain.updateStatus(operationMode);
 	}
 
 	public void setupAutonChooser() {

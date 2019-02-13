@@ -65,17 +65,17 @@ public class Constants {
     public final double SCALE_ANGLE_SETPOINT = 230;
 	public final double SWITCH_ANGLE_SETPOINT = 80;
 	public static double mArmOnTargetTolerance = 10;
-	public static double mArmKp = 0;// .45
+	public static double mArmKp = 7.5;// .45
 	public static double mArmKi = 0.0;
 	public static double mArmKd = 0.0;// .25
 	public static double mArmKf = 0.0;
 	public static int mArmIZone = (int) (1023.0 / mArmKp);
 	public static double mArmRampRate = .2;
     public static int mArmAllowableError = 0;
-    public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 2.5 / 12.0;
+    public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 3.5 / 12.0;
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
-	public static final int START_CONFIG_ANGLE = 90;
-	public static final double ARM_HOLDING_PWM = 0.075;
+	public static final int START_CONFIG_ANGLE = 900;
+	public static final double ARM_HOLDING_PWM = 0.06;
 
 	//Elevator
 	public static final double ELEVATOR_NATIVE_TO_ANGLE_FACTOR = (100 / 12) * (84 / 14) * (84 / 32) * (20 / 32) * (16 / 18);
