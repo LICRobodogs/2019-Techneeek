@@ -11,6 +11,9 @@ import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
 import frc.robot.commands.ScoreHatch;
+import frc.robot.commands.arm.ArmGoToBackCargo;
+import frc.robot.commands.arm.ArmGoToFrontCargo;
+import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.elevator.ElevatorGoToHatch2;
 import frc.robot.commands.elevator.ElevatorGoToHatch3;
@@ -52,7 +55,7 @@ public class OI {
 		intakeIn.whileHeld(new IntakeSpeed());
 		intakeIn.whenReleased(new IntakeSpeedOff());
 
-		JoystickButton intakeHold = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
+		JoystickButton intakeHold = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.X_BUTTON);
 		intakeHold.whileHeld(new IntakeSpeed(.275));
 		intakeHold.whenReleased(new IntakeSpeedOff());
 
@@ -74,6 +77,17 @@ public class OI {
 		JoystickButton hatchLvl3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
 		hatchLvl3.whenPressed(new ElevatorGoToHatch3());
 
+		JoystickButton armCargo = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
+		armCargo.whenPressed(new ArmGoToFrontCargo());
+
+		Button armRest = new InternalButton();
+		armRest.whenPressed(new ArmGoToRest());
+		SmartDashboard.putData("Arm Rest", armRest);
+
+		Button armBackCargo = new InternalButton();
+		armBackCargo.whenPressed(new ArmGoToBackCargo());
+		SmartDashboard.putData("Arm Back Cargo", armBackCargo);
+		
 		// Pneumatics Diagonostics
 
 		Button testSuctionGrab = new InternalButton();

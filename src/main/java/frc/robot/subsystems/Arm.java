@@ -4,8 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -15,9 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.commands.JoystickArm;
 import frc.util.Constants;
-import frc.util.ControlLoopable;
+import frc.util.drivers.DunkVictorSPX;
+import frc.util.drivers.IPositionControlledSubsystem;
+import frc.util.drivers.LeaderDunkTalonSRX;
+import frc.util.drivers.MotionParameters;
+import frc.util.drivers.SRXGains;
 
-public class Arm extends Subsystem implements ControlLoopable {
+public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private static Arm instance = null;
 
 	public static Arm getInstance() {
@@ -40,15 +42,28 @@ public class Arm extends Subsystem implements ControlLoopable {
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
 
 	public static DoubleSolenoid brakePiston, shootPiston;
-	private TalonSRX armTalon;
-	private VictorSPX armFollower;
-
+	private LeaderDunkTalonSRX armTalon;
+	private DunkVictorSPX armFollower;
 	
-	private static double offset;
 	private int homePosition = 50;
-	private int maxUpTravelPosition = 1200;
+	private int restPosition = 1000;
+	private int maxUpTravelPosition = 1450;
+	private int frontCargoPosition = 450;
+	private int backCargoPosition = 1300;
 	public int upPositionLimit = maxUpTravelPosition;
 	public int downPositionLimit = homePosition;
+
+	public final static int WRIST_PROFILE_UP = 0;
+	public final static int WRIST_PROFILE_DOWN = 1;
+
+	private int targetPosition = homePosition;
+	private final static int onTargetThreshold = 5;
+
+	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
+	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
+
+	private MotionParameters upMotionParameters = new MotionParameters(1000, 1000, upGains);
+	private MotionParameters downMotionParameters = new MotionParameters(500, 500, downGains);
 	
 	public double mAngle;
 
@@ -59,8 +74,8 @@ public class Arm extends Subsystem implements ControlLoopable {
 		try {
 			// shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
 
-			armTalon = new TalonSRX(Constants.WRIST_TALON_ID);
-			armFollower = new VictorSPX(Constants.WRIST_VICTOR_ID);
+			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
+			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
 
 			this.armTalon.configForwardSoftLimitEnable(true);
 			this.armTalon.configForwardSoftLimitThreshold(upPositionLimit);
@@ -72,18 +87,14 @@ public class Arm extends Subsystem implements ControlLoopable {
 			armFollower.setInverted(true);
 			armTalon.setNeutralMode(NeutralMode.Brake);
 			armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
-			armTalon.config_kP(0, Constants.mArmKp, 10);
-			armTalon.config_kI(0, Constants.mArmKi, 10);
-			armTalon.config_kD(0, Constants.mArmKd, 10);
-			armTalon.config_kF(0, Constants.mArmKf, 10);
-			armTalon.config_IntegralZone(0, Constants.mArmIZone, 10);
+
 			armTalon.configClosedloopRamp(Constants.mArmRampRate, 10);
-			// armTalon.configNominalOutputForward(0, 10);
-			// armTalon.configNominalOutputReverse(0, 10);
+
 			armTalon.configPeakOutputForward(Constants.ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
 			armTalon.configPeakOutputReverse(-Constants.ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
-			// armTalon.set(ControlMode.PercentOutput, 0);
 
+			armTalon.configMotionParameters(upMotionParameters);
+			armTalon.configMotionParameters(downMotionParameters);
 		} catch (Exception e) {
 			System.err.println("An error occurred in the Arm constructor");
 		}
@@ -116,26 +127,26 @@ public class Arm extends Subsystem implements ControlLoopable {
 	}
 
 	public void setArmAngle(ArmControlMode controlMode, double angle) {
-		setControlMode(controlMode);
-		// this.mAngle = angle-offset;
-		if(controlMode == ArmControlMode.MANUAL && Math.abs(angle) < Constants.ARM_HOLDING_PWM){
-			setControlMode(ArmControlMode.HOLD);
-		}
-		if (this.controlMode == ArmControlMode.MANUAL && Math.abs(angle) > Constants.ARM_HOLDING_PWM) {
-			armTalon.set(ControlMode.PercentOutput, angle, DemandType.ArbitraryFeedForward,getFeedForward());
-		} else if (this.controlMode == ArmControlMode.TEST) {
+		// setControlMode(controlMode);
+		// // this.mAngle = angle-offset;
+		// if(controlMode == ArmControlMode.MANUAL && Math.abs(angle) < Constants.ARM_HOLDING_PWM){
+		// 	setControlMode(ArmControlMode.HOLD);
+		// }
+		// if (this.controlMode == ArmControlMode.MANUAL && Math.abs(angle) > Constants.ARM_HOLDING_PWM) {
+		// 	armTalon.set(ControlMode.PercentOutput, angle, DemandType.ArbitraryFeedForward,getFeedForward());
+		// } else if (this.controlMode == ArmControlMode.TEST) {
 
-		} else if (this.controlMode == ArmControlMode.HOLD) {
-			if(getRawAngle()<homePosition){
-				armTalon.set(ControlMode.Position, homePosition, DemandType.ArbitraryFeedForward,getFeedForward());
-			}else if(getRawAngle()>maxUpTravelPosition){
-				armTalon.set(ControlMode.Position, maxUpTravelPosition, DemandType.ArbitraryFeedForward,getFeedForward());
-			}else{
-				armTalon.set(ControlMode.Position, armTalon.getSelectedSensorPosition(0), DemandType.ArbitraryFeedForward,getFeedForward());
-			}
-		} else if (this.controlMode == ArmControlMode.SENSORED) {
-			armTalon.set(ControlMode.Position, (mAngle != 0 ? mAngle : 0));
-		}
+		// } else if (this.controlMode == ArmControlMode.HOLD) {
+		// 	if(getCurrentPosition()<homePosition){
+		// 		armTalon.set(ControlMode.Position, homePosition, DemandType.ArbitraryFeedForward,getFeedForward());
+		// 	}else if(getCurrentPosition()>maxUpTravelPosition){
+		// 		armTalon.set(ControlMode.Position, maxUpTravelPosition, DemandType.ArbitraryFeedForward,getFeedForward());
+		// 	}else{
+		// 		armTalon.set(ControlMode.Position, armTalon.getSelectedSensorPosition(0), DemandType.ArbitraryFeedForward,getFeedForward());
+		// 	}
+		// } else if (this.controlMode == ArmControlMode.SENSORED) {
+		// 	armTalon.set(ControlMode.Position, (mAngle != 0 ? mAngle : 0));
+		// }
 	}
 
 	public void controlLoopUpdate() {
@@ -169,12 +180,83 @@ public class Arm extends Subsystem implements ControlLoopable {
 
 	@Override
 	protected void initDefaultCommand() {
-		setDefaultCommand(new JoystickArm());
+		// setDefaultCommand(new JoystickArm());
+	}
+
+	//sets control mode to motion magic
+	public void wristMove(ControlMode controlMode, double targetPosition) {
+		this.manageMotion(targetPosition);
+		armTalon.set(controlMode, targetPosition);
+	}
+
+	public void motionMagicControl() {
+		manageMotion(targetPosition);
+		armTalon.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, getFeedForward());
+	}
+
+	/*
+	 * controls the position of the collector between upPositionLimit and
+	 * downPositionLimit based on the scalar input between -1 and 1.
+	 */
+	public void motionMagicPositionControl(double positionScalar) {
+		double encoderPosition = 0;
+
+		if (positionScalar > 0) {
+			encoderPosition = positionScalar * upPositionLimit;
+		} else {
+			encoderPosition = -positionScalar * downPositionLimit;
+		}
+		armTalon.set(ControlMode.MotionMagic, encoderPosition);
+	}
+
+	/*
+	 * choose which set of gains to use based on direction of travel.
+	 */
+	public void manageMotion(double targetPosition) {
+		double currentPosition = getCurrentPosition();
+
+		manageLimits();
+		if (currentPosition > targetPosition) {
+			armTalon.selectMotionParameters(downMotionParameters);
+		} else {
+			armTalon.selectMotionParameters(upMotionParameters);
+		}
+	
+		this.armTalon.configForwardSoftLimitThreshold(upPositionLimit);
+		this.armTalon.configReverseSoftLimitThreshold(downPositionLimit);
+	}
+
+	//Prevents wrist from moving behind the home position whilst elevator is not above first stage
+	
+	private void manageLimits() {
+		if (Robot.elevator.getCurrentPosition() > Robot.elevator.getTopOfFirstStagePosition()) {
+			this.upPositionLimit = maxUpTravelPosition;
+		} else {
+			this.upPositionLimit = restPosition;
+			if (this.targetPosition < homePosition) {
+				this.targetPosition = homePosition;
+			}
+		}
+	}
+
+	public int getTargetPosition() {
+		return this.targetPosition;
+	}
+
+	//if valid position is inverted return false else, return true
+	public boolean setTargetPosition(int position) {
+		manageLimits();
+		if (!isValidPosition(position)) {
+			return false;
+		} else {
+			this.targetPosition = position;
+			return true;
+		}
 	}
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
-		SmartDashboard.putNumber("Arm RAW Angle: ", getRawAngle());
+		SmartDashboard.putNumber("Arm RAW Angle: ", getCurrentPosition());
 		// SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());
 		SmartDashboard.putNumber("PWM:", armTalon.getMotorOutputVoltage());
@@ -216,7 +298,8 @@ public class Arm extends Subsystem implements ControlLoopable {
 		// return angle < 0.1 ? 0:angle;
 	}
 
-	private double getRawAngle() {
+	@Override
+	public int getCurrentPosition() {
 		int rawAngle = armTalon.getSelectedSensorPosition(0);
 		// return
 		// ((double)armTalon.getSelectedSensorPosition(0))/NATIVE_TO_ANGLE_FACTOR;
@@ -234,24 +317,25 @@ public class Arm extends Subsystem implements ControlLoopable {
 		return gravityCompensation * Constants.ARM_HOLDING_PWM;
 	}
 
-	public boolean isValidPosition(double signal){
-		if(signal>0 && (getRawAngle()>=maxUpTravelPosition)){
+	public boolean isValidPosition(double signal, boolean manual){
+		if(signal>0 && (getCurrentPosition()>=maxUpTravelPosition)){
 			return false;
 		}
-		if(signal<0 && (getRawAngle()<=homePosition)){
+		if(signal<0 && (getCurrentPosition()<=homePosition)){
 			return false;
 		}
-		if(signal>0 && (getRawAngle()>900 && Robot.elevator.getCurrentPosition()<13000)){
+		if(signal>0 && (getCurrentPosition()>900 && Robot.elevator.getCurrentPosition()<13000)){
 			return false;
 		}
 		return true;
 	}
 
+	public boolean isValidPosition(int position) {
+		return (position <= upPositionLimit && position >= downPositionLimit);
+	}
+
 	public void resetArmEncoder() {
-		offset = armTalon.getSensorCollection().getPulseWidthPosition() / Constants.ARM_NATIVE_TO_ANGLE_FACTOR;
-		// mAngle=0;
 		armTalon.setSelectedSensorPosition(0, 0, 10);
-		// setSetpoint(0);
 	}
 
 	public void setStartConfigAngle() {
@@ -271,9 +355,30 @@ public class Arm extends Subsystem implements ControlLoopable {
 		return homeLimit.get();
 	}
 
-	@Override
-	public void setPeriodMs(long periodMs) {
-		// TODO Auto-generated method stub
+	public int getFrontCargoPosition(){
+		return frontCargoPosition;
+	}
+	public int getBackCargoPosition(){
+		return backCargoPosition;
+	}
 
+	public int getFrontRestPosition(){
+		return restPosition;
+	}
+
+	@Override
+	public void periodic() {
+	}
+
+	@Override
+	public double getCurrentVelocity() {
+		return armTalon.getSelectedSensorVelocity();
+	}
+
+	@Override
+	public boolean isInPosition(int targetPosition) {
+		int currentPosition = getCurrentPosition();
+		int positionError = Math.abs(currentPosition - targetPosition);
+		return positionError < onTargetThreshold;
 	}
 }

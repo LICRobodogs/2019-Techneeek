@@ -33,7 +33,7 @@ public class JoystickArm extends Command {
         SmartDashboard.putNumber("signal", signal);
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
         // Robot.elevator.motionMagicControl();
-        if(Robot.arm.isValidPosition(signal)){
+        if(Robot.arm.isValidPosition(signal,true)){
             Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
         }
     }
