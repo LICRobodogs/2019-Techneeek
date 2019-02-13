@@ -33,6 +33,10 @@ public class Arm extends Subsystem implements ControlLoopable {
 		MANUAL, SENSORED, HOLD, TEST
 	}
 
+	public static enum ArmSide {
+		FRONT, BACK
+	}
+
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
 
 	public static DoubleSolenoid brakePiston, shootPiston;

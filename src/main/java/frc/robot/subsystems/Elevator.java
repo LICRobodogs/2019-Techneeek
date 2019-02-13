@@ -32,7 +32,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
     private boolean isHoldingPosition = false;
     private boolean atScale = false;
 
-    private int homePosition = 4500;
+    private int homePosition = 3000;
 	private int collectPosition = 1000;
 	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
@@ -54,15 +54,15 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.09;
 
-	private final static int onTargetThreshold = 1000; // changed to 500 from 100 for testing on practice field
+	private final static int onTargetThreshold = 250; // changed to 500 from 100 for testing on practice field
     
     //                                            slot          p      i     d      f    izone
-	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.0, 0.0, 0.0, 0.0, 0);
-	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.0, 0.0, 0.0, 0.0, 0);
+	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.5, 0.0, 0.0, 0.0, 0);
+	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.5, 0.0, 0.0, 0.0, 0);
 	
 	//Uses PID values to go to a position                              accel velo  gains
-	private MotionParameters upMotionParameters = new MotionParameters(2600, 2000, upGains);
-	private MotionParameters downMotionParameters = new MotionParameters(2600, 1000, downGains);	
+	private MotionParameters upMotionParameters = new MotionParameters(6000, 6000, upGains);
+	private MotionParameters downMotionParameters = new MotionParameters(3000, 2000, downGains);	
 	
 	public final DunkVictorSPX elevatorVictorFollower = new DunkVictorSPX(Constants.ELEVATOR_VICTOR1_ID);
 	public final DunkTalonSRX elevatorTalonFollower = new DunkTalonSRX(Constants.ELEVATOR_TALON2_ID);
@@ -122,7 +122,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
 	public void motionMagicControl() {
 		this.manageMotion(targetPosition);
-		this.elevatorLead.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, 0.1);
+		this.elevatorLead.set(ControlMode.MotionMagic, targetPosition, DemandType.ArbitraryFeedForward, getArbitraryFeedForward());
 	}
 
 	public int getCurrentPosition() {
@@ -195,8 +195,15 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		return this.minimumDunkHeight;
 	}
 
-	public int getDunkPosition() {
-		return this.dunkPosition;
+	public int getHatchPosition(int level) {
+		if(level==1){
+			return Constants.HATCH_LEVEL1_SETPOINT;
+		}else if(level==2){
+			return Constants.HATCH_LEVEL2_SETPOINT;
+		}else if(level==3){
+			return Constants.HATCH_LEVEL3_SETPOINT;
+		}
+		return getCurrentPosition();
 	}
 
 	public int getClimbPosition() {

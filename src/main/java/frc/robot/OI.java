@@ -7,18 +7,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.controller.GamePad;
 import frc.controller.GamePadTriggerButton;
 import frc.controller.Ps4_Controller;
-import frc.robot.commands.arm.ArmPistonPosition;
-import frc.robot.commands.elevator.ElevatorStop;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
 import frc.robot.commands.ScoreHatch;
+import frc.robot.commands.arm.ArmPistonPosition;
+import frc.robot.commands.elevator.ElevatorGoToHatch2;
+import frc.robot.commands.elevator.ElevatorGoToHatch3;
+import frc.robot.commands.elevator.ElevatorStop;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.util.Constants;
 
 public class OI {
-    private static OI instance;
+	private static OI instance;
 
 	private Ps4_Controller m_driverGamepad;
 	private GamePad m_operatorGamepad;
@@ -65,6 +67,12 @@ public class OI {
 
 		JoystickButton stopElevator = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.X_BUTTON);
 		stopElevator.whenPressed(new ElevatorStop());
+
+		JoystickButton hatchLvl2 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.B_BUTTON);
+		hatchLvl2.whenPressed(new ElevatorGoToHatch2());
+
+		JoystickButton hatchLvl3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
+		hatchLvl3.whenPressed(new ElevatorGoToHatch3());
 
 		// Pneumatics Diagonostics
 

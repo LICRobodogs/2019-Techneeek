@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
 		setupAutonChooser();
 		
 		elevator.elevatorLead.setSelectedSensorPosition(0);
-		// arm.setStartConfigAngle();
+		arm.setStartConfigAngle();
 	}
 
 	@Override
