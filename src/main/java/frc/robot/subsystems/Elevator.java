@@ -32,7 +32,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
     private boolean isHoldingPosition = false;
     private boolean atScale = false;
 
-    private int homePosition = 5000;
+    private int homePosition = 4500;
 	private int collectPosition = 1000;
 	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
@@ -40,7 +40,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int minimumDunkHeight = 26500;
 	private int dunkPosition = 33500;
 	private int climbPosition = 48000;
-	private int maxUpTravelPosition = 40000;
+	private int maxUpTravelPosition = 47000;
 
 	private int scaleMiddlePosition = 38500;
 	private int scaleBottomPosition = 35000;
@@ -90,12 +90,15 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
 		this.elevatorLead.setNeutralMode(NeutralMode.Brake);
 		this.elevatorLead.configClosedloopRamp(0.25);
+		this.elevatorLead.configOpenloopRamp(0.5);
 
 		this.elevatorLead.configVoltageCompSaturation(11.5);
 		this.elevatorLead.enableVoltageCompensation(true);
 
 		// this.elevatorLead.configPeakOutputReverse(-0.2);
 		// this.elevatorLead.configPeakOutputForward(0.2);
+
+		this.elevatorLead.setSelectedSensorPosition(0);
 	}
 
 	public void initDefaultCommand() {
