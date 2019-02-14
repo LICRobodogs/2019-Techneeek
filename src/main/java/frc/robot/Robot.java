@@ -191,10 +191,22 @@ public class Robot extends TimedRobot implements PIDOutput {
     //  Trajectory right_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/paths/Straight_Line.left.pf1.csv");
      m_left_follower = new EncoderFollower(left_trajectory);
 		 m_right_follower = new EncoderFollower(right_trajectory);
+		//  kv= 0.5369 ka= 0.0889 in feet per whatever left
+		// kv= 0.5158 ka= 0.0735 right
+		double lKv = (0.5369/12);
+		// double lKv = (0.5369);
+		double lKa = (0.0889/12);
+		// double lKa = (0.0889);
+		double rKv = (0.5369/12);
+		// double rKv = (0.5369);
+		double rKa = (0.0889/12);
+		// double rKa = (0.0889);
+		double kP = .1;
+		double kd = kP/100;
 		 m_left_follower.configureEncoder((int)driveBaseSubsystem.getLeftDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
-		 m_left_follower.configurePIDVA(1.0, 0.0, 0.0, 1 / Constants.kPathFollowingMaxVelSlow, 0);
+		 m_left_follower.configurePIDVA(kP, 0.0, kd, lKv, lKa);
 		 m_right_follower.configureEncoder((int)driveBaseSubsystem.getRightDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
-		 m_right_follower.configurePIDVA(1.0, 0.0, 0.0, 1 / Constants.kPathFollowingMaxVelSlow, 0);
+		 m_right_follower.configurePIDVA(kP, 0.0, kd, rKv, rKa);
 
 		 m_follower_notifier = new Notifier(this::followPath);
      m_follower_notifier.startPeriodic(left_trajectory.get(0).dt);
@@ -214,7 +226,9 @@ public class Robot extends TimedRobot implements PIDOutput {
 			SmartDashboard.putNumber("Heading Difference", heading_difference);
 
 			double turn =  0.8 * (-1.0/80.0) * heading_difference;
-			driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
+			// driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
+			
+			driveBaseSubsystem.drive(-(left_speed + right_speed)/2, turn);
 			
 		}
 }
@@ -310,6 +324,7 @@ public class Robot extends TimedRobot implements PIDOutput {
 
 @Override
   public void disabledInit() {
+		driveBaseSubsystem.subsystemHome();
 		SmartDashboard.putBoolean("\nStarted Auton",true);
 
 		System.out.println("LEFT DISTANCE" + driveBaseSubsystem.getLeftDistanceInches());
