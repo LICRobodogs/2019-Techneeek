@@ -175,14 +175,16 @@ public class Robot extends TimedRobot implements PIDOutput {
 		
 		String name = "Straight_Line";
 		// String lFilePath = Filesystem.getDeployDirectory().toString()+"/paths/"+name+".left.pdf1.csv";
-		String lFilePath = "/home/lvuser/deploy/paths/Straight_Line.left.pf1.csv";
-		String rFilePath = "/home/lvuser/deploy/paths/Straight_Line.right.pf1.csv";
+		// String pathName = "Swerve_Right";
+		String pathName = "Straight_Line";
+		String lFilePath = "/home/lvuser/deploy/output/"+pathName+".left.pf1.csv";
+		String rFilePath = "/home/lvuser/deploy/output/"+pathName+".right.pf1.csv";
 		SmartDashboard.putString("\nLeft File Path",lFilePath);
 
 		File myLFile = new File(lFilePath);
-		Trajectory left_trajectory = Pathfinder.readFromCSV(myLFile);
 		File myRFile = new File(rFilePath);
-		Trajectory right_trajectory = Pathfinder.readFromCSV(myRFile);
+		Trajectory left_trajectory = Pathfinder.readFromCSV(myRFile);
+		Trajectory right_trajectory = Pathfinder.readFromCSV(myLFile);
 
 		// Trajectory left_trajectory = PathfinderFRC.getTrajectory(Filesystem.getDeployDirectory().toString()+ "/Paths/" + name + ".left.pf1.csv");
 		// Trajectory left_trajectory = PathfinderFRC.getTrajectory("/home/lvuser/paths/Straight_Line.left.pf1.csv");
@@ -193,16 +195,18 @@ public class Robot extends TimedRobot implements PIDOutput {
 		 m_right_follower = new EncoderFollower(right_trajectory);
 		//  kv= 0.5369 ka= 0.0889 in feet per whatever left
 		// kv= 0.5158 ka= 0.0735 right
+
+		// double lKv = (0.5369)*1;
+		// double lKa = (0.0889)*1;
+		// double rKv = (0.5158)*1;
+		// double rKa = (0.0735)*1;
 		double lKv = (0.5369/12);
-		// double lKv = (0.5369);
 		double lKa = (0.0889/12);
-		// double lKa = (0.0889);
-		double rKv = (0.5369/12);
-		// double rKv = (0.5369);
-		double rKa = (0.0889/12);
-		// double rKa = (0.0889);
-		double kP = .1;
-		double kd = kP/100;
+		double rKv = (0.5158/12);
+		double rKa = (0.0735/12);
+
+		double kP = .9;
+		double kd = kP/20;
 		 m_left_follower.configureEncoder((int)driveBaseSubsystem.getLeftDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
 		 m_left_follower.configurePIDVA(kP, 0.0, kd, lKv, lKa);
 		 m_right_follower.configureEncoder((int)driveBaseSubsystem.getRightDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
@@ -218,17 +222,25 @@ public class Robot extends TimedRobot implements PIDOutput {
 			double left_speed = m_left_follower.calculate(driveBaseSubsystem.getLeftPositionRaw());
 			double right_speed = m_right_follower.calculate(driveBaseSubsystem.getRightPositionRaw());
 			double heading = Controllers.getInstance().getGyro().getAngle();
-			double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
+			double desired_heading = -Pathfinder.r2d(m_left_follower.getHeading());
 			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
 
 			SmartDashboard.putNumber("Heading", heading);
 			SmartDashboard.putNumber("Heading Desired", desired_heading);
 			SmartDashboard.putNumber("Heading Difference", heading_difference);
 
+        double kP = 0.005; // propotional turning constant
+        double turningValue = (desired_heading - heading) * kP;
+		// Invert the direction of the turn if we are going backwards
+	
 			double turn =  0.8 * (-1.0/80.0) * heading_difference;
 			// driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
+			double daSpeed = (left_speed + right_speed)/2;
+			 daSpeed = left_speed;
+			// turningValue = Math.copySign(turningValue, Robot.getPsController().xSpeed());
+			turningValue = Math.copySign(turningValue, daSpeed);
 			
-			driveBaseSubsystem.drive(-(left_speed + right_speed)/2, turn);
+			driveBaseSubsystem.drive(daSpeed, turningValue);
 			
 		}
 }
