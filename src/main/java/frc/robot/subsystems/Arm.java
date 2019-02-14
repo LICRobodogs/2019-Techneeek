@@ -42,7 +42,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
 	// private ArmSide armSide = ArmSide.BACK; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	private ArmSide armSide = ArmSide.FRONT; //FOR TESTING ONLY
-	private ArmSide armSidePrev = ArmSide.NEITHER;
+	private ArmSide armSidePrev = ArmSide.FRONT;
 	public static DoubleSolenoid brakePiston, shootPiston;
 	private LeaderDunkTalonSRX armTalon;
 	private DunkVictorSPX armFollower;
@@ -51,18 +51,19 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int restPosition = 900;
 	private int safePosition = 1000;
 	private int maxUpTravelPosition = 1600;
+	private int collectPosition = 37;
 	private int frontHatchPosition = 100;
 	private int backHatchPosition = 1500;
-	private int frontCargoPosition = 450;
+	private int frontCargoPosition = 490;
 	private int backCargoPosition = 1300;
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = homePosition;
+	public int downPositionLimit = collectPosition;
 
 	public final static int WRIST_PROFILE_UP = 0;
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 20;
+	private final static int onTargetThreshold = 30;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
@@ -236,7 +237,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	//Prevents wrist from moving behind the home position whilst elevator is not above first stage
 	
 	private void manageLimits() {
-		if (Robot.elevator.getCurrentPosition() > Robot.elevator.getTopOfFirstStagePosition()) {
+		if (Robot.elevator.getCurrentPosition() >= Robot.elevator.getTopOfFirstStagePosition()) {
 			this.upPositionLimit = maxUpTravelPosition;
 		} else {
 			this.upPositionLimit = restPosition;
@@ -401,8 +402,20 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		return restPosition;
 	}
 
+	public int getCollectPosition(){
+		return collectPosition;
+	}
+
 	public int getSafePosition(){
 		return safePosition;
+	}
+
+	public int getHomePosition(){
+		return homePosition;
+	}
+
+	public int getTargetThreshold(){
+		return onTargetThreshold;
 	}
 
 	@Override

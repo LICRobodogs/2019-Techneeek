@@ -50,14 +50,14 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		// driveTrain = DriveTrain.getInstance();
+		driveTrain = DriveTrain.getInstance();
 		intake = Intake.getInstance();
 		arm = Arm.getInstance();
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
-		controlLoop.addLoopable(intake);
+		// controlLoop.addLoopable(intake);
 		comp = new Compressor();
 		setupAutonChooser();
 		
@@ -87,7 +87,6 @@ public class Robot extends TimedRobot {
 		// arm.setControlMode(ArmControlMode.MANUAL);
 		// driveTrain.setPeriodMs(Constants.kTimeoutMs);
 		// controlLoop.start();
-		System.out.println("test");
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		// arm.resetArmEncoder();
 		Scheduler.getInstance().removeAll();
-		intake.setSuction(Intake.IntakeState.SUCC_OUT);
+		// intake.setSuction(Intake.IntakeState.SUCC_OUT);
 	}
 
 	public void disabledPeriodic() {

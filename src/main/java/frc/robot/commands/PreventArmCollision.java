@@ -26,20 +26,24 @@ public class PreventArmCollision extends Command {
 	protected void initialize() {
 		int armPosition = Robot.arm.getCurrentPosition();
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
-		System.out.println("Arm position: " + armPosition);
-		System.out.println("Elevator position: " + elevatorPosition);
+		System.out.println("Arm position arm: " + armPosition);
+		System.out.println("Elevator position elevator: " + elevatorPosition);
         if (((desiredArmPosition > safePosition && armPosition < safePosition) || (desiredArmPosition < safePosition && armPosition > safePosition)) 
         && elevatorPosition < Robot.elevator.getTopOfFirstStagePosition()) {
             isArmSafe = false;
             isElevatorSafe = false;
 			Robot.arm.setTargetPosition(restPosition);
 			Robot.elevator.setTargetPosition(Robot.elevator.getTopOfFirstStagePosition());
+		} else if(((desiredArmPosition > safePosition && armPosition < safePosition) || (desiredArmPosition < safePosition && armPosition > safePosition))){
+			isArmSafe = false;
+            isElevatorSafe = true;
+			Robot.arm.setTargetPosition(restPosition);
 		} else {
             isArmSafe = true;
             isElevatorSafe = true;
 		}
-		System.out.println("Arm is safe: " + isArmSafe);
-		System.out.println("Elevator is safe: " + isElevatorSafe);
+		System.out.println("Arm is safe arm: " + isArmSafe);
+		System.out.println("Elevator is safe elevator: " + isElevatorSafe);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -50,18 +54,18 @@ public class PreventArmCollision extends Command {
             System.out.println("moving arm");
         }
         if (!isElevatorSafe) {
-            System.out.println("moving elevator");
-            Robot.elevator.motionMagicControl();
+            System.out.println("moving elevator in arm collision command");
+            // Robot.elevator.motionMagicControl();
             if(elevatorPosition >= Robot.elevator.getTopOfFirstStagePosition()){
                 isElevatorSafe = true;
-		        System.out.println("Elevator is safe: " + isElevatorSafe);
+		        System.out.println("Elevator is safe and done: " + isElevatorSafe);
             }
         }
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		boolean beyondTarget = Robot.arm.getCurrentPosition() <= safePosition;
+		boolean beyondTarget = Math.abs(Robot.arm.getCurrentPosition()- restPosition) <= Robot.arm.getTargetThreshold();
         return isArmSafe || beyondTarget;
 	}
 

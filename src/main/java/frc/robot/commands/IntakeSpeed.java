@@ -30,14 +30,7 @@ public class IntakeSpeed extends Command {
 	}
 
 	protected void execute() {
-		if (mSpeed == 0 && mSpeed2 != 0) {
-			Robot.intake.setTopSpeed(mSpeed2);
-			Robot.intake.setBottomSpeed(0);
-		} else if (mSpeed != 0) {
-			Robot.intake.setSpeed(mSpeed);
-		} else {
-			Robot.intake.setSpeed();
-		}
+		Robot.intake.setSpeed(mSpeed);
 		if(Robot.comp.enabled()){
 			Robot.comp.stop();
 		}

@@ -14,7 +14,10 @@ public class IntakeSuction extends Command {
 
 	@Override
 	protected void initialize() {
+		System.out.println("suction " + state.toString());
 		Robot.intake.setSuction(state);
+		System.out.println("intake suction " + Robot.intake.getSuccState().toString());
+
 	}
 
 	@Override
@@ -24,7 +27,7 @@ public class IntakeSuction extends Command {
 
 	@Override
 	protected boolean isFinished() {
-		return true;
+		return false;
 	}
 
 	@Override

@@ -65,13 +65,13 @@ public class Constants {
     public final double SCALE_ANGLE_SETPOINT = 230;
 	public final double SWITCH_ANGLE_SETPOINT = 80;
 	public static double mArmOnTargetTolerance = 10;
-	public static double mArmUpKp = 3;// .45
+	public static double mArmUpKp = 3.5;// .45
 	public static double mArmUpKi = 0.0;
 	public static double mArmUpKd = 0.0;// .25
 	public static double mArmUpKf = 0.0;
 	public static int mArmUpIZone = (int) (1023.0 / mArmUpKp);
 
-	public static double mArmDownKp = 1;// .45
+	public static double mArmDownKp = 3;// .45
 	public static double mArmDownKi = 0.0;
 	public static double mArmDownKd = 0.0;// .25
 	public static double mArmDownKf = 0.0;
@@ -86,13 +86,13 @@ public class Constants {
 
 	//Elevator
 	public static final double ELEVATOR_NATIVE_TO_ANGLE_FACTOR = (100 / 12) * (84 / 14) * (84 / 32) * (20 / 32) * (16 / 18);
-    public static final int HATCH_LEVEL1_SETPOINT = 8000;
-    public static final int HATCH_LEVEL2_SETPOINT = 16000;
-    public static final int HATCH_LEVEL3_SETPOINT = 32000;
+    public static final int HATCH_LEVEL1_SETPOINT = 4000;
+    public static final int HATCH_LEVEL2_SETPOINT = 26000;
+    public static final int HATCH_LEVEL3_SETPOINT = 48000;
 
 	public static final int CARGO_LEVEL1_SETPOINT = 9000;
-    public static final int CARGO_LEVEL2_SETPOINT = 18000;
-    public static final int CARGO_LEVEL3_SETPOINT = 36000;
+    public static final int CARGO_LEVEL2_SETPOINT = 30000;
+    public static final int CARGO_LEVEL3_SETPOINT = 48000;
 
     //DT PID
     public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
