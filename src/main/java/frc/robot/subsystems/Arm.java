@@ -40,7 +40,8 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
-	private ArmSide armSide = ArmSide.FRONT;
+	// private ArmSide armSide = ArmSide.BACK; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	private ArmSide armSide = ArmSide.FRONT; //FOR TESTING ONLY
 	private ArmSide armSidePrev = ArmSide.NEITHER;
 	public static DoubleSolenoid brakePiston, shootPiston;
 	private LeaderDunkTalonSRX armTalon;
@@ -61,7 +62,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 5;
+	private final static int onTargetThreshold = 20;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
@@ -76,15 +77,14 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	private Arm() {
 		try {
+			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
+			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
 			// shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
 			armFollower.follow(armTalon);
 			armFollower.setInverted(true);
 			
 			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
 			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
-
-			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
-			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
 
 			this.armTalon.configForwardSoftLimitEnable(true);
 			this.armTalon.configForwardSoftLimitThreshold(upPositionLimit);
@@ -263,6 +263,8 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
+		SmartDashboard.putString("Side: ", getSide().toString());
+		SmartDashboard.putString("Prev Side: ", getPrevSide().toString());
 		SmartDashboard.putNumber("Arm RAW Angle: ", getCurrentPosition());
 		// SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());

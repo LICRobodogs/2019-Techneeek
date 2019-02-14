@@ -46,12 +46,12 @@ public class PreventArmCollision extends Command {
 	protected void execute() {
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
 		if (!isArmSafe && isElevatorSafe) {
-            // Robot.arm.motionMagicControl();
+            Robot.arm.motionMagicControl();
             System.out.println("moving arm");
         }
         if (!isElevatorSafe) {
             System.out.println("moving elevator");
-            // Robot.elevator.motionMagicControl();
+            Robot.elevator.motionMagicControl();
             if(elevatorPosition >= Robot.elevator.getTopOfFirstStagePosition()){
                 isElevatorSafe = true;
 		        System.out.println("Elevator is safe: " + isElevatorSafe);
@@ -62,8 +62,7 @@ public class PreventArmCollision extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
 		boolean beyondTarget = Robot.arm.getCurrentPosition() <= safePosition;
-        // return isArmSafe || beyondTarget;
-        return false;
+        return isArmSafe || beyondTarget;
 	}
 
 	// Called once after isFinished returns true

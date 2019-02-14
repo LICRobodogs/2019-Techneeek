@@ -7,7 +7,7 @@ import frc.robot.subsystems.Intake.IntakeState;
 
 public class ScoreBottomHeight extends CommandGroup {
         public ScoreBottomHeight() {
-            if(Robot.arm.getPrevSide() == ArmSide.NEITHER || (Robot.arm.getPrevSide() == ArmSide.BACK && Robot.arm.getSide() == ArmSide.FRONT)) {
+            if(Robot.arm.getPrevSide() == ArmSide.NEITHER) {
                 if(Robot.intake.getSuccState() == IntakeState.SUCC_IN){
                     addSequential(new PreventArmCollision(Robot.arm.getFrontHatchPosition()));
                     addSequential(new ScoreFrontHatch(1));

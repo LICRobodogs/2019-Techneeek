@@ -54,11 +54,11 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.09;
 
-	private final static int onTargetThreshold = 250; // changed to 500 from 100 for testing on practice field
+	private final static int onTargetThreshold = 500; // changed to 500 from 100 for testing on practice field
     
     //                                            slot          p      i     d      f    izone
-	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.5, 0.0, 0.0, 0.0, 0);
-	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.5, 0.0, 0.0, 0.0, 0);
+	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.25, 0.0, 0.0, 0.0, 0);
+	private final SRXGains downGains = new SRXGains(ELEVATOR_DOWN, 0.25, 0.0, 0.0, 0.0, 0);
 	
 	//Uses PID values to go to a position                              accel velo  gains
 	private MotionParameters upMotionParameters = new MotionParameters(6000, 6000, upGains);

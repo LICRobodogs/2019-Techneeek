@@ -25,8 +25,8 @@ public class ArmToggleBack extends Command {
     }
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-            return true;
-		} 
+        return false;
+    } 
 			
 
     // Called once after isFinished returns true

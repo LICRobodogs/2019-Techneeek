@@ -70,7 +70,7 @@ public class OI {
 		JoystickButton toggleFrontSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
 		toggleFrontSide.whenPressed(new ArmToggleFront());
 
-		JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
+		JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.START_BUTTON);
 		toggleBackSide.whenPressed(new ArmToggleBack());
 
 		JoystickButton level1 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
