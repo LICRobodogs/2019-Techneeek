@@ -45,6 +45,7 @@ public class DunkGyro extends AHRS{
 
     public synchronized void reset() {
         super.reset();
+        mAHRS.reset();
         resetState();
     }
 

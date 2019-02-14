@@ -64,7 +64,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
         	leftDrive2.follow(leftDrive1);
         	rightDrive2.follow(rightDrive1);
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
-			mxp = new AHRS(SPI.Port.kMXP);
+			// mxp = new AHRS(SPI.Port.kMXP);
 
 			m_drive.setSafetyEnabled(false);
 		} catch (Exception e) {

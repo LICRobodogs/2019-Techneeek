@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+// import frc.robot;
 import frc.util.drivers.Controllers;
 
 public class TurnToHeading extends Command {
@@ -12,9 +13,9 @@ public class TurnToHeading extends Command {
     int count = 0;
     private boolean isFinished = false;
 
-	public TurnToHeading(double rotationDeg) {
+	public TurnToHeading() {
 		requires(Robot.driveBaseSubsystem);
-		heading = rotationDeg;
+
 	}
 
 	@Override
@@ -26,11 +27,12 @@ public class TurnToHeading extends Command {
 
 	@Override
 	public void execute() {
+		
 		// Robot.driveBaseSubsystem.rotateDegrees(heading);
 		Robot.driveBaseSubsystem.setPercentSpeed(-.1,.1);
         // double error = Controllers.getInstance().getGyro().Error();
         // inErrorZone = Math.abs(error) < 2;
-            isFinished = Math.abs(Controllers.getInstance().getGyro().getMyYaw().getDegrees()-heading) <= 5;
+            isFinished = Math.abs(Controllers.getInstance().getGyro().getAngle()-heading) <= 5;
 
 
 		// Nothing done here, controller updates in mEnabedLooper in robot

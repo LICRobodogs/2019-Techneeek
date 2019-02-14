@@ -2,15 +2,18 @@ package frc.robot.subsystems;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Kinematics;
-import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.*;
 import frc.util.Constants;
 import frc.util.Util;
 import frc.util.TrajectoryFollowingMotion.Lookahead;
@@ -20,15 +23,11 @@ import frc.util.TrajectoryFollowingMotion.PathFollowerRobotState;
 import frc.util.drivers.Controllers;
 import frc.util.drivers.DriveControlState;
 import frc.util.drivers.DriveMotorValues;
-import frc.util.drivers.DunkGyro;
 import frc.util.drivers.DunkTalonSRX;
 import frc.util.drivers.DunkVictorSPX;
 import frc.util.loops.Loop;
 import frc.util.math.RigidTransform2d;
-import frc.util.math.Rotation2d;
 import frc.util.math.Twist2d;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
 
 
 
@@ -36,7 +35,8 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      private static DriveBaseSubsystem instance = null;
      private DunkTalonSRX leftMaster, leftSlave, rightMaster;
      private DunkVictorSPX rightSlave;
-     private DunkGyro gyro;
+     // private DunkGyro gyro;
+     // private AHRS gyro;
      private DriveControlState controlMode;
      private static ReentrantLock _subsystemMutex = new ReentrantLock();
      private boolean previousBrakeModeVal;
@@ -44,6 +44,7 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      private Path mCurrentPath = null;
      private PathFollower mPathFollower;
      private PathFollowerRobotState robotState = PathFollowerRobotState.getInstance();
+     // public static final ADIS16470_IMU imu = new ADIS16470_IMU();
      public DifferentialDrive m_drive;
 
      public PIDController turnController;
@@ -51,6 +52,7 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      private final double ki = 0.0;
      private final double kd = 0.0;
      private final double kf = 0.0;
+     private Controllers robotControllers;
      public static DriveBaseSubsystem getInstance() {
           if (instance == null) 
                instance = new DriveBaseSubsystem();
@@ -59,7 +61,7 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 
      private DriveBaseSubsystem() {
           
-          Controllers robotControllers = Controllers.getInstance();
+          robotControllers = Controllers.getInstance();
           leftMaster = robotControllers.getLeftDrive1();
           leftSlave = robotControllers.getLeftDrive2();
           rightMaster = robotControllers.getRightDrive1();
@@ -73,13 +75,13 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           m_drive = new DifferentialDrive(leftMaster, rightMaster);
           m_drive.setSafetyEnabled(false);
           
-          gyro = robotControllers.getGyro();
+          // gyro = robotControllers.getGyro();
           
           previousBrakeModeVal = false;
           // setBrakeMode(true);
 
           // controlMode = DriveControlState.PATH_FOLLOWING; //because we start match on auton
-          turnController = new PIDController(kp,ki,kd,gyro.getAHRS(),this);
+          turnController = new PIDController(kp,ki,kd,robotControllers.getGyro(),this);
           turnController.setInputRange(-180,180);
           turnController.setOutputRange(-0.45,0.45);
           turnController.setAbsoluteTolerance(2.0f);
@@ -132,15 +134,14 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 	}
      	
 	public void rotateDegrees(double angle) {
-		gyro.reset();
+		robotControllers.getGyro().reset();
 		turnController.reset();
 		turnController.setPID(kp, ki, kd);
 		turnController.setSetpoint(angle);
 		turnController.enable();
 	}
      public void subsystemHome() {
-          gyro.zeroYaw();
-          gyro.reset();
+          robotControllers.getGyro().reset();
           boolean setSucceeded;
           int retryCounter = 0;
           do {
@@ -270,15 +271,15 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
 
 	public double getRightVelocityInchesPerSec() { return rpmToInchesPerSecond(Util.convertNativeUnitsToRPM(rightMaster.getSelectedSensorVelocity(0))); }
     
-     public Rotation2d getGyroAngle() {
-          return gyro.getMyYaw();
+     public double getGyroAngle() {
+          return robotControllers.getGyro().getAngle();
      }
 
 
-     public synchronized void setGyroAngle(Rotation2d angle) {
-		gyro.reset();
-		gyro.setAngleAdjustment(angle);
-     }
+     // public synchronized void setGyroAngle(double angle) {
+	// 	robotControllers.getGyro().reset();
+	// 	robotControllers.getGyro().setAngleAdjustment(angle);
+     // }
      public DunkTalonSRX getLeftMaster() {
           return leftMaster;
      }
@@ -287,9 +288,10 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
      }
      public void dashUpdate() {
           
-          SmartDashboard.putNumber("\nLeft Velocity (in/sec)",getLeftVelocityInchesPerSec());
-          SmartDashboard.putNumber("\nRight Velocity (in/sec)",getRightVelocityInchesPerSec());
-          SmartDashboard.putNumber("\nGyro Angle in Degrees",getGyroAngle().getDegrees());
+          // SmartDashboard.putNumber("\nLeft Velocity (in/sec)",getLeftVelocityInchesPerSec());
+          // SmartDashboard.putNumber("\nRight Velocity (in/sec)",getRightVelocityInchesPerSec());
+          // SmartDashboard.putNumber("\nGyro Angle in Degrees",getGyroAngle().getDegrees());
+          SmartDashboard.putNumber("\nGyro Yaw Angle in Degrees",getGyroAngle());
           SmartDashboard.putNumber("\nLeft Distance (in)",getLeftDistanceInches());
           SmartDashboard.putNumber("\nRight Distance (in)",getRightDistanceInches());
           

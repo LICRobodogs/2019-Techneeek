@@ -17,7 +17,7 @@ public class Ps4_Controller extends Joystick {
     static final int lbIndex = Constants.lbIndex;
 	static final int rbIndex = Constants.rbIndex;
 	
-	public enum Buttons {X,CIRCLE,SQUARE,TRIABLE,LB,RB}
+	public enum Buttons {X,CIRCLE,SQUARE,TRIANGLE,LB,RB}
 	public static enum Directions {UP, DOWN, LEFT, RIGHT}
 
     public Ps4_Controller(int axis) {

@@ -23,6 +23,6 @@ public class ResetPoseFromPathAction extends RunOnceAction {
     public synchronized void runOnce() {
         RigidTransform2d startPose = mPathContainer.getStartPose();
         PathFollowerRobotState.getInstance().reset(Timer.getFPGATimestamp(), startPose);
-        DriveBaseSubsystem.getInstance().setGyroAngle(startPose.getRotation());
+        // DriveBaseSubsystem.getInstance().setGyroAngle(startPose.getRotation());
     }
 }

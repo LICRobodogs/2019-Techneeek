@@ -41,7 +41,8 @@ public class RobotStateEstimator implements Loop {
     public synchronized void onLoop(double timestamp, boolean isAuto) {
         final double left_distance = drive_.getLeftDistanceInches();
         final double right_distance = drive_.getRightDistanceInches();
-        final Rotation2d gyro_angle = drive_.getGyroAngle();
+        // final Rotation2d gyro_angle = drive_.getGyroAngle();
+        final Rotation2d gyro_angle = new Rotation2d();
         final Twist2d odometry_velocity = robot_state_.generateOdometryFromSensors(
                 left_distance - left_encoder_prev_distance_, right_distance - right_encoder_prev_distance_, gyro_angle);
         final Twist2d predicted_velocity = Kinematics.forwardKinematics(drive_.getLeftVelocityInchesPerSec(),
