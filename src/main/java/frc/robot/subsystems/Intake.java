@@ -23,7 +23,7 @@ public class Intake extends Subsystem implements ControlLoopable {
         SUCC_IN, SUCC_OUT
     };
 
-	
+	private IntakeState succState = IntakeState.SUCC_OUT;
 
 	private static Solenoid leftSuctionSolenoid;
 	private static Solenoid rightSuctionSolenoid;
@@ -88,12 +88,13 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSuction(IntakeState state) {
-		if (state == IntakeState.SUCC_IN) {
+		this.succState = state;
+		if (this.succState == IntakeState.SUCC_IN) {
 			leftSuctionSolenoid.set(false);
             rightSuctionSolenoid.set(false);
             leftSuction.set(ControlMode.PercentOutput, 1);
             rightSuction.set(ControlMode.PercentOutput, 1);
-		} else if (state == IntakeState.SUCC_OUT) {
+		} else if (this.succState == IntakeState.SUCC_OUT) {
 			leftSuctionSolenoid.set(true);
             rightSuctionSolenoid.set(true);
             leftSuction.set(ControlMode.PercentOutput, 0);
@@ -126,5 +127,9 @@ public class Intake extends Subsystem implements ControlLoopable {
 
 	public void setBottomSpeed(double speed) {
 		bottomIntake.set(ControlMode.PercentOutput, -speed);
+	}
+
+	public IntakeState getSuccState() {
+		return this.succState;
 	}
 }

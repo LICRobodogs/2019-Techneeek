@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -11,7 +12,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.commands.JoystickArm;
 import frc.util.Constants;
 import frc.util.drivers.DunkVictorSPX;
 import frc.util.drivers.IPositionControlledSubsystem;
@@ -36,18 +36,22 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	public static enum ArmSide {
-		FRONT, BACK
+		FRONT, BACK, NEITHER
 	}
 
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
-
+	private ArmSide armSide = ArmSide.FRONT;
+	private ArmSide armSidePrev = ArmSide.NEITHER;
 	public static DoubleSolenoid brakePiston, shootPiston;
 	private LeaderDunkTalonSRX armTalon;
 	private DunkVictorSPX armFollower;
 	
 	private int homePosition = 50;
-	private int restPosition = 1000;
-	private int maxUpTravelPosition = 1450;
+	private int restPosition = 900;
+	private int safePosition = 1000;
+	private int maxUpTravelPosition = 1600;
+	private int frontHatchPosition = 100;
+	private int backHatchPosition = 1500;
 	private int frontCargoPosition = 450;
 	private int backCargoPosition = 1300;
 	public int upPositionLimit = maxUpTravelPosition;
@@ -73,6 +77,11 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private Arm() {
 		try {
 			// shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
+			armFollower.follow(armTalon);
+			armFollower.setInverted(true);
+			
+			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
+			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
 
 			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
 			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
@@ -83,8 +92,6 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 			this.armTalon.configReverseSoftLimitEnable(true);
 			this.armTalon.configReverseSoftLimitThreshold(downPositionLimit);
 
-			armFollower.follow(armTalon);
-			armFollower.setInverted(true);
 			armTalon.setNeutralMode(NeutralMode.Brake);
 			armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
@@ -347,6 +354,23 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		// resetArmEncoder();
 	}
 
+	public void setArmSide(ArmSide side) {
+		if(this.armSidePrev == ArmSide.NEITHER){
+			this.armSidePrev = side;
+		}else{
+			this.armSidePrev = this.armSide;
+		}
+		this.armSide = side;
+	}
+
+	public ArmSide getSide() {
+		return armSide;
+	}
+
+	public ArmSide getPrevSide() {
+		return armSidePrev;
+	}
+
 	public ArmControlMode getMode() {
 		return controlMode;
 	}
@@ -358,12 +382,25 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public int getFrontCargoPosition(){
 		return frontCargoPosition;
 	}
+
 	public int getBackCargoPosition(){
 		return backCargoPosition;
 	}
 
+	public int getFrontHatchPosition(){
+		return frontHatchPosition;
+	}
+
+	public int getBackHatchPosition(){
+		return backHatchPosition;
+	}
+
 	public int getFrontRestPosition(){
 		return restPosition;
+	}
+
+	public int getSafePosition(){
+		return safePosition;
 	}
 
 	@Override

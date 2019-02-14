@@ -10,18 +10,18 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ElevatorGoToHatch3 extends Command {
+public class ElevatorGoToCargo extends Command {
 
-    private int hatchLevel = Robot.elevator.getHatchPosition(3);
+    private int cargoLevel = 0;
     
-	public ElevatorGoToHatch3() {
+	public ElevatorGoToCargo(int level) {
 		requires(Robot.elevator);
-
+		cargoLevel = Robot.elevator.getCargoPosition(level);
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-        Robot.elevator.setTargetPosition(hatchLevel);
+        Robot.elevator.setTargetPosition(cargoLevel);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -31,7 +31,7 @@ public class ElevatorGoToHatch3 extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-        return Robot.elevator.isInPosition(hatchLevel);
+        return Robot.elevator.isInPosition(cargoLevel);
     }
 
 	// Called once after isFinished returns true

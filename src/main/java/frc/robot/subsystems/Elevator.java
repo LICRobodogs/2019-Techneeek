@@ -206,6 +206,17 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		return getCurrentPosition();
 	}
 
+	public int getCargoPosition(int level) {
+		if(level==1){
+			return Constants.CARGO_LEVEL1_SETPOINT;
+		}else if(level==2){
+			return Constants.CARGO_LEVEL2_SETPOINT;
+		}else if(level==3){
+			return Constants.CARGO_LEVEL3_SETPOINT;
+		}
+		return getCurrentPosition();
+	}
+
 	public int getClimbPosition() {
 		return this.climbPosition;
 	}

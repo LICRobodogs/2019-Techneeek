@@ -85,10 +85,13 @@ public class Constants {
 
 	//Elevator
 	public static final double ELEVATOR_NATIVE_TO_ANGLE_FACTOR = (100 / 12) * (84 / 14) * (84 / 32) * (20 / 32) * (16 / 18);
-    public static final int HATCH_LEVEL1_SETPOINT = 4000;
-    public static final int HATCH_LEVEL2_SETPOINT = 10000;
-    public static final int HATCH_LEVEL3_SETPOINT = 36000;
+    public static final int HATCH_LEVEL1_SETPOINT = 8000;
+    public static final int HATCH_LEVEL2_SETPOINT = 16000;
+    public static final int HATCH_LEVEL3_SETPOINT = 32000;
 
+	public static final int CARGO_LEVEL1_SETPOINT = 9000;
+    public static final int CARGO_LEVEL2_SETPOINT = 18000;
+    public static final int CARGO_LEVEL3_SETPOINT = 36000;
 
     //DT PID
     public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;

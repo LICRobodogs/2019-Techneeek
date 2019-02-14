@@ -10,13 +10,13 @@ import frc.controller.Ps4_Controller;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
+import frc.robot.commands.ScoreBottomHeight;
 import frc.robot.commands.ScoreHatch;
+import frc.robot.commands.ScoreMiddleHeight;
+import frc.robot.commands.ScoreTopHeight;
 import frc.robot.commands.arm.ArmGoToBackCargo;
-import frc.robot.commands.arm.ArmGoToFrontCargo;
 import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
-import frc.robot.commands.elevator.ElevatorGoToHatch2;
-import frc.robot.commands.elevator.ElevatorGoToHatch3;
 import frc.robot.commands.elevator.ElevatorStop;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -70,15 +70,15 @@ public class OI {
 
 		JoystickButton stopElevator = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.X_BUTTON);
 		stopElevator.whenPressed(new ElevatorStop());
+		
+		JoystickButton level1 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
+		level1.whenPressed(new ScoreBottomHeight());
 
-		JoystickButton hatchLvl2 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.B_BUTTON);
-		hatchLvl2.whenPressed(new ElevatorGoToHatch2());
+		JoystickButton level2 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.B_BUTTON);
+		level2.whenPressed(new ScoreMiddleHeight());
 
-		JoystickButton hatchLvl3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
-		hatchLvl3.whenPressed(new ElevatorGoToHatch3());
-
-		JoystickButton armCargo = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
-		armCargo.whenPressed(new ArmGoToFrontCargo());
+		JoystickButton level3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
+		level3.whenPressed(new ScoreTopHeight());
 
 		Button armRest = new InternalButton();
 		armRest.whenPressed(new ArmGoToRest());

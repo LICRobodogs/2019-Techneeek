@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ElevatorGoToHatch2 extends Command {
+public class ElevatorGoToHatch extends Command {
 
-    private int hatchLevel = Robot.elevator.getHatchPosition(2);
+    private int hatchLevel = 0;
     
-	public ElevatorGoToHatch2() {
+	public ElevatorGoToHatch(int level) {
 		requires(Robot.elevator);
-
+		hatchLevel = Robot.elevator.getHatchPosition(level);
 	}
 
 	// Called just before this Command runs the first time
