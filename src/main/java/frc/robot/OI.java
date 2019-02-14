@@ -17,6 +17,8 @@ import frc.robot.commands.ScoreTopHeight;
 import frc.robot.commands.arm.ArmGoToBackCargo;
 import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
+import frc.robot.commands.arm.ArmToggleBack;
+import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.elevator.ElevatorStop;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -37,40 +39,40 @@ public class OI {
 		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
 
-		JoystickButton scoreHatch = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
-		scoreHatch.whenPressed(new ScoreHatch());
-
+		JoystickButton intakeHold = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.X_BUTTON);
+		intakeHold.whileHeld(new IntakeSpeed(.275));
+		intakeHold.whenReleased(new IntakeSpeedOff());
+		
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
-
+		
 		// DPadButton armGearboxDogClimb = new DPadButton(m_driverGamepad, DPadButton.Direction.LEFT);
 		// armGearboxDogClimb.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.CLIMB_DOG));
-
+		
 		// OPERATOR CONTROLS
 		GamePadTriggerButton intakeOut = new GamePadTriggerButton(m_operatorGamepad, Constants.LEFT_TRIGGER_AXIS);
 		intakeOut.whileHeld(new IntakeSpeed());
 		intakeOut.whenReleased(new IntakeSpeedOff());
-
+		
 		GamePadTriggerButton intakeIn = new GamePadTriggerButton(m_operatorGamepad, Constants.RIGHT_TRIGGER_AXIS);
 		intakeIn.whileHeld(new IntakeSpeed());
 		intakeIn.whenReleased(new IntakeSpeedOff());
-
-		JoystickButton intakeHold = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.X_BUTTON);
-		intakeHold.whileHeld(new IntakeSpeed(.275));
-		intakeHold.whenReleased(new IntakeSpeedOff());
-
-		JoystickButton suctionRelease = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
-		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
-
-		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
+		
+		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 
-		// JoystickButton armBrake = new JoystickButton(m_operatorGamepad.getJoyStick(), GamePad.A_BUTTON);
-		// armBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
+		JoystickButton scoreHatch = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
+		scoreHatch.whenPressed(new ScoreHatch());
 
 		JoystickButton stopElevator = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.X_BUTTON);
 		stopElevator.whenPressed(new ElevatorStop());
 		
+		JoystickButton toggleFrontSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
+		toggleFrontSide.whenPressed(new ArmToggleFront());
+
+		JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
+		toggleBackSide.whenPressed(new ArmToggleBack());
+
 		JoystickButton level1 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
 		level1.whenPressed(new ScoreBottomHeight());
 
