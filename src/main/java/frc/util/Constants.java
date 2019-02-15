@@ -91,6 +91,12 @@ public class Constants {
 	public static final double kPathFollowingGoalPosTolerance = 1;
 	public static final double kPathFollowingGoalVelTolerance = 18.0;
 	public static final double kPathStopSteeringDistance = 9.0;
+	
+	//self generated values for path following. divided by 12 to convert into inches
+	public static final double lKv = (0.5369/12);
+	public static final double lKa = (0.0889/12);
+	public static final double rKv = (0.5158/12);
+	public static final double rKa = (0.0735/12);
 
 		//Thread prioritization - 5 is default
 		

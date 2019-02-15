@@ -13,7 +13,8 @@ public class TurnToHeading extends Command {
     int count = 0;
     private boolean isFinished = false;
 
-	public TurnToHeading() {
+	public TurnToHeading(double heading) {
+		this.heading = heading;
 		requires(Robot.driveBaseSubsystem);
 
 	}

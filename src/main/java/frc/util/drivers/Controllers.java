@@ -4,6 +4,7 @@ import com.analog.adis16470.frc.ADIS16470_IMU;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
+import frc.controller.Ps4_Controller;
 
 public class Controllers {
     private static Controllers instance = null;
@@ -19,13 +20,14 @@ public class Controllers {
         leftDrive2 = new DunkTalonSRX(3);
         rightDrive1 = new DunkTalonSRX(1);
         rightDrive2 = new DunkVictorSPX(2);
+        ps_controller = new Ps4_Controller(0);
         // mxp = new DunkGyro(SPI.Port.kMXP);
         // mxp = new AHRS(SPI.Port.kMXP);
         //  gyro 
          
 
     }
-
+    private Ps4_Controller ps_controller;
     private DunkTalonSRX leftDrive1;
     private DunkTalonSRX leftDrive2;
     private DunkTalonSRX rightDrive1;
@@ -47,6 +49,9 @@ public class Controllers {
     }
     public AHRS getGyro() {
         return gyro;
+    }
+    public Ps4_Controller getPS_Controller() {
+        return ps_controller;
     }
     // public ADIS16470_IMU getGyro() {
     //     return gyro;

@@ -74,7 +74,6 @@ public class DriveBaseSubsystem extends Subsystem implements PIDOutput {
           // rightMaster.setSensorPhase(true);
           m_drive = new DifferentialDrive(leftMaster, rightMaster);
           m_drive.setSafetyEnabled(false);
-          
           // gyro = robotControllers.getGyro();
           
           previousBrakeModeVal = false;
