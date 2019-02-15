@@ -184,17 +184,25 @@ public class Robot extends TimedRobot implements PIDOutput {
 			double left_speed = m_left_follower.calculate(driveBaseSubsystem.getLeftPositionRaw());
 			double right_speed = m_right_follower.calculate(driveBaseSubsystem.getRightPositionRaw());
 			double heading = Controllers.getInstance().getGyro().getAngle();
-			double desired_heading = Pathfinder.r2d(m_left_follower.getHeading());
+			double desired_heading = -Pathfinder.r2d(m_left_follower.getHeading());
 			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
 
 			SmartDashboard.putNumber("Heading", heading);
 			SmartDashboard.putNumber("Heading Desired", desired_heading);
 			SmartDashboard.putNumber("Heading Difference", heading_difference);
 
+        double kP = 0.005; // propotional turning constant
+        double turningValue = (desired_heading - heading) * kP;
+		// Invert the direction of the turn if we are going backwards
+	
 			double turn =  0.8 * (-1.0/80.0) * heading_difference;
 			// driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
+			double daSpeed = (left_speed + right_speed)/2;
+			 daSpeed = left_speed;
+			// turningValue = Math.copySign(turningValue, Robot.getPsController().xSpeed());
+			turningValue = Math.copySign(turningValue, daSpeed);
 			
-			driveBaseSubsystem.drive(-(left_speed + right_speed)/2, turn);
+			driveBaseSubsystem.drive(daSpeed, turningValue);
 			
 		}
 }
