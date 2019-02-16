@@ -36,13 +36,14 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	public static enum ArmSide {
-		FRONT, BACK, NEITHER
+		FRONT, BACK, NEITHER, SAME
 	}
 
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
 	// private ArmSide armSide = ArmSide.BACK; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	private ArmSide armSide = ArmSide.FRONT; //FOR TESTING ONLY
-	private ArmSide armSidePrev = ArmSide.FRONT;
+	private ArmSide armSidePrev = ArmSide.NEITHER;
+	private boolean hasMoved = true;
 	public static DoubleSolenoid brakePiston, shootPiston;
 	private LeaderDunkTalonSRX armTalon;
 	private DunkVictorSPX armFollower;
@@ -50,6 +51,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int homePosition = 50;
 	private int restPosition = 900;
 	private int safePosition = 1000;
+	private int drivingPosition = 694;
 	private int maxUpTravelPosition = 1600;
 	private int collectPosition = 37;
 	private int frontHatchPosition = 100;
@@ -357,13 +359,22 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		// resetArmEncoder();
 	}
 
+	//ASSUMING SIDE TOGGLE CAN ONLY BE PRESSED ONCE
 	public void setArmSide(ArmSide side) {
-		if(this.armSidePrev == ArmSide.NEITHER){
-			this.armSidePrev = side;
+		if(hasMoved || armSide != side){
+			if(this.armSidePrev == ArmSide.NEITHER){
+				this.armSidePrev = side;
+			}else if(this.armSide != ArmSide.SAME && this.armSidePrev != side){
+				this.armSidePrev = this.armSide;
+			}
+			this.armSide = side;
 		}else{
-			this.armSidePrev = this.armSide;
+			System.out.println("Stop toggling side before moving arm!");
 		}
-		this.armSide = side;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
 	}
 
 	public ArmSide getSide() {
@@ -408,6 +419,10 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public int getSafePosition(){
 		return safePosition;
+	}
+
+	public int getDrivingPosition(){
+		return drivingPosition;
 	}
 
 	public int getHomePosition(){

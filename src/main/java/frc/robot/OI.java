@@ -16,6 +16,7 @@ import frc.robot.commands.ScoreHatch;
 import frc.robot.commands.ScoreMiddleHeight;
 import frc.robot.commands.ScoreTopHeight;
 import frc.robot.commands.arm.ArmGoToBackCargo;
+import frc.robot.commands.arm.ArmGoToDrivingPosition;
 import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleBack;
@@ -39,10 +40,6 @@ public class OI {
 		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
 
-		DPadButton intakeHold = new DPadButton(m_operatorGamepad,DPadButton.Direction.UP);
-		intakeHold.whileHeld(new IntakeSpeed(.25));
-		intakeHold.whenReleased(new IntakeSpeedOff());
-		
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
 		
@@ -53,11 +50,14 @@ public class OI {
 		DPadButton intakeOut = new DPadButton(m_operatorGamepad, DPadButton.Direction.LEFT);
 		intakeOut.whileHeld(new IntakeSpeed(-.6));
 		intakeOut.whenReleased(new IntakeSpeedOff());		
-
+		
 		DPadButton intakeIn = new DPadButton(m_operatorGamepad, DPadButton.Direction.RIGHT);
 		intakeIn.whileHeld(new IntakeSpeed(.45));
-		intakeIn.whenReleased(new IntakeSpeedOff());		
+		intakeIn.whenReleased(new IntakeSpeed(.25));		
 		
+		DPadButton intakeHold = new DPadButton(m_operatorGamepad,DPadButton.Direction.UP);
+		intakeHold.whenPressed(new ArmGoToDrivingPosition());
+
 		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
 		suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 

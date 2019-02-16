@@ -1,11 +1,8 @@
 package frc.robot.commands.arm;
 
-import frc.robot.*;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.Arm.ArmSide;
 
 /**
  *
@@ -47,8 +44,8 @@ public class ArmGoToHome extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        // Robot.elevator.setElevator(ControlMode.Position,
-        // Robot.elevator.getCurrentPosition(),DemandType.ArbitraryFeedForward,Robot.elevator.getArbitraryFeedForward());
+        Robot.arm.setHasMoved(true);
+        Robot.arm.setArmSide(ArmSide.SAME);
     }
 
     // Called when another command which requires one or more of the same

@@ -6,7 +6,7 @@ import frc.robot.commands.elevator.ElevatorGoToCargo;
 
 public class ScoreBackCargo extends CommandGroup {
         public ScoreBackCargo(int level) {
-                addSequential(new ElevatorGoToCargo(level));
                 addSequential(new ArmGoToBackCargo());
+                addSequential(new ElevatorGoToCargo(level));
         }
 }

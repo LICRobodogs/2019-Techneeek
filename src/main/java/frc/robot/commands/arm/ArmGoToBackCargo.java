@@ -1,6 +1,7 @@
 package frc.robot.commands.arm;
 
 import frc.robot.*;
+import frc.robot.subsystems.Arm.ArmSide;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -48,8 +49,8 @@ public class ArmGoToBackCargo extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-        // Robot.elevator.setElevator(ControlMode.Position,
-        // Robot.elevator.getCurrentPosition(),DemandType.ArbitraryFeedForward,Robot.elevator.getArbitraryFeedForward());
+        Robot.arm.setHasMoved(true);
+        Robot.arm.setArmSide(ArmSide.SAME);
     }
 
     // Called when another command which requires one or more of the same

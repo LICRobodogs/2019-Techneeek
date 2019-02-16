@@ -6,7 +6,7 @@ import frc.robot.commands.elevator.ElevatorGoToHatch;
 
 public class ScoreBackHatch extends CommandGroup {
         public ScoreBackHatch(int level) {
-                addSequential(new ElevatorGoToHatch(level));
                 addSequential(new ArmGoToBackHatch());
+                addSequential(new ElevatorGoToHatch(level));
         }
 }

@@ -7,25 +7,24 @@ import frc.robot.subsystems.Arm.ArmSide;
 /**
  *
  */
-public class ArmGoToRest extends Command {
+public class ArmGoToDrivingPosition extends Command {
 
-    private int frontRestPosition = Robot.arm.getFrontRestPosition();
+    private int drivingPosition = Robot.arm.getDrivingPosition();
     private boolean allowedToMove = false;
 
-    public ArmGoToRest() {
+    public ArmGoToDrivingPosition() {
         requires(Robot.arm);
-
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        allowedToMove = Robot.arm.setTargetPosition(frontRestPosition);// Robot.wrist.getUpwardLimit() <
+        allowedToMove = Robot.arm.setTargetPosition(drivingPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move to rest");
+            System.out.println("Allowed to move");
         } else {
-            System.out.println("Not allowed to move to rest");
+            System.out.println("Not allowed to move");
         }
     }
 
@@ -38,7 +37,7 @@ public class ArmGoToRest extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         if (allowedToMove) {
-			return Robot.arm.isInPosition(frontRestPosition);
+			return Robot.arm.isInPosition(drivingPosition);
 		} else {
 			return true;
 		}    }

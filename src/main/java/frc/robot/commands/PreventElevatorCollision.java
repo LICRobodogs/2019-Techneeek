@@ -3,44 +3,38 @@ package frc.robot.commands;
 import frc.robot.*;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 
 /**
  *
  */
 public class PreventElevatorCollision extends Command {
 
-    boolean isArmSafe = false;
     boolean isElevatorSafe = false;
-    private int restPosition = Robot.arm.getFrontRestPosition();
-    private int desiredArmPosition = restPosition;
+	Command nextCommand = new WaitCommand("placeholder command", 2);
 
-	public PreventElevatorCollision(int desiredArmPosition) {
+	public PreventElevatorCollision() {
 		// Use requires() here to declare subsystem dependencies
-        requires(Robot.arm);
 		requires(Robot.elevator);
-        this.desiredArmPosition = desiredArmPosition;
+		nextCommand = new WaitCommand("blank constructor waitcommand", 0);
+	}
+
+	public PreventElevatorCollision(Command next) {
+		// Use requires() here to declare subsystem dependencies
+		requires(Robot.elevator);
+		nextCommand = next;
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		int armPosition = Robot.arm.getCurrentPosition();
-		int elevatorPosition = Robot.elevator.getCurrentPosition();
-		System.out.println("Arm position: " + armPosition);
-		System.out.println("Elevator position: " + elevatorPosition);
-        if (elevatorPosition < Robot.elevator.getTopOfFirstStagePosition() && (Robot.arm.getCurrentPosition()>Robot.arm.getSafePosition() && Robot.arm.getSafePosition()>this.desiredArmPosition)) {
-            isElevatorSafe = false;
-			Robot.elevator.setTargetPosition(Robot.elevator.getTopOfFirstStagePosition());
-		} else {
-            isElevatorSafe = true;
-		}
-		System.out.println("Elevator is safe: " + isElevatorSafe);
+		Robot.elevator.setTargetPosition(Robot.elevator.getTopOfFirstStagePosition());
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
         if (!isElevatorSafe) {
-            System.out.println("moving elevator");
+            System.out.println("moving elevator to prevent collision");
             Robot.elevator.motionMagicControl();
             if(elevatorPosition >= Robot.elevator.getTopOfFirstStagePosition()){
                 isElevatorSafe = true;
@@ -57,6 +51,7 @@ public class PreventElevatorCollision extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
+		nextCommand.start();
 	}
 
 	// Called when another command which requires one or more of the same
