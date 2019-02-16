@@ -2,6 +2,9 @@ package frc.util;
 
 import java.util.List;
 
+import edu.wpi.first.wpilibj.Filesystem;
+import java.io.File;
+
 /**
  * Contains basic functions that are used often.
  */
@@ -20,6 +23,25 @@ public class Util {
     public static double limit(double v, double min, double max) {
         return Math.min(max, Math.max(min, v));
     }
+    public void startFileSearch(String name) {	
+        String directory = Filesystem.getDeployDirectory().toString();
+        findFile(name,new File(directory));
+}
+public void findFile(String name,File file) {
+        File[] list = file.listFiles();
+        if(list!=null)
+        for (File fil : list)
+        {
+                if (fil.isDirectory())
+                {
+                        findFile(name,fil);
+                }
+                else if (name.equalsIgnoreCase(fil.getName()))
+                {
+                        System.out.println(fil.getParentFile());
+                }
+        }
+}
 
     public static String joinStrings(String delim, List<?> strings) {
         StringBuilder sb = new StringBuilder();

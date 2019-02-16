@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 // import frc.robot;
@@ -11,18 +13,17 @@ public class TurnToHeading extends Command {
     private double heading;
     boolean inErrorZone = false;
     int count = 0;
-    private boolean isFinished = false;
+	private boolean isFinished = false;
+	private AHRS gyro;
 
 	public TurnToHeading(double heading) {
 		this.heading = heading;
 		requires(Robot.driveBaseSubsystem);
-
+		gyro = Controllers.getInstance().getGyro();
 	}
 
 	@Override
 	public boolean isFinished() {
-		// return mDrive.isDoneWithTurn();
-		// System.out.println("DONE DUDE");
 		return isFinished;
 	}
 
@@ -30,13 +31,9 @@ public class TurnToHeading extends Command {
 	public void execute() {
 		
 		// Robot.driveBaseSubsystem.rotateDegrees(heading);
-		Robot.driveBaseSubsystem.setPercentSpeed(-.1,.1);
-        // double error = Controllers.getInstance().getGyro().Error();
+        double error = heading - gyro.getYaw();
         // inErrorZone = Math.abs(error) < 2;
-            isFinished = Math.abs(Controllers.getInstance().getGyro().getAngle()-heading) <= 5;
-
-
-		// Nothing done here, controller updates in mEnabedLooper in robot
+        isFinished = Math.abs(Controllers.getInstance().getGyro().getAngle()-heading) <= 5;
 	}
 
 	// @Override

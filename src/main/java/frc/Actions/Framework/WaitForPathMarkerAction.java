@@ -20,7 +20,8 @@ public class WaitForPathMarkerAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return mDrive.hasPassedMarker(mMarker);
+        // return mDrive.hasPassedMarker(mMarker);
+        return true;
     }
 
     @Override

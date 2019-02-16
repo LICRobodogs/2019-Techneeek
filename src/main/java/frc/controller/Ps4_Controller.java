@@ -1,7 +1,7 @@
 package frc.controller;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.util.Constants;
-
+import frc.controller.ButtonDebouncer;
 
 
 public class Ps4_Controller extends Joystick {
@@ -15,17 +15,30 @@ public class Ps4_Controller extends Joystick {
     static final int circleIndex = Constants.circleIndex;
     static final int triangleIndex = Constants.triangleIndex;
     static final int lbIndex = Constants.lbIndex;
-	static final int rbIndex = Constants.rbIndex;
+    static final int rbIndex = Constants.rbIndex;
+    static  ButtonDebouncer X;
+    static  ButtonDebouncer SQUARE;
+    static ButtonDebouncer TRIANGLE;
+    static ButtonDebouncer CIRCLE;
+    static ButtonDebouncer LB;
+    static ButtonDebouncer RB;
+    
 	
 	public enum Buttons {X,CIRCLE,SQUARE,TRIANGLE,LB,RB}
 	public static enum Directions {UP, DOWN, LEFT, RIGHT}
 
     public Ps4_Controller(int axis) {
         super(axis);
+        X = new ButtonDebouncer(getJoyStick(), xIndex);
+        SQUARE = new ButtonDebouncer(getJoyStick(), squareIndex);
+        TRIANGLE = new ButtonDebouncer(getJoyStick(), triangleIndex);
+        CIRCLE = new ButtonDebouncer(getJoyStick(), circleIndex);
+        LB = new ButtonDebouncer(getJoyStick(), lbIndex);
+        RB = new ButtonDebouncer(getJoyStick(), rbIndex);
     }
 
 	//WHY
-    public Joystick getJoyStick() {
+    public Ps4_Controller getJoyStick() {
 		return this;
 	}
 
@@ -69,17 +82,17 @@ public class Ps4_Controller extends Joystick {
         }
         switch(button) {
             case "X":
-                return this.getRawButton(xIndex);
+                return X.get();
             case "CIRCLE":
-                return this.getRawButton(circleIndex);
+                return CIRCLE.get();
             case "SQUARE":
-                return this.getRawButton(squareIndex);
+                return SQUARE.get();
             case "TRIANGLE":
-                return this.getRawButton(triangleIndex);
+                return TRIANGLE.get();
             case "LB":    
-                return this.getRawButton(lbIndex);
+                return LB.get();
             case "RB":
-                return this.getRawButton(rbIndex);
+                return RB.get();
             default:
                 return false;
         }

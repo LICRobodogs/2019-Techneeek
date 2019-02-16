@@ -23,7 +23,8 @@ public class DrivePathAction implements Action {
 
     @Override
     public boolean isFinished() {
-        return mDrive.isDoneWithPath();
+        // return mDrive.isDoneWithPath();
+        return true;
     }
 
     @Override
