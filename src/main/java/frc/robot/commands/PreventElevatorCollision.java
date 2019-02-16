@@ -45,7 +45,7 @@ public class PreventElevatorCollision extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		boolean beyondTarget = Math.abs(Robot.elevator.getCurrentPosition() - Robot.elevator.getTopOfFirstStagePosition()) <= Robot.elevator.getTargetThreshold();;
+		boolean beyondTarget = Robot.elevator.getCurrentPosition() >= Robot.elevator.getTopOfFirstStagePosition();
         return isElevatorSafe || beyondTarget;
 	}
 
