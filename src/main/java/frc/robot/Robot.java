@@ -7,12 +7,7 @@
 
 package frc.robot;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -20,281 +15,310 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.Autonomous.Framework.AutoModeExecuter;
 import frc.controller.Ps4_Controller;
+import frc.robot.PathFiles.paths;
 import frc.robot.commands.GoStraightAtPercent;
 import frc.robot.commands.JoyStickWithGyro;
+import frc.robot.commands.StraightPath;
 import frc.robot.commands.TurnToHeading;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveBaseSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.util.Constants;
-import frc.util.CustomSubsystem;
-import frc.util.ThreadRateControl;
 import frc.util.drivers.Controllers;
-import frc.util.loops.Looper;
-import frc.util.loops.RobotStateEstimator;
 import jaci.pathfinder.Pathfinder;
 import jaci.pathfinder.Trajectory;
-import jaci.pathfinder.followers.EncoderFollower;
+import frc.util.Util;
 
-
-public class Robot extends TimedRobot implements PIDOutput { 
-  
-  public static Intake intake;
+public class Robot extends TimedRobot implements PIDOutput {
+	public static Intake intake;
 	public static Arm arm;
 	public static Controllers robotControllers;
 	public static DriveBaseSubsystem driveBaseSubsystem;
 	public static OI oi;
-	private ArrayList<CustomSubsystem> subsystemVector; //use so we can instantiate everything in a forloop and then for every subsystem in here, register its loop  in the looper
-	private Looper mLooper;
-	
-	private RobotStateEstimator robotStateEstimator;
-	private ThreadRateControl threadRateControl = new ThreadRateControl();
-	private AutoModeExecuter autoModeExecuter;
-	private static Ps4_Controller ps_controller;	
+
+	private static Ps4_Controller ps_controller;
 	private static Command driveCommand;
 	private static TurnToHeading turnCommand;
 	private static GoStraightAtPercent straightPercent;
-	private EncoderFollower m_left_follower;
-  private EncoderFollower m_right_follower;
-	private Notifier m_follower_notifier; 
+
 	public PIDController turnController;
+	public PIDController driveController;
 	private String pathToFollow = "Straight_Line";
- 
+	private double previous_error = 0.0;
+	private double integral = 0.0;
+	public static Trajectory left_trajectory;
+	public static Trajectory right_trajectory;
+	public static PathFiles trajectoryFiles;
+
 	static final double kToleranceDegrees = 2.0f;
 	double rotateToAngleRate;
+	double driveToPositionRate;
 
-	//can delete below
-	public DifferentialDrive myDrive;
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
-
-	@SuppressWarnings("unused")
-	private boolean hasRun;
 
 	public static enum OperationMode {
 		TEST, COMPETITION
 	};
 
 	// public static OperationMode operationMode = OperationMode.TEST;
-	
-	 /* commented out for test build
-  @Override
-  public void robotInit() {
-    driveTrain = new DriveTrain();
-		intake = new Intake();
-		arm = new Arm();
-		oi = new OI();
-		controlLoop.addLoopable(driveTrain);
-		controlLoop.addLoopable(arm);
-    controlLoop.addLoopable(intake);
-    setupAutonChooser();
-	}
-	*/
+	/*
+	 * commented out for test build
+	 * 
+	 * @Override public void robotInit() { driveTrain = new DriveTrain(); intake =
+	 * new Intake(); arm = new Arm(); oi = new OI();
+	 * controlLoop.addLoopable(driveTrain); controlLoop.addLoopable(arm);
+	 * controlLoop.addLoopable(intake); setupAutonChooser(); }
+	 */
 	@Override
-  public void robotInit() {
-    robotControllers = Controllers.getInstance(); //want to spawn asap 
+	public void robotInit() {
+		robotControllers = Controllers.getInstance(); // want to spawn asap
 		driveBaseSubsystem = DriveBaseSubsystem.getInstance();
-		robotStateEstimator = RobotStateEstimator.getInstance();
+		
+		trajectoryFiles = PathFiles.getInstance(); // this too, spawn asap
+
 		driveCommand = new JoyStickWithGyro();
 		turnCommand = new TurnToHeading(45);
 		straightPercent = new GoStraightAtPercent(0.5);
+
+		ps_controller = robotControllers.getPS_Controller();
+		setUpTurnController();
+		driveController = driveBaseSubsystem.getPIDController();
+		// left_trajectory = Pathfinder.readFromCSV(Util.lFile("Straight_Line"));
+		// right_trajectory = Pathfinder.readFromCSV(Util.rFile("Straight_Line"));
+
 		// mLooper = new Looper();
-		// driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper & it registers itself
+		// driveBaseSubsystem.registerEnabledLoops(mLooper); //we pass it the looper &
+		// it registers itself
 		// mLooper.register(robotStateEstimator);
 	}
 
-  @Override
-  public void robotPeriodic() {
-	driveBaseSubsystem.dashUpdate();
+	public void setUpTurnController() {
+		double kP = 0.4, kI = 0.0, kD = 0.0, kF = 0.0;
+		turnController = new PIDController(kP, kI, kD, kF, robotControllers.getGyro(), this);
+		turnController.setInputRange(-180.0f, 180.0f);
+		turnController.setOutputRange(-1.0, 1.0);
+		turnController.setAbsoluteTolerance(kToleranceDegrees);
+		turnController.setContinuous(true);
+
+		/* Add the PID Controller to the Test-mode dashboard, allowing manual */
+		/* tuning of the Turn Controller's P, I and D coefficients. */
+		/* Typically, only the P value needs to be modified. */
+		LiveWindow.addActuator("DriveSystem", "RotateController", turnController);
 	}
-	
-	public void startFileSearch(String name) {	
-			String directory = Filesystem.getDeployDirectory().toString();
-			findFile(name,new File(directory));
+
+	@Override
+	public void robotPeriodic() {
+		driveBaseSubsystem.dashUpdate();
 	}
-	public void findFile(String name,File file) {
-			File[] list = file.listFiles();
-			if(list!=null)
-			for (File fil : list)
-			{
-					if (fil.isDirectory())
-					{
-							findFile(name,fil);
-					}
-					else if (name.equalsIgnoreCase(fil.getName()))
-					{
-							System.out.println(fil.getParentFile());
-					}
-			}
-	}
+
 	public void startCommand(Command toStart) {
 		toStart.start();
 	}
+
 	public void setPath(String path) {
 		pathToFollow = path;
 	}
+
 	public String getPath(String path) {
 		return pathToFollow;
 	}
-	public File lFile() {
-		String lFilePath = "/home/lvuser/deploy/output/"+pathToFollow+".left.pf1.csv";
-		return new File(lFilePath);
-	}
-	public File rFile() {
-		String rFilePath = "/home/lvuser/deploy/output/"+pathToFollow+".right.pf1.csv";
-		return new File(rFilePath);
-	}
-  // @Override
-  public void autonomousInit() {
-		double kP = .1;
-		double kd = kP/100; 
 
-		SmartDashboard.putBoolean("\nStarted Auton",true);
+	// @Override
+	public void autonomousInit() {
+
+		setPath("Straight_Line");
+		SmartDashboard.putBoolean("\nStarted Auton", true);
 		driveBaseSubsystem.subsystemHome();
-	
-		startCommand(turnCommand);
-		startCommand(straightPercent);
-		// startFileSearch();
-		Trajectory left_trajectory = Pathfinder.readFromCSV(lFile());
-		Trajectory right_trajectory = Pathfinder.readFromCSV(rFile());
-		
-		m_left_follower = new EncoderFollower(left_trajectory);
-		m_right_follower = new EncoderFollower(right_trajectory);
-	
-
-		m_left_follower.configureEncoder((int)driveBaseSubsystem.getLeftDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
-		m_right_follower.configureEncoder((int)driveBaseSubsystem.getRightDistanceInches(), Constants.DRIVE_TICKS_PER_ROTATION, Constants.kDriveWheelDiameterInches);
-		 
-		m_left_follower.configurePIDVA(kP, 0.0, kd, Constants.lKv, Constants.lKa);
-		m_right_follower.configurePIDVA(kP, 0.0, kd, Constants.rKv, Constants.rKa);
-
-		m_follower_notifier = new Notifier(this::followPath);
-    m_follower_notifier.startPeriodic(left_trajectory.get(0).dt);
+		clearSchedular();
+		Command com = new StraightPath("Straight_Path");
+		startCommand(com);
 	}
 
-	private void followPath() {
-		if (m_left_follower.isFinished() || m_right_follower.isFinished()) {
-			m_follower_notifier.stop();
-		} else {
-			double left_speed = m_left_follower.calculate(driveBaseSubsystem.getLeftPositionRaw());
-			double right_speed = m_right_follower.calculate(driveBaseSubsystem.getRightPositionRaw());
-			double heading = Controllers.getInstance().getGyro().getAngle();
-			double desired_heading = -Pathfinder.r2d(m_left_follower.getHeading());
-			double heading_difference = Pathfinder.boundHalfDegrees(desired_heading - heading);
-
-			SmartDashboard.putNumber("Heading", heading);
-			SmartDashboard.putNumber("Heading Desired", desired_heading);
-			SmartDashboard.putNumber("Heading Difference", heading_difference);
-
-        double kP = 0.005; // propotional turning constant
-        double turningValue = (desired_heading - heading) * kP;
-		// Invert the direction of the turn if we are going backwards
-	
-			double turn =  0.8 * (-1.0/80.0) * heading_difference;
-			// driveBaseSubsystem.setSpeed(left_speed + turn, right_speed - turn);
-			double daSpeed = (left_speed + right_speed)/2;
-			 daSpeed = left_speed;
-			// turningValue = Math.copySign(turningValue, Robot.getPsController().xSpeed());
-			turningValue = Math.copySign(turningValue, daSpeed);
-			
-			driveBaseSubsystem.drive(daSpeed, turningValue);
-			
-		}
-}
-
-  @Override
-  public void autonomousPeriodic() {
-	driveBaseSubsystem.dashUpdate();
-    Scheduler.getInstance().run();
+	@Override
+	public void autonomousPeriodic() {
+		driveBaseSubsystem.dashUpdate();
+		Scheduler.getInstance().run();
 	}
 
-
-  @Override
+	@Override
 	public void teleopInit() {
 		driveBaseSubsystem.subsystemHome();
-		m_follower_notifier.stop();
-    driveBaseSubsystem.setSpeed(0, 0);
-		driveCommand.start();
-		Scheduler.getInstance().removeAll();
+		// stopNotifier();
+		driveBaseSubsystem.setSpeed(0, 0);
+		clearSchedular();
+		// startCommand(new JoyStickWithGyro());
+		startCommand(new JoyStickWithGyro());
 	}
 
-  @Override
-  public void teleopPeriodic() {
-	driveBaseSubsystem.dashUpdate();
+	@Override
+	public void teleopPeriodic() {
+		driveBaseSubsystem.dashUpdate();
 		Scheduler.getInstance().run();
-		// turn();
-
-	}
-	
-	public void turn() {
-			boolean rotateToAngle = false;
-			if ( ps_controller.isButtonPressed("X")) {
-				robotControllers.getGyro().reset();
-			}
-			if ( ps_controller.isButtonPressed("X")) {
-					turnController.setSetpoint(0.0f);
-					rotateToAngle = true;
-			} else if ( ps_controller.isButtonPressed("CIRCLE")) {
-					turnController.setSetpoint(90.0f);
-					rotateToAngle = true;
-			} else if ( ps_controller.isButtonPressed("TRIANGLE")) {
-					turnController.setSetpoint(179.9f);
-					rotateToAngle = true;
-			} else if ( ps_controller.isButtonPressed("SQUARE")) {
-					turnController.setSetpoint(-90.0f);
-					rotateToAngle = true;
-			}
-			double currentRotationRate;
-			if ( rotateToAngle ) {
-					turnController.enable();
-					currentRotationRate = rotateToAngleRate;
-			} else {
-					turnController.disable();
-					currentRotationRate = ps_controller.getTwist();
-			}
-			try {
-					/* Use the joystick X axis for lateral movement,          */
-					/* Y axis for forward movement, and the current           */
-					/* calculated rotation rate (or joystick Z axis),         */
-					/* depending upon whether "rotate to angle" is active.    */
-					// driveBaseSubsystem.drive(ps_controller.getX(), ps_controller.getY(), 
-					// 															 currentRotationRate, robotControllers.getGyro().getAngle());
-			} catch( RuntimeException ex ) {
-					DriverStation.reportError("Error communicating with drive system:  " + ex.getMessage(), true);
-			}
-			Timer.delay(0.005);		// wait for a motor update time
 	}
 
-@Override
-  public void disabledInit() {
+	@Override
+	public void disabledInit() {
 		driveBaseSubsystem.subsystemHome();
 		System.out.println("LEFT DISTANCE" + driveBaseSubsystem.getLeftDistanceInches());
 		System.out.println("RIGHT DISTANCE" + driveBaseSubsystem.getRightDistanceInches());
 		Scheduler.getInstance().removeAll();
+		turnController.reset();
+		driveController.reset();
 	}
 
-  @Override
-  public void testPeriodic() {
+	@Override
+	public void testPeriodic() {
+		// turn();
+		drive();
 	}
-	 /**
-   * Runs during test mode
-   */
-  public void test() {
-  }
 
-  @Override
-  /* This function is invoked periodically by the PID Controller, */
-  /* based upon navX-MXP yaw angle input and PID Coefficients.    */
-  public void pidWrite(double output) {
-      rotateToAngleRate = output;
-  }
-  
-  public void setupAutonChooser() {
+	@Override
+	public void testInit() {
+		driveBaseSubsystem.subsystemHome();
+		// stopNotifier();
+		driveBaseSubsystem.setSpeed(0, 0);
+		clearSchedular();
+	}
+	
+
+	// public void stopNotifier() {
+	// try {
+	// m_follower_notifier.stop();
+	// } catch (NullPointerException e) {
+	// }
+	// }
+	public void clearSchedular() {
+		try {
+			Scheduler.getInstance().removeAll();
+		} catch (NullPointerException e) {
+		}
+	}
+
+	public void turn() {
+		boolean rotateToAngle = false;
+		if (ps_controller.isButtonPressed("LB")) {
+			driveBaseSubsystem.subsystemHome();
+			turnController.setSetpoint(0.0f);
+			rotateToAngle = true;
+		} else if (ps_controller.isButtonPressed("X")) {
+			turnController.setSetpoint(0.0f);
+			rotateToAngle = true;
+		} else if (ps_controller.isButtonPressed("CIRCLE")) {
+			turnController.setSetpoint(90.0f);
+			rotateToAngle = true;
+		} else if (ps_controller.isButtonPressed("TRIANGLE")) {
+			turnController.setSetpoint(180.0f);
+			rotateToAngle = true;
+		} else if (ps_controller.isButtonPressed("SQUARE")) {
+			turnController.setSetpoint(-90.0f);
+			rotateToAngle = true;
+		}
+		double currentRotationRate;
+		if (rotateToAngle) {
+			turnController.enable();
+			currentRotationRate = rotateToAngleRate;
+		} else {
+			turnController.disable();
+			currentRotationRate = ps_controller.getTwist();
+		}
+		try {
+			/* Use the joystick X axis for lateral movement, */
+			/* Y axis for forward movement, and the current */
+			/* calculated rotation rate (or joystick Z axis), */
+			/* depending upon whether "rotate to angle" is active. */
+			// double error = (turnController.getSetpoint() -
+			// robotControllers.getGyro().getYaw());
+
+			// double pro = turnController.getError() * turnController.getP();
+			// double deriv = (turnController.getError() - this.previous_error) / .02;
+			// this.integral += (turnController.getError()*.02);
+			// driveBaseSubsystem.steer((pro + integral*turnController.getI() +
+			// deriv*turnController.getD()));
+			// previous_error = turnController.getError();
+
+			double error = (turnController.getSetpoint() - robotControllers.getGyro().getYaw());
+			double scaled = Math.pow((error * turnController.getP())/180, 2);
+			driveBaseSubsystem.steer(scaled);
+			SmartDashboard.putNumber("Error",error);
+
+			// currentRotationRate, robotControllers.getGyro().getAngle());
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error communicating with drive system:  " + ex.getMessage(), true);
+		}
+		Timer.delay(0.005); // wait for a motor update time
+	}
+
+	public void drive() {
+		boolean rotateToAngle = false;
+		if (ps_controller.isButtonPressed("LB")) {
+			driveBaseSubsystem.subsystemHome();
+			driveController.setSetpoint(0.0);
+		}
+		else if (ps_controller.isButtonPressed("X")) {
+			// driveController.setSetpoint(driveBaseSubsystem.inchesToSensorPosition(2.0));
+			// driveController.setSetpoint(driveBaseSubsystem.inchesToSensorPosition(6.0));
+			driveController.setSetpoint(6.0);
+			rotateToAngle = true;
+		} else if (ps_controller.isButtonPressed("CIRCLE")) {
+			driveController.setSetpoint(-6.0);
+			rotateToAngle = true;
+		}
+		// else if ( ps_controller.isButtonPressed("TRIANGLE")) {
+		// turnController.setSetpoint(180.0f);
+		// rotateToAngle = true;
+		// } else if ( ps_controller.isButtonPressed("SQUARE")) {
+		// turnController.setSetpoint(-90.0f);
+		// rotateToAngle = true;
+		// }
+		double positionRate;
+		if (rotateToAngle) {
+			driveController.enable();
+			positionRate = driveToPositionRate;
+		} else {
+			driveController.disable();
+			positionRate = ps_controller.getTwist();
+		}
+		try {
+			/* Use the joystick X axis for lateral movement, */
+			/* Y axis for forward movement, and the current */
+			/* calculated rotation rate (or joystick Z axis), */
+			/* depending upon whether "rotate to angle" is active. */
+			// double turningValue = (turnController.getSetpoint() -
+			// robotControllers.getGyro().getYaw()) * 0.08;
+			// double driveValue = (driveController.getSetpoint() - driveBaseSubsystem.getLeftPositionRaw())
+			// 		* driveController.getP();
+			// double scaled = driveValue/driveController.getSetpoint();
+			// driveBaseSubsystem.drive(scaled, 0);
+			SmartDashboard.putNumber("Error",driveController.getError());
+
+			// currentRotationRate, robotControllers.getGyro().getAngle());
+		} catch (RuntimeException ex) {
+			DriverStation.reportError("Error communicating with drive system:  " + ex.getMessage(), true);
+		}
+		Timer.delay(0.005); // wait for a motor update time
+	}
+
+	/**
+	 * Runs during test mode
+	 */
+	public void test() {
+	}
+
+	@Override
+	/* This function is invoked periodically by the PID Controller, */
+	/* based upon navX-MXP yaw angle input and PID Coefficients. */
+	public void pidWrite(double output) {
+		driveToPositionRate = output;
+		// driveBaseSubsystem.steer(output);
+		rotateToAngleRate = output;
+	}
+
+
+	public void setupAutonChooser() {
 		autonChooser = new SendableChooser<>();
 		// autonChooser.addDefault("Straight Only", new StraightOnly());
 		// autonChooser.addDefault("Straight Only", new BasicMode());

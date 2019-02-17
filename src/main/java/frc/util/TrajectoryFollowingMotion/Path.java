@@ -1,11 +1,11 @@
 package frc.util.TrajectoryFollowingMotion;
 
-import frc.util.Constants;
-import frc.util.math.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import frc.util.Constants;
+import frc.util.math.Translation2d;
 
 
 /**

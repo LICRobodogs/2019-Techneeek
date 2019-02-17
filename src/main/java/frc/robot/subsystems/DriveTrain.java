@@ -1,22 +1,16 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SPI;
-
-import frc.util.*;
-import frc.util.drivers.DunkTalonSRX;
-import frc.util.drivers.DunkVictorSPX;
-import frc.robot.*;
-import frc.robot.commands.*;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.OI;
+import frc.robot.Robot;
+import frc.robot.commands.JoystickDrive;
+import frc.util.Constants;
+import frc.util.ControlLoopable;
+import frc.util.drivers.DunkTalonSRX;
+import frc.util.drivers.DunkVictorSPX;
 
 public class DriveTrain extends Subsystem implements ControlLoopable {
 	public static enum DriveTrainControlMode {

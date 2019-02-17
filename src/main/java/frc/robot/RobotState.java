@@ -1,17 +1,13 @@
 package frc.robot;
 
-import frc.util.math.Translation2d;
-import frc.util.math.Rotation2d;
-import frc.util.math.RigidTransform2d;
-import frc.util.*;
-import frc.util.math.Twist2d;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import frc.util.InterpolatingDouble;
+import frc.util.InterpolatingTreeMap;
+import frc.util.math.RigidTransform2d;
+import frc.util.math.Rotation2d;
+import frc.util.math.Twist2d;
 
 /**
  * RobotState keeps track of the poses of various coordinate frames throughout the match. A coordinate frame is simply a

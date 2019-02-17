@@ -1,8 +1,7 @@
 package frc.robot.commands;
 
-import frc.robot.*;
-
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class JoystickArm extends Command {
 

@@ -1,7 +1,10 @@
 package frc.util.TrajectoryFollowingMotion;
 
 
-import frc.util.math.*;
+import frc.util.math.RigidTransform2d;
+import frc.util.math.Rotation2d;
+import frc.util.math.Translation2d;
+import frc.util.math.Twist2d;
 
 /**
  * Implements an adaptive pure pursuit controller. See:

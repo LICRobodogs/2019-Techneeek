@@ -23,15 +23,15 @@ public class JoyStickWithGyro extends Command {
 
     public JoyStickWithGyro(){
         requires(Robot.driveBaseSubsystem);
-        ps = Controllers.getInstance().getPS_Controller();
-        gyro = Controllers.getInstance().getGyro();
     }
 
-    public void initialize(){        
+    public void initialize(){
+        ps = Controllers.getInstance().getPS_Controller();
+        gyro = Controllers.getInstance().getGyro();        
     }
 
     public void execute() {
-        double turningValue = (kAngleSetpoint - gyro.getAngle()) * kP;
+        double turningValue = (kAngleSetpoint - gyro.getYaw()) * kP;
 		// Invert the direction of the turn if we are going backwards
 		turningValue = Math.copySign(turningValue, ps.xSpeed());
         Robot.driveBaseSubsystem.drive(ps.xSpeed(), turningValue);

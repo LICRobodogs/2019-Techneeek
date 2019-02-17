@@ -52,7 +52,7 @@ public class Constants {
     public static final double kPathFollowingMaxAccel = 100.0; // inches per second^2
     
     //WHEELS
-    public static final double kDriveWheelDiameterInches = 4.875;	//Practice bot calibrated 4.875
+    public static final double kDriveWheelDiameterInches = 4.000;	//Practice bot calibrated 4.875
 	//public static final double kDriveWheelDiameterInches = 5;	//Comp bot measured val
     // public static final double kDriveWheelDiameterInches = PathAdapter.getAdaptedWheelDiameter();
     

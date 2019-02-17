@@ -23,11 +23,20 @@ public class Util {
     public static double limit(double v, double min, double max) {
         return Math.min(max, Math.max(min, v));
     }
-    public void startFileSearch(String name) {	
+    public static File lFile(String pathToFollow) {
+		// Util.startFileSearch(pathToFollow);
+		String lFilePath = "/home/lvuser/deploy/output/"+pathToFollow+".left.pf1.csv";
+		return new File(lFilePath);
+	}
+	public static File rFile(String pathToFollow) {
+		String rFilePath = "/home/lvuser/deploy/output/"+pathToFollow+".right.pf1.csv";
+		return new File(rFilePath);
+	}
+    public static void startFileSearch(String name) {	
         String directory = Filesystem.getDeployDirectory().toString();
         findFile(name,new File(directory));
 }
-public void findFile(String name,File file) {
+public static void findFile(String name,File file) {
         File[] list = file.listFiles();
         if(list!=null)
         for (File fil : list)

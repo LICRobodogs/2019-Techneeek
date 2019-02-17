@@ -1,8 +1,7 @@
 package frc.robot.commands;
 
-import frc.robot.*;
-import frc.robot.subsystems.DriveBaseSubsystem;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class GoStraightAtPercent extends Command {
     private double percent;

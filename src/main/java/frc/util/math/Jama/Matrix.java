@@ -1,14 +1,14 @@
 package frc.util.math.Jama;
 
-import java.text.NumberFormat;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.StreamTokenizer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Locale;
-import java.text.FieldPosition;
-import java.io.PrintWriter;
-import java.io.BufferedReader;
-import java.io.StreamTokenizer;
-import frc.util.math.Jama.util.*;
+
+import frc.util.math.Jama.util.Maths;
 
 /**
    Jama = Java Matrix class.

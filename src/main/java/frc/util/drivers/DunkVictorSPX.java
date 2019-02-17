@@ -5,9 +5,14 @@ import com.ctre.phoenix.ParamEnum;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+
 public class DunkVictorSPX extends WPI_VictorSPX {
 
 	private static final int DEFAULT_TIMEOUT_MS = 0;
+	private  PIDController controller;
+	private double rampBand;
 
 	public DunkVictorSPX(int deviceNumber) {
 		super(deviceNumber);
@@ -16,6 +21,23 @@ public class DunkVictorSPX extends WPI_VictorSPX {
 		this.configMotionProfileTrajectoryPeriod(0);
 
 	}
+        /**
+         * Constructor for a PID controlled motor, with a controllable multiplier.
+         *
+         * @param motor The motor being set.
+         * @param rampBand The acceptable range for a motor change in one loop
+         * @param controller The PIDController this was passed as output to
+         */
+	// public DunkVictorSPX(int deviceNumber, double rampBand, PIDController controller) {
+	// 	this(deviceNumber);
+	// 	this.rampBand = rampBand;
+	// 	this.controller = controller;
+	// 	controller.setOutputRange(0-rampBand, 0+rampBand);		
+	// }
+	// public void pidWrite(double pidInput) { 
+	// 	this.set(pidInput);
+	// 	controller.setOutputRange(pidInput - rampBand, pidInput + rampBand);
+	// }
 
 	public ErrorCode configPIDF(int slotIdx, double P, double I, double D, double F) {
 		ErrorCode errorCode = ErrorCode.OK;

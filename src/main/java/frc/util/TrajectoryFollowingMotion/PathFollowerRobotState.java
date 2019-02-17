@@ -1,19 +1,13 @@
 package frc.util.TrajectoryFollowingMotion;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.util.Constants;
-import frc.util.math.Translation2d;
-import frc.util.math.Rotation2d;
-import frc.util.math.RigidTransform2d;
-import frc.robot.Kinematics;
-import frc.util.*;
-import frc.util.math.Twist2d;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import frc.util.math.*;
+
+import frc.robot.Kinematics;
+import frc.util.InterpolatingDouble;
+import frc.util.InterpolatingTreeMap;
+import frc.util.math.RigidTransform2d;
+import frc.util.math.Rotation2d;
+import frc.util.math.Twist2d;
 /**
  * RobotState keeps track of the poses of various coordinate frames throughout the match. A coordinate frame is simply a
  * point and direction in space that defines an (x,y) coordinate system. Transforms (or poses) keep track of the spatial

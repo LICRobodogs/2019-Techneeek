@@ -8,18 +8,26 @@ import com.ctre.phoenix.motorcontrol.SensorTerm;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
-public class DunkTalonSRX extends WPI_TalonSRX {
+public class DunkTalonSRX extends WPI_TalonSRX implements PIDOutput, PIDSource {
 
+	private PIDController controller;
+	private double rampBand;
 	private int defaultTimeoutMs = 0;
 	private int defaultPidIndex = 0;
 
 	private int primaryPidIndex = 0;
 	private int secondaryPidIndex = 1;
 
-	private double[] mCLRampRate = {0, 0};
-	private int[] mMMAccel = {0, 0};
-	private int[] mMMVel = {0, 0};
+	private double[] mCLRampRate = { 0, 0 };
+	private int[] mMMAccel = { 0, 0 };
+	private int[] mMMVel = { 0, 0 };
+	private PIDSourceType sourceType;
 
 	private FeedbackDevice primaryFeedbackDevice;
 	private FeedbackDevice secondaryFeedbackDevice;
@@ -31,6 +39,25 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 		this.configPeakOutputForward(1);
 		this.configPeakOutputReverse(-1);
 		this.configMotionProfileTrajectoryPeriod(0);
+		setPIDSourceType(PIDSourceType.kDisplacement);
+	}
+
+	/**
+	 * Constructor for a PID controlled motor, with a controllable multiplier.
+	 *
+	 * @param motor      The motor being set.
+	 * @param rampBand   The acceptable range for a motor change in one loop
+	 * @param controller The PIDController this was passed as output to
+	 */
+	public DunkTalonSRX(int deviceNumber, double rampBand, PIDController controller) {
+		this(deviceNumber);
+		this.rampBand = rampBand;
+		this.controller = controller;
+	}
+
+	public void pidWrite(double pidInput) {
+		this.set(pidInput);
+		controller.setOutputRange(pidInput - rampBand, pidInput + rampBand);
 	}
 
 	public int getPrimaryPidIndex() {
@@ -63,6 +90,24 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 
 	public FeedbackDevice getSecondaryFeedbackDevice() {
 		return this.secondaryFeedbackDevice;
+	}
+
+	@Override
+	public void setPIDSourceType(PIDSourceType pidSource) {
+		sourceType = pidSource;
+	}
+
+	@Override
+	public PIDSourceType getPIDSourceType() {
+		return sourceType;
+	}
+
+	@Override
+	public double pidGet() {
+		if (sourceType == PIDSourceType.kDisplacement)
+			return getPrimarySensorPosition();
+		else
+			return getPrimarySensorVelocity();
 	}
 
 	// ------------- HELPER METHODS -------- //
@@ -155,19 +200,19 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 	public void configRemoteSensor1(int remoteDeviceId, RemoteSensorSource remoteSensorSource) {
 		this.configRemoteFeedbackFilter(remoteDeviceId, remoteSensorSource, 1);
 	}
-	
+
 	public int getPrimarySensorPosition() {
 		return this.getSelectedSensorPosition(primaryPidIndex);
 	}
-	
+
 	public int getSecondarySensorPosition() {
 		return this.getSelectedSensorPosition(secondaryPidIndex);
 	}
-	
+
 	public int getPrimarySensorVelocity() {
 		return this.getSelectedSensorVelocity(primaryPidIndex);
 	}
-	
+
 	public int getSecondarySensorVelocity() {
 		return this.getSelectedSensorVelocity(secondaryPidIndex);
 	}
@@ -236,16 +281,18 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 	public ErrorCode configMotionAcceleration(int sensorUnitsPer100msPerSec) {
 		return super.configMotionAcceleration(sensorUnitsPer100msPerSec, defaultTimeoutMs);
 	}
-	
+
 	public ErrorCode configMotionCruiseVelocity(int sensorUnitsPer100ms) {
 		return super.configMotionCruiseVelocity(sensorUnitsPer100ms, defaultTimeoutMs);
 	}
-	//From 195 CKTalonSRX for the talon helper
+
+	// From 195 CKTalonSRX for the talon helper
 	public ErrorCode configMotionCruiseVelocity(int sensorUnitsPer100ms, int slotIdx, int timeoutMs) {
 		setCurrentMMVel(sensorUnitsPer100ms, slotIdx);
 		return super.configMotionCruiseVelocity(sensorUnitsPer100ms, timeoutMs);
 	}
-	//From 195 CKTalonSRX for the talon helper
+
+	// From 195 CKTalonSRX for the talon helper
 	public ErrorCode configMotionAcceleration(int sensorUnitsPer100msPerSec, int slotIdx, int timeoutMs) {
 		setCurrentMMAccel(sensorUnitsPer100msPerSec, slotIdx);
 		return super.configMotionAcceleration(sensorUnitsPer100msPerSec, timeoutMs);
@@ -312,36 +359,40 @@ public class DunkTalonSRX extends WPI_TalonSRX {
 		return super.configClosedloopRamp(secondsFromNeutralToFull, defaultTimeoutMs);
 	}
 
-	//From 195 CKTalonSRX for talon helper
+	// From 195 CKTalonSRX for talon helper
 	public ErrorCode configClosedloopRamp(double secondsFromNeutralToFull, int slotIdx, int timeoutMs) {
 		setCurrentSlotCLRampRate(secondsFromNeutralToFull, slotIdx);
 		return super.configClosedloopRamp(secondsFromNeutralToFull, timeoutMs);
 	}
-	
+
 	public ErrorCode configVoltageCompSaturation(double voltage) {
 		return super.configVoltageCompSaturation(voltage, defaultTimeoutMs);
 	}
-	
+
 	public ErrorCode configMaxIntegralAccumulator(int slotIdx, double iaccum) {
 		return super.configMaxIntegralAccumulator(slotIdx, iaccum, defaultTimeoutMs);
 	}
-//From CKTalonSRX 195
+
+	// From CKTalonSRX 195
 	private synchronized void setCurrentMMVel(int vel, int slot) {
 		if (slot < mMMVel.length) {
 			mMMVel[slot] = vel;
 		}
 	}
-//From CKTalonSRK 195
+
+	// From CKTalonSRK 195
 	private synchronized void setCurrentMMAccel(int accel, int slot) {
 		if (slot < mMMAccel.length) {
 			mMMAccel[slot] = accel;
 		}
 	}
-	//From CKTalonSRK 195
+
+	// From CKTalonSRK 195
 	private synchronized void setCurrentSlotCLRampRate(double rampRate, int slot) {
 		if (slot < mCLRampRate.length) {
 			mCLRampRate[slot] = rampRate;
 		}
 	}
+
 
 }

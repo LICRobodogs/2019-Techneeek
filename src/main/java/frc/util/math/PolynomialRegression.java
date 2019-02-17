@@ -11,8 +11,9 @@ package frc.util.math;
  *
  ******************************************************************************/
 
-import frc.util.math.Jama.*;
 // import Jama.QRDecomposition;
+import frc.util.math.Jama.Matrix;
+import frc.util.math.Jama.QRDecomposition;
 
 /**
  * The {@code PolynomialRegression} class performs a polynomial regression on an set of <em>N</em> data points (
