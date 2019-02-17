@@ -32,7 +32,7 @@ public class IntakeSpeed extends Command {
 	protected void execute() {
 		Robot.intake.setSpeed(mSpeed);
 		if(Robot.comp.enabled()){
-			Robot.comp.stop();
+			// Robot.comp.stop();
 		}
 		// SmartDashboard.putNumber("Intake Speed: ",mSpeed);
 	}

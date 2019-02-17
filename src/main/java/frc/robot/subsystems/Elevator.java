@@ -32,15 +32,15 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
     private boolean isHoldingPosition = false;
     private boolean atScale = false;
 
-    private int homePosition = 3000;
-	private int collectPosition = 200;
+    private int homePosition = 5000;
+	private int collectPosition = 3700;
 	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
 	private int topOfFirstStagePosition = 32000;
 	private int minimumDunkHeight = 26500;
 	private int dunkPosition = 33500;
 	private int climbPosition = 48000;
-	private int maxUpTravelPosition = 48500;
+	private int maxUpTravelPosition = 51000;
 
 	private int scaleMiddlePosition = 38500;
 	private int scaleBottomPosition = 35000;
@@ -50,11 +50,11 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public final static int ELEVATOR_DOWN = 1;
 
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = collectPosition;
+	public int downPositionLimit = 3500;
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.09;
 
-	private final static int onTargetThreshold = 150; // changed to 500 from 100 for testing on practice field
+	private final static int onTargetThreshold = 350; // changed to 500 from 100 for testing on practice field
     
     //                                            slot          p      i     d      f    izone
 	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.30, 0.0, 0.0, 0.0, 0);
@@ -62,7 +62,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	
 	//Uses PID values to go to a position                              accel velo  gains
 	private MotionParameters upMotionParameters = new MotionParameters(6000, 6000, upGains);
-	private MotionParameters downMotionParameters = new MotionParameters(3000, 2000, downGains);	
+	private MotionParameters downMotionParameters = new MotionParameters(2000, 2000, downGains);	
 	
 	public final DunkVictorSPX elevatorVictorFollower = new DunkVictorSPX(Constants.ELEVATOR_VICTOR1_ID);
 	public final DunkTalonSRX elevatorTalonFollower = new DunkTalonSRX(Constants.ELEVATOR_TALON2_ID);
@@ -191,8 +191,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		return this.topOfFirstStagePosition;
 	}
 
-	public int getMinimumDunkPosition() {
-		return this.minimumDunkHeight;
+	public int getDunkPosition() {
+		return this.dunkPosition;
 	}
 
 	public int getHatchPosition(int level) {

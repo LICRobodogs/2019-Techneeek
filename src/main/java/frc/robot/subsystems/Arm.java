@@ -49,11 +49,11 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private DunkVictorSPX armFollower;
 	
 	private int homePosition = 50;
-	private int restPosition = 900;
+	private int restPosition = 950;
 	private int safePosition = 1000;
-	private int drivingPosition = 694;
+	private int drivingPosition = 950;
 	private int maxUpTravelPosition = 1600;
-	private int collectPosition = 37;
+	private int collectPosition = 38;
 	private int frontHatchPosition = 100;
 	private int backHatchPosition = 1500;
 	private int frontCargoPosition = 490;
@@ -65,7 +65,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 30;
+	private final static int onTargetThreshold = 40;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
@@ -82,7 +82,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		try {
 			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
 			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
-			// shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
+			shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
 			armFollower.follow(armTalon);
 			armFollower.setInverted(true);
 			
@@ -112,9 +112,9 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public void setArmPiston(ArmPistonState state) {
 		if (state == ArmPistonState.SHOOT) {
-			shootPiston.set(Value.kForward);
-		} else if (state == ArmPistonState.RELOAD) {
 			shootPiston.set(Value.kReverse);
+		} else if (state == ArmPistonState.RELOAD) {
+			shootPiston.set(Value.kForward);
 		} else if (state == ArmPistonState.BRAKE) {
 			brakePiston.set(Value.kForward);
 		} else if (state == ArmPistonState.RELEASE) {
@@ -375,6 +375,10 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public void setHasMoved(boolean hasMoved) {
 		this.hasMoved = hasMoved;
+	}
+
+	public LeaderDunkTalonSRX getMasterTalon(){
+		return armTalon;
 	}
 
 	public ArmSide getSide() {

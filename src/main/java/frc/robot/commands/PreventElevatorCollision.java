@@ -27,7 +27,7 @@ public class PreventElevatorCollision extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		Robot.elevator.setTargetPosition(Robot.elevator.getTopOfFirstStagePosition());
+		Robot.elevator.setTargetPosition(Robot.elevator.getDunkPosition());
 	}
 
 	// Called repeatedly when this Command is scheduled to run

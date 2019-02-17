@@ -1,6 +1,9 @@
 package frc.robot.commands.arm;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.Arm.ArmSide;
 
@@ -13,6 +16,7 @@ public class ArmGoToDrivingPosition extends Command {
     private boolean allowedToMove = false;
 
     public ArmGoToDrivingPosition() {
+        // super()
         requires(Robot.arm);
     }
 

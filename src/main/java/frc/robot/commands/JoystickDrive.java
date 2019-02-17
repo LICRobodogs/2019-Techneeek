@@ -21,8 +21,8 @@ public class JoystickDrive extends Command {
     }
 
     public void execute() {
-        double move = 0.65*Robot.oi.getMoveInput();
-        double steer = 0.65*Robot.oi.getSteerInput();
+        double move = 0.4*Robot.oi.getMoveInput();
+        double steer = 0.4*Robot.oi.getSteerInput();
 
         Robot.driveTrain.drive(move, -steer);
     }
