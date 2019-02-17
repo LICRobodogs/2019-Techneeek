@@ -42,7 +42,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private ArmControlMode controlMode = ArmControlMode.HOLD;
 	// private ArmSide armSide = ArmSide.BACK; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	private ArmSide armSide = ArmSide.FRONT; //FOR TESTING ONLY
-	private ArmSide armSidePrev = ArmSide.NEITHER;
+	private ArmSide desiredArmSide = ArmSide.FRONT;
 	private boolean hasMoved = true;
 	public static DoubleSolenoid brakePiston, shootPiston;
 	private LeaderDunkTalonSRX armTalon;
@@ -53,19 +53,19 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int safePosition = 1000;
 	private int drivingPosition = 950;
 	private int maxUpTravelPosition = 1600;
-	private int collectPosition = 38;
+	private int collectPosition = 350;
 	private int frontHatchPosition = 100;
 	private int backHatchPosition = 1500;
-	private int frontCargoPosition = 490;
+	private int frontCargoPosition = 560;
 	private int backCargoPosition = 1300;
 	public int upPositionLimit = maxUpTravelPosition;
-	public int downPositionLimit = collectPosition;
+	public int downPositionLimit = homePosition;
 
 	public final static int WRIST_PROFILE_UP = 0;
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 40;
+	private final static int onTargetThreshold = 30;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
@@ -83,6 +83,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
 			armFollower = new DunkVictorSPX(Constants.WRIST_VICTOR_ID);
 			shootPiston = new DoubleSolenoid(Constants.SHOOT_IN_PCM_ID, Constants.SHOOT_OUT_PCM_ID);
+			brakePiston = new DoubleSolenoid(Constants.BRAKE_DEPLOY_PCM_ID, Constants.BRAKE_RELEASE_PCM_ID);
 			armFollower.follow(armTalon);
 			armFollower.setInverted(true);
 			
@@ -127,8 +128,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	public boolean isBrakeEngaged() {
-		return false;
-		// return brakePiston.get() == Value.kReverse;
+		return brakePiston.get() == Value.kForward;
     }
 
 	public void setArmAngle() {
@@ -267,13 +267,12 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
 		SmartDashboard.putString("Side: ", getSide().toString());
-		SmartDashboard.putString("Prev Side: ", getPrevSide().toString());
+		SmartDashboard.putString("Desired Side: ", getDesiredSide().toString());
 		SmartDashboard.putNumber("Arm RAW Angle: ", getCurrentPosition());
 		// SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());
 		SmartDashboard.putNumber("PWM:", armTalon.getMotorOutputVoltage());
 		SmartDashboard.putNumber("FeedForward:", getFeedForward());
-		// SmartDashboard.putBoolean("isHome", isHome());
 		// SmartDashboard.putBoolean("isShot", isShot());
 		SmartDashboard.putBoolean("isBrakeEngaged", isBrakeEngaged());
 		SmartDashboard.putString("TALON MODE: ", armTalon.getControlMode().toString());
@@ -360,17 +359,8 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	//ASSUMING SIDE TOGGLE CAN ONLY BE PRESSED ONCE
-	public void setArmSide(ArmSide side) {
-		if(hasMoved || armSide != side){
-			if(this.armSidePrev == ArmSide.NEITHER){
-				this.armSidePrev = side;
-			}else if(this.armSide != ArmSide.SAME && this.armSidePrev != side){
-				this.armSidePrev = this.armSide;
-			}
-			this.armSide = side;
-		}else{
-			System.out.println("Stop toggling side before moving arm!");
-		}
+	public void setDesiredArmSide(ArmSide side) {
+		this.desiredArmSide = side;
 	}
 
 	public void setHasMoved(boolean hasMoved) {
@@ -385,8 +375,8 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		return armSide;
 	}
 
-	public ArmSide getPrevSide() {
-		return armSidePrev;
+	public ArmSide getDesiredSide() {
+		return desiredArmSide;
 	}
 
 	public ArmControlMode getMode() {
@@ -439,6 +429,11 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	@Override
 	public void periodic() {
+		if(getCurrentPosition() < 1000){
+			armSide = ArmSide.FRONT;
+		}else{
+			armSide = ArmSide.BACK;
+		}
 	}
 
 	@Override

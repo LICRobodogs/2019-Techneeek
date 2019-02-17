@@ -16,15 +16,15 @@ public class IntakePositionAvoidCollision extends ConditionalCommand {
 
     @Override
     protected boolean condition() {
-        return (Robot.arm.getSide() != Robot.arm.getPrevSide()) && Robot.arm.getSide() != ArmSide.SAME;
+        return Robot.arm.getSide() != Robot.arm.getDesiredSide();
     }
 
     private static class SwitchSideAndGoToIntake extends CommandGroup {
         public SwitchSideAndGoToIntake() {
             addSequential(new PreventElevatorCollision());
-            addSequential(new ElevatorGoToIntake());
-            addSequential(new WaitCommand(0.5));
             addSequential(new ArmGoToHome());
+            addSequential(new WaitCommand(0.25));
+            addSequential(new ElevatorGoToIntake());
         }
     }
 

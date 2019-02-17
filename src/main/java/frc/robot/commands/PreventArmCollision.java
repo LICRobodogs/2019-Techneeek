@@ -26,8 +26,8 @@ public class PreventArmCollision extends Command {
 	protected void initialize() {
 		int armPosition = Robot.arm.getCurrentPosition();
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
-		System.out.println("Arm position arm: " + armPosition);
-		System.out.println("Elevator position elevator: " + elevatorPosition);
+		// System.out.println("Arm position arm: " + armPosition);
+		// System.out.println("Elevator position elevator: " + elevatorPosition);
         if (((desiredArmPosition > safePosition && armPosition < safePosition) || (desiredArmPosition < safePosition && armPosition > safePosition)) 
         && elevatorPosition < Robot.elevator.getTopOfFirstStagePosition()) {
             isArmSafe = false;
@@ -42,8 +42,8 @@ public class PreventArmCollision extends Command {
             isArmSafe = true;
             isElevatorSafe = true;
 		}
-		System.out.println("Arm is safe arm: " + isArmSafe);
-		System.out.println("Elevator is safe elevator: " + isElevatorSafe);
+		// System.out.println("Arm is safe arm: " + isArmSafe);
+		// System.out.println("Elevator is safe elevator: " + isElevatorSafe);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -51,14 +51,14 @@ public class PreventArmCollision extends Command {
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
 		if (!isArmSafe && isElevatorSafe) {
             Robot.arm.motionMagicControl();
-            System.out.println("moving arm");
+            // System.out.println("moving arm");
         }
         if (!isElevatorSafe) {
-            System.out.println("moving elevator in arm collision command");
+            // System.out.println("moving elevator in arm collision command");
             // Robot.elevator.motionMagicControl();
             if(elevatorPosition >= Robot.elevator.getTopOfFirstStagePosition()){
                 isElevatorSafe = true;
-		        System.out.println("Elevator is safe and done: " + isElevatorSafe);
+		        // System.out.println("Elevator is safe and done: " + isElevatorSafe);
             }
         }
 	}

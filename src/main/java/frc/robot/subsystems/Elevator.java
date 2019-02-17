@@ -33,14 +33,14 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
     private boolean atScale = false;
 
     private int homePosition = 5000;
-	private int collectPosition = 3700;
+	private int collectPosition = 4300;
 	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
 	private int topOfFirstStagePosition = 32000;
 	private int minimumDunkHeight = 26500;
 	private int dunkPosition = 33500;
 	private int climbPosition = 48000;
-	private int maxUpTravelPosition = 51000;
+	private int maxUpTravelPosition = 54000;
 
 	private int scaleMiddlePosition = 38500;
 	private int scaleBottomPosition = 35000;
@@ -54,7 +54,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int targetPosition = 0;
 	private double arbitraryFeedForward = 0.09;
 
-	private final static int onTargetThreshold = 350; // changed to 500 from 100 for testing on practice field
+	private final static int onTargetThreshold = 700; // changed to 500 from 100 for testing on practice field
     
     //                                            slot          p      i     d      f    izone
 	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.30, 0.0, 0.0, 0.0, 0);
@@ -255,7 +255,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public boolean isWristSafe(double targetElevatorPosition) {
 		// boolean atRisk = Robot.arm.getCurrentPosition() < Robot.arm.getSafePosition();
 		boolean atRisk = false;
-		System.out.println("is wrist at risk: " + atRisk);
+		// System.out.println("is wrist at risk: " + atRisk);
 		if (atRisk && targetElevatorPosition < minimumDunkHeight && getCurrentPosition() > topOfFirstStagePosition) {
 			return false;
 		} else {

@@ -16,8 +16,8 @@ public class ArmToggleBack extends InstantCommand {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        Robot.arm.setArmSide(ArmSide.BACK);
-        System.out.println("Switching to Back");
+        Robot.arm.setDesiredArmSide(ArmSide.BACK);
+        // System.out.println("Switching to Back");
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
+import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Arm.ArmSide;
 
 /**
@@ -26,9 +27,10 @@ public class ArmGoToDrivingPosition extends Command {
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move");
-        } else {
-            System.out.println("Not allowed to move");
+            // System.out.println("Allowed to move");
+            Robot.arm.setArmPiston(ArmPistonState.RELEASE);
+    } else {
+            // System.out.println("Not allowed to move");
         }
     }
 
@@ -49,7 +51,7 @@ public class ArmGoToDrivingPosition extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
-        Robot.arm.setArmSide(ArmSide.SAME);
+        Robot.arm.setArmPiston(ArmPistonState.BRAKE);
     }
 
     // Called when another command which requires one or more of the same

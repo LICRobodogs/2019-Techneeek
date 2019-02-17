@@ -7,18 +7,18 @@ import frc.robot.subsystems.Intake.IntakeState;
 
 public class ScoreMiddleHeight extends ConditionalCommand {
     public ScoreMiddleHeight() {
-        super(new SwitchSideAndGoToMiddleHeight(Robot.arm.getSide(),Robot.arm.getPrevSide()), new GoToMiddleHeight(Robot.arm.getSide(),Robot.arm.getPrevSide()));
+        super(new SwitchSideAndGoToMiddleHeight(Robot.arm.getDesiredSide()), new GoToMiddleHeight(Robot.arm.getDesiredSide()));
         requires(Robot.arm);
     }
 
     @Override
     protected boolean condition() {
-        return (Robot.arm.getSide() != Robot.arm.getPrevSide()) && Robot.arm.getSide() != ArmSide.SAME;
+        return Robot.arm.getSide() != Robot.arm.getDesiredSide();
     }
 
     private static class SwitchSideAndGoToMiddleHeight extends ConditionalCommand {
-        public SwitchSideAndGoToMiddleHeight(ArmSide side, ArmSide prevSide) {
-            super(new PreventElevatorCollision((side==ArmSide.FRONT || (side==ArmSide.SAME && prevSide==ArmSide.FRONT)) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2)), new PreventElevatorCollision((side==ArmSide.FRONT || (side==ArmSide.SAME && prevSide==ArmSide.FRONT)) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2)));
+        public SwitchSideAndGoToMiddleHeight(ArmSide side) {
+            super(new PreventElevatorCollision((side==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2)), new PreventElevatorCollision((side==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2)));
             requires(Robot.intake);
         }
 
@@ -29,8 +29,8 @@ public class ScoreMiddleHeight extends ConditionalCommand {
     }
 
     private static class GoToMiddleHeight extends ConditionalCommand {
-        public GoToMiddleHeight(ArmSide side, ArmSide prevSide) {
-            super((side==ArmSide.FRONT || (side==ArmSide.SAME && prevSide==ArmSide.FRONT)) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2), (side==ArmSide.FRONT || (side==ArmSide.SAME && prevSide==ArmSide.FRONT)) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2));
+        public GoToMiddleHeight(ArmSide side) {
+            super((side==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2), (side==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2));
             requires(Robot.intake);
         }
 

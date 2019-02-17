@@ -16,8 +16,8 @@ public class ArmToggleFront extends InstantCommand {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        Robot.arm.setArmSide(ArmSide.FRONT);
-        System.out.println("Switching to Front");
+        Robot.arm.setDesiredArmSide(ArmSide.FRONT);
+        // System.out.println("Switching to Front");
     }
 
     // Called repeatedly when this Command is scheduled to run

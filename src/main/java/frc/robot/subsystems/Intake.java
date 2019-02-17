@@ -88,7 +88,7 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSuction(IntakeState state) {
-		succState = state;
+		this.succState = state;
 		if (succState == IntakeState.SUCC_IN) {
 			leftSuctionSolenoid.set(false);
             rightSuctionSolenoid.set(false);

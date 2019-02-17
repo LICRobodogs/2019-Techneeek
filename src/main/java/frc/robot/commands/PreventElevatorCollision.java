@@ -34,11 +34,11 @@ public class PreventElevatorCollision extends Command {
 	protected void execute() {
 		int elevatorPosition = Robot.elevator.getCurrentPosition();
         if (!isElevatorSafe) {
-            System.out.println("moving elevator to prevent collision");
+            // System.out.println("moving elevator to prevent collision");
             Robot.elevator.motionMagicControl();
             if(elevatorPosition >= Robot.elevator.getTopOfFirstStagePosition()){
                 isElevatorSafe = true;
-		        System.out.println("Elevator is safe: " + isElevatorSafe);
+		        // System.out.println("Elevator is safe: " + isElevatorSafe);
             }
         }
 	}

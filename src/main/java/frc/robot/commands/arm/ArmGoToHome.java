@@ -3,8 +3,9 @@ package frc.robot.commands.arm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
-import frc.robot.subsystems.Arm.ArmSide;
+import frc.robot.subsystems.Arm.ArmPistonState;
 
 /**
  *
@@ -24,9 +25,10 @@ public class ArmGoToHome extends Command {
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move to home");
-        } else {
-            System.out.println("Not allowed to move to home");
+            // System.out.println("Allowed to move to home");
+            Robot.arm.setArmPiston(ArmPistonState.RELEASE);
+    } else {
+            // System.out.println("Not allowed to move to home");
         }
     }
 
@@ -47,7 +49,7 @@ public class ArmGoToHome extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
-        Robot.arm.setArmSide(ArmSide.SAME);
+        Robot.arm.setArmPiston(ArmPistonState.BRAKE);
         Robot.arm.getMasterTalon().set(ControlMode.PercentOutput,0);
     }
 

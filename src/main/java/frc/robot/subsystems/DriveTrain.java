@@ -34,6 +34,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 	private double m_moveInput = Constants.m_moveInput;
 	private double m_steerInput = Constants.m_steerInput;
+	private double desiredSpeed = 0.4;
 
 	// NavX
 
@@ -174,5 +175,13 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 	public static void setRunning(boolean isRunning) {
 		DriveTrain.isRunning = isRunning;
+	}
+
+	public double getDesiredSpeed(){
+		return this.desiredSpeed;
+	}
+
+	public void setDesiredSpeed(double speed){
+		this.desiredSpeed = speed;
 	}
 }

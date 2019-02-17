@@ -1,6 +1,7 @@
 package frc.robot.commands.arm;
 
 import frc.robot.*;
+import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Arm.ArmSide;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -27,9 +28,10 @@ public class ArmGoToBackCargo extends Command {
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move");
+            // System.out.println("Allowed to move");
+            Robot.arm.setArmPiston(ArmPistonState.RELEASE);
         } else {
-            System.out.println("Not allowed to move");
+            // System.out.println("Not allowed to move");
         }
     }
 
@@ -50,7 +52,7 @@ public class ArmGoToBackCargo extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
-        Robot.arm.setArmSide(ArmSide.SAME);
+        Robot.arm.setArmPiston(ArmPistonState.BRAKE);
     }
 
     // Called when another command which requires one or more of the same

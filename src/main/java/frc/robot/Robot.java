@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -55,12 +56,12 @@ public class Robot extends TimedRobot {
 		arm = Arm.getInstance();
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
+		CameraServer.getInstance().startAutomaticCapture();
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
 		comp = new Compressor();
 		setupAutonChooser();
-		
 		elevator.elevatorLead.setSelectedSensorPosition(4000);
 		arm.setStartConfigAngle();
 	}

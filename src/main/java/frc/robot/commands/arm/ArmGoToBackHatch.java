@@ -2,7 +2,7 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Arm.ArmSide;
+import frc.robot.subsystems.Arm.ArmPistonState;
 
 /**
  *
@@ -22,9 +22,10 @@ public class ArmGoToBackHatch extends Command {
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move");
+            // System.out.println("Allowed to move");
+            Robot.arm.setArmPiston(ArmPistonState.RELEASE);
         } else {
-            System.out.println("Not allowed to move");
+            // System.out.println("Not allowed to move");
         }
     }
 
@@ -45,7 +46,7 @@ public class ArmGoToBackHatch extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
-        Robot.arm.setArmSide(ArmSide.SAME);
+        Robot.arm.setArmPiston(ArmPistonState.BRAKE);
     }
 
     // Called when another command which requires one or more of the same

@@ -15,6 +15,8 @@ import frc.robot.commands.ScoreBottomHeight;
 import frc.robot.commands.ScoreHatch;
 import frc.robot.commands.ScoreMiddleHeight;
 import frc.robot.commands.ScoreTopHeight;
+import frc.robot.commands.SetDriveSpeedNormal;
+import frc.robot.commands.SetDriveSpeedSlow;
 import frc.robot.commands.arm.ArmGoToBackCargo;
 import frc.robot.commands.arm.ArmGoToDrivingPosition;
 import frc.robot.commands.arm.ArmGoToRest;
@@ -37,8 +39,11 @@ public class OI {
 
 		// DRIVER CONTROLS
 
-		JoystickButton armReload = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
-		armReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
+		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
+		setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
+
+		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
+		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
@@ -49,11 +54,14 @@ public class OI {
 		// OPERATOR CONTROLS
 		DPadButton intakeOut = new DPadButton(m_operatorGamepad, DPadButton.Direction.LEFT);
 		intakeOut.whileHeld(new IntakeSpeed(-.6));
-		intakeOut.whenReleased(new IntakeSpeedOff());		
+		intakeOut.whenReleased(new IntakeSpeed(-.35));		
 		
 		DPadButton intakeIn = new DPadButton(m_operatorGamepad, DPadButton.Direction.RIGHT);
 		intakeIn.whileHeld(new IntakeSpeed(.45));
-		intakeIn.whenReleased(new IntakeSpeed(.25));		
+		intakeIn.whenReleased(new IntakeSpeed(.25));	
+		
+		DPadButton intakeOff = new DPadButton(m_operatorGamepad, DPadButton.Direction.DOWN);
+		intakeOff.whenPressed(new IntakeSpeedOff());
 		
 		DPadButton intakeHold = new DPadButton(m_operatorGamepad,DPadButton.Direction.UP);
 		intakeHold.whenPressed(new ArmGoToDrivingPosition());

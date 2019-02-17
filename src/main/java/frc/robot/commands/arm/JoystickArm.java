@@ -2,6 +2,7 @@ package frc.robot.commands.arm;
 
 import frc.robot.*;
 import frc.robot.subsystems.Arm.ArmControlMode;
+import frc.robot.subsystems.Arm.ArmPistonState;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -10,7 +11,11 @@ public class JoystickArm extends Command {
 
 	@Override
     protected boolean isFinished() {
-        return false;
+        return true;
+    }
+
+    protected void end(){
+        Robot.arm.setArmPiston(ArmPistonState.BRAKE);
     }
 
     public JoystickArm(){
@@ -19,7 +24,7 @@ public class JoystickArm extends Command {
     
 
     public void initialize(){
-        
+        Robot.arm.setArmPiston(ArmPistonState.RELEASE);
     }
 
     @Override

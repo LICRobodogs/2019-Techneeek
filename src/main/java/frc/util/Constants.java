@@ -34,8 +34,8 @@ public class Constants {
 
 
 	// PNEUMATICS
-	public static final int BRAKE_DEPLOY_PCM_ID = 4;
-	public static final int BRAKE_RELEASE_PCM_ID = 5;
+	public static final int BRAKE_DEPLOY_PCM_ID = 5;
+	public static final int BRAKE_RELEASE_PCM_ID = 4;
 
 	public static final int LEFT_SUCTION_PCM_ID = 0;
 	public static final int RIGHT_SUCTION_PCM_ID = 1;
@@ -90,9 +90,9 @@ public class Constants {
     public static final int HATCH_LEVEL2_SETPOINT = 26000;
     public static final int HATCH_LEVEL3_SETPOINT = 50000;
 
-	public static final int CARGO_LEVEL1_SETPOINT = 9000;
-    public static final int CARGO_LEVEL2_SETPOINT = 30000;
-    public static final int CARGO_LEVEL3_SETPOINT = 48000;
+	public static final int CARGO_LEVEL1_SETPOINT = 9500;
+	public static final int CARGO_LEVEL2_SETPOINT = 33500;
+    public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
     //DT PID
     public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
