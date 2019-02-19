@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ArmGoToBackCargo extends Command {
 
     private int backCargoPosition = Robot.arm.getBackCargoPosition();
-    private boolean allowedToMove = false;
+    private boolean allowedToMove = true;
 
     public ArmGoToBackCargo() {
         requires(Robot.arm);
@@ -24,7 +24,8 @@ public class ArmGoToBackCargo extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        allowedToMove = Robot.arm.setTargetPosition(backCargoPosition);// Robot.wrist.getUpwardLimit() <
+        setTimeout(3);
+        Robot.arm.setTargetPosition(backCargoPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
@@ -38,6 +39,7 @@ public class ArmGoToBackCargo extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (allowedToMove) {
+            System.out.println("Going to back cargo");
 			Robot.arm.motionMagicControl();
 	    }
     }

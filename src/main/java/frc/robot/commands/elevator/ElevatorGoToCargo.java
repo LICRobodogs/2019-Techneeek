@@ -22,7 +22,7 @@ public class ElevatorGoToCargo extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		setTimeout(3);
-        	Robot.elevator.setTargetPosition(cargoLevel);
+        Robot.elevator.setTargetPosition(cargoLevel);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

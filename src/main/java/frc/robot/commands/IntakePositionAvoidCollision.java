@@ -22,7 +22,7 @@ public class IntakePositionAvoidCollision extends ConditionalCommand {
     private static class SwitchSideAndGoToIntake extends CommandGroup {
         public SwitchSideAndGoToIntake() {
             addSequential(new PreventElevatorCollision());
-            addSequential(new ArmGoToHome());
+            addSequential(new ArmGoToHome(true));
             addSequential(new WaitCommand(0.25));
             addSequential(new ElevatorGoToIntake());
         }

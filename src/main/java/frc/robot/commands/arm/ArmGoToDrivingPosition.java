@@ -23,6 +23,7 @@ public class ArmGoToDrivingPosition extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        setTimeout(3);
         allowedToMove = Robot.arm.setTargetPosition(drivingPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 

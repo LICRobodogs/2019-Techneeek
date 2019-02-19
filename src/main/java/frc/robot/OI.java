@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.InternalButton;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -30,19 +32,19 @@ import frc.util.Constants;
 public class OI {
 	private static OI instance;
 
-	private Ps4_Controller m_driverGamepad;
+	private XboxController m_driverGamepad;
 	private GamePad m_operatorGamepad;
 
 	private OI() {
-		m_driverGamepad = Ps4_Controller.getInstance();
+		m_driverGamepad = new XboxController(0);
 		m_operatorGamepad = GamePad.getInstance();
 
 		// DRIVER CONTROLS
 
-		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
+		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
 		setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
 
-		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
+		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad, Constants.RIGHT_BUMPER_BUTTON);
 		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
@@ -134,7 +136,7 @@ public class OI {
 
 	}
 
-	public Ps4_Controller getDriverGamepad() {
+	public XboxController getDriverGamepad() {
 		return m_driverGamepad;
 	}
 
@@ -143,11 +145,13 @@ public class OI {
 	}
 	
 	public double getMoveInput() {
-		return getDriverGamepad().xSpeed();
+		return getDriverGamepad().getTriggerAxis(Hand.kLeft) - getDriverGamepad().getTriggerAxis(Hand.kRight);
+		// return 0;
 	}
 	
 	public double getSteerInput() {
-		return getDriverGamepad().zRotation();
+		return -getDriverGamepad().getRawAxis(0);
+		// return 0;
 	}
 
 	public static OI getInstance() {

@@ -52,7 +52,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int restPosition = 950;
 	private int safePosition = 1000;
 	private int drivingPosition = 950;
-	private int maxUpTravelPosition = 1600;
+	private int maxUpTravelPosition = 1700;
 	private int collectPosition = 350;
 	private int frontHatchPosition = 100;
 	private int backHatchPosition = 1500;
@@ -70,7 +70,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
 
-	private MotionParameters upMotionParameters = new MotionParameters(1000, 1000, upGains);
+	private MotionParameters upMotionParameters = new MotionParameters(2000, 2000, upGains);
 	private MotionParameters downMotionParameters = new MotionParameters(500, 500, downGains);
 	
 	public double mAngle;
@@ -343,6 +343,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public boolean isValidPosition(int position) {
 		return (position <= upPositionLimit && position >= downPositionLimit);
+		// return true;
 	}
 
 	public void resetArmEncoder() {

@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
 	public void updateStatus() {
 		arm.updateStatus(operationMode);
 		// driveTrain.updateStatus(operationMode);
+		intake.updateStatus(operationMode);
 	}
 
 	public void setupAutonChooser() {

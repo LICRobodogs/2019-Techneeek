@@ -38,7 +38,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int autoSwitchPostion = 20000;
 	private int topOfFirstStagePosition = 32000;
 	private int minimumDunkHeight = 26500;
-	private int dunkPosition = 33500;
+	private int dunkPosition = 33000;
 	private int climbPosition = 48000;
 	private int maxUpTravelPosition = 54000;
 

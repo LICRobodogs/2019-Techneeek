@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
@@ -104,9 +105,22 @@ public class Intake extends Subsystem implements ControlLoopable {
 
 	@Override
 	public void controlLoopUpdate() {
-		// if(Math.abs(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis())>0&&innerWheelPiston.get()==Value.kReverse)
-		// setIntakePiston(IntakePistonState.IN);
-		// setSpeed(0.6*(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis()));
+		// if(getSuccState() == IntakeState.SUCC_IN){
+		// 	if(leftSuction.getOutputCurrent()>=0.375 && rightSuction.getOutputCurrent()>0.24){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 1);
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 1);
+		// 	}else if(leftSuction.getOutputCurrent()>=0.38){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0.5);				
+		// 	}else if(rightSuction.getOutputCurrent()>=0.24){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0.25);
+		// 	}else{
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);				
+		// 	}
+		// }else{
+		// 	Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+		// 	Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);
+		// }
 	}
 
 	@Override

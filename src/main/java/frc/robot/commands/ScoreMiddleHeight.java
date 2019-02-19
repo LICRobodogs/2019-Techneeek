@@ -18,7 +18,7 @@ public class ScoreMiddleHeight extends ConditionalCommand {
 
     private static class SwitchSideAndGoToMiddleHeight extends ConditionalCommand {
         public SwitchSideAndGoToMiddleHeight(ArmSide side) {
-            super(new PreventElevatorCollision((side==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2)), new PreventElevatorCollision((side==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2)));
+            super(new PreventElevatorCollision((Robot.arm.getDesiredSide()==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2)), new PreventElevatorCollision((Robot.arm.getDesiredSide()==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2)));
             requires(Robot.intake);
         }
 
@@ -30,7 +30,7 @@ public class ScoreMiddleHeight extends ConditionalCommand {
 
     private static class GoToMiddleHeight extends ConditionalCommand {
         public GoToMiddleHeight(ArmSide side) {
-            super((side==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2), (side==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2));
+            super((Robot.arm.getDesiredSide()==ArmSide.FRONT) ? new ScoreFrontHatch(2) : new ScoreBackHatch(2), (Robot.arm.getDesiredSide()==ArmSide.FRONT) ? new ScoreFrontCargo(2) : new ScoreBackCargo(2));
             requires(Robot.intake);
         }
 

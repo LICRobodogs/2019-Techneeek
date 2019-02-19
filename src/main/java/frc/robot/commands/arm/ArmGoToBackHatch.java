@@ -10,7 +10,7 @@ import frc.robot.subsystems.Arm.ArmPistonState;
 public class ArmGoToBackHatch extends Command {
 
     private int backHatchPosition = Robot.arm.getBackHatchPosition();
-    private boolean allowedToMove = false;
+    private boolean allowedToMove = true;
 
     public ArmGoToBackHatch() {
         requires(Robot.arm);
@@ -18,7 +18,8 @@ public class ArmGoToBackHatch extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        allowedToMove = Robot.arm.setTargetPosition(backHatchPosition);// Robot.wrist.getUpwardLimit() <
+        setTimeout(3);
+        Robot.arm.setTargetPosition(backHatchPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
@@ -32,6 +33,7 @@ public class ArmGoToBackHatch extends Command {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (allowedToMove) {
+            System.out.println("Going to back hatch");
 			Robot.arm.motionMagicControl();
 	    }
     }

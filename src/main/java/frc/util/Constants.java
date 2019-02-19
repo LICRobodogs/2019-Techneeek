@@ -82,16 +82,16 @@ public class Constants {
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
 	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
 	// public static final int START_CONFIG_ANGLE = 1800; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
-	public static final double ARM_HOLDING_PWM = 0.16;
+	public static final double ARM_HOLDING_PWM = 0.26;
 
 	//Elevator
 	public static final double ELEVATOR_NATIVE_TO_ANGLE_FACTOR = (100 / 12) * (84 / 14) * (84 / 32) * (20 / 32) * (16 / 18);
     public static final int HATCH_LEVEL1_SETPOINT = 4000;
-    public static final int HATCH_LEVEL2_SETPOINT = 26000;
-    public static final int HATCH_LEVEL3_SETPOINT = 50000;
+    public static final int HATCH_LEVEL2_SETPOINT = 26500;
+    public static final int HATCH_LEVEL3_SETPOINT = 49000;
 
 	public static final int CARGO_LEVEL1_SETPOINT = 9500;
-	public static final int CARGO_LEVEL2_SETPOINT = 33500;
+	public static final int CARGO_LEVEL2_SETPOINT = 31000;
     public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
     //DT PID

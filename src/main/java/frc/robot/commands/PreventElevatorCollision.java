@@ -27,6 +27,7 @@ public class PreventElevatorCollision extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
+		setTimeout(3);
 		Robot.elevator.setTargetPosition(Robot.elevator.getDunkPosition());
 	}
 

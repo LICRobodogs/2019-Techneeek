@@ -18,11 +18,12 @@ public class ArmGoToFrontHatch extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+        setTimeout(3);
         allowedToMove = Robot.arm.setTargetPosition(frontHatchPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            System.out.println("Allowed to move");
+            System.out.println("Allowed to move to front hatch");
             Robot.arm.setArmPiston(ArmPistonState.RELEASE);
     } else {
             System.out.println("Not allowed to move");

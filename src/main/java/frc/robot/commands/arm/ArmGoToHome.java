@@ -14,20 +14,27 @@ public class ArmGoToHome extends Command {
 
     private int collect = Robot.arm.getCollectPosition();
     private boolean allowedToMove = false;
+    private boolean engageBrake = false;
 
     public ArmGoToHome() {
         requires(Robot.arm);
     }
 
+    public ArmGoToHome(boolean brake) {
+        requires(Robot.arm);
+        this.engageBrake = brake;
+    }
+
     // Called just before this Command runs the first time
     protected void initialize() {
+        setTimeout(3);
         allowedToMove = Robot.arm.setTargetPosition(collect);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
             // System.out.println("Allowed to move to home");
             Robot.arm.setArmPiston(ArmPistonState.RELEASE);
-    } else {
+        } else {
             // System.out.println("Not allowed to move to home");
         }
     }
@@ -49,6 +56,7 @@ public class ArmGoToHome extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
+        new WaitCommand("before braking",3);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
         Robot.arm.getMasterTalon().set(ControlMode.PercentOutput,0);
     }
