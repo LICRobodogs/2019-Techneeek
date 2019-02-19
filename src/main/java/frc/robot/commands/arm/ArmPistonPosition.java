@@ -8,7 +8,6 @@ public class ArmPistonPosition extends Command {
 	private ArmPistonState state;
 
 	public ArmPistonPosition(ArmPistonState state) {
-		requires(Robot.arm);
 		this.state = state;
 	}
 

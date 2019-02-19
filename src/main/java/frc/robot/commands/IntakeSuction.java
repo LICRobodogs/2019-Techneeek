@@ -8,7 +8,6 @@ public class IntakeSuction extends Command {
 	private IntakeState state;
 
 	public IntakeSuction(IntakeState state) {
-		requires(Robot.intake);
 		this.state = state;
 	}
 

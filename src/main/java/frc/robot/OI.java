@@ -153,8 +153,10 @@ public class OI {
 	}
 	
 	public double getSteerInput() {
-		return -getDriverGamepad().getRawAxis(0);
-		// return 0;
+		if(Math.abs(getDriverGamepad().getRawAxis(0)) > 0.1){
+			return -getDriverGamepad().getRawAxis(0);
+		}
+		return 0;
 	}
 
 	public static OI getInstance() {
