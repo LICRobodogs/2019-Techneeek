@@ -22,12 +22,12 @@ public class PreventElevatorCollision extends Command {
 	public PreventElevatorCollision(Command next) {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.elevator);
-		nextCommand = next;
+		this.nextCommand = next;
 	}
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		setTimeout(3);
+		super.setTimeout(5);
 		Robot.elevator.setTargetPosition(Robot.elevator.getDunkPosition());
 	}
 

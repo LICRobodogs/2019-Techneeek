@@ -18,7 +18,7 @@ public class ArmGoToBackHatch extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(3);
+        super.setTimeout(5);
         Robot.arm.setTargetPosition(backHatchPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 

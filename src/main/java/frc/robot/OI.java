@@ -41,11 +41,14 @@ public class OI {
 
 		// DRIVER CONTROLS
 
-		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
-		setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
+		// JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
+		// setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
 
-		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad, Constants.RIGHT_BUMPER_BUTTON);
-		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
+		// JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad, Constants.RIGHT_BUMPER_BUTTON);
+		// setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
+
+		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
+		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));

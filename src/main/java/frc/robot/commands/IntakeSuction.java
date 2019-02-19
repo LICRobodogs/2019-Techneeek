@@ -16,7 +16,6 @@ public class IntakeSuction extends Command {
 	protected void initialize() {
 		// System.out.println("suction " + state.toString());
 		Robot.intake.setSuction(state);
-		System.out.println("intake suction " + Robot.intake.getSuccState().toString());
 
 	}
 

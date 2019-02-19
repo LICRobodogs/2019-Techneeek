@@ -20,7 +20,7 @@ public class ElevatorGoToIntake extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		setTimeout(3);
+		super.setTimeout(5);
 		Robot.elevator.setTargetPosition(Robot.elevator.getCollectPosition());
 	}
 

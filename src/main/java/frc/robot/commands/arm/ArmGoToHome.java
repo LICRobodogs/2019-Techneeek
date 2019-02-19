@@ -27,7 +27,7 @@ public class ArmGoToHome extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(3);
+        super.setTimeout(5);
         allowedToMove = Robot.arm.setTargetPosition(collect);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
@@ -56,9 +56,10 @@ public class ArmGoToHome extends Command {
     // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
-        new WaitCommand("before braking",3);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
         Robot.arm.getMasterTalon().set(ControlMode.PercentOutput,0);
+        new WaitCommand("before braking",3).start();
+        Robot.arm.setArmPiston(ArmPistonState.RELEASE);
     }
 
     // Called when another command which requires one or more of the same

@@ -4,7 +4,10 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
+import frc.robot.commands.arm.ArmGoToFrontCargo;
+import frc.robot.commands.arm.ArmGoToFrontCargo;
 import frc.robot.commands.arm.ArmGoToHome;
+import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.elevator.ElevatorGoToIntake;
 import frc.robot.subsystems.Arm.ArmSide;
 
@@ -16,15 +19,17 @@ public class IntakePositionAvoidCollision extends ConditionalCommand {
 
     @Override
     protected boolean condition() {
-        return Robot.arm.getSide() != Robot.arm.getDesiredSide();
+        return Robot.arm.getDesiredSide() == ArmSide.FRONT && Robot.arm.getSide() == ArmSide.BACK;
     }
 
     private static class SwitchSideAndGoToIntake extends CommandGroup {
         public SwitchSideAndGoToIntake() {
             addSequential(new PreventElevatorCollision());
-            addSequential(new ArmGoToHome(true));
+            addSequential(new ArmGoToFrontCargo());
             addSequential(new WaitCommand(0.25));
             addSequential(new ElevatorGoToIntake());
+            addSequential(new ArmGoToHome());
+            addSequential(new ArmToggleFront());
         }
     }
 

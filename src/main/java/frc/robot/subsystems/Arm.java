@@ -52,12 +52,12 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int restPosition = 950;
 	private int safePosition = 1000;
 	private int drivingPosition = 950;
-	private int maxUpTravelPosition = 1700;
+	private int maxUpTravelPosition = 1850;
 	private int collectPosition = 350;
 	private int frontHatchPosition = 100;
-	private int backHatchPosition = 1500;
+	private int backHatchPosition = 1780;
 	private int frontCargoPosition = 560;
-	private int backCargoPosition = 1300;
+	private int backCargoPosition = 1780;
 	public int upPositionLimit = maxUpTravelPosition;
 	public int downPositionLimit = homePosition;
 
@@ -65,13 +65,13 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 30;
+	private final static int onTargetThreshold = 20;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
 
 	private MotionParameters upMotionParameters = new MotionParameters(2000, 2000, upGains);
-	private MotionParameters downMotionParameters = new MotionParameters(500, 500, downGains);
+	private MotionParameters downMotionParameters = new MotionParameters(1000, 1000, downGains);
 	
 	public double mAngle;
 
@@ -430,7 +430,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	@Override
 	public void periodic() {
-		if(getCurrentPosition() < 1000){
+		if(getCurrentPosition() < 1100){
 			armSide = ArmSide.FRONT;
 		}else{
 			armSide = ArmSide.BACK;

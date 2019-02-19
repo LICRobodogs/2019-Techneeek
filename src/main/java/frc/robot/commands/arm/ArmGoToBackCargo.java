@@ -24,7 +24,7 @@ public class ArmGoToBackCargo extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(3);
+        super.setTimeout(5);
         Robot.arm.setTargetPosition(backCargoPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 

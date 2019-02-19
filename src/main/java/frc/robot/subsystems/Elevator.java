@@ -42,17 +42,13 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private int climbPosition = 48000;
 	private int maxUpTravelPosition = 54000;
 
-	private int scaleMiddlePosition = 38500;
-	private int scaleBottomPosition = 35000;
-	private int scaleTopPosition = 51000;
-
 	public final static int ELEVATOR_UP = 0;
 	public final static int ELEVATOR_DOWN = 1;
 
 	public int upPositionLimit = maxUpTravelPosition;
 	public int downPositionLimit = 3500;
 	private int targetPosition = 0;
-	private double arbitraryFeedForward = 0.09;
+	private double arbitraryFeedForward = 0.07;
 
 	private final static int onTargetThreshold = 700; // changed to 500 from 100 for testing on practice field
     
@@ -89,7 +85,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		this.elevatorLead.configMotionParameters(downMotionParameters);
 
 		this.elevatorLead.setNeutralMode(NeutralMode.Brake);
-		this.elevatorLead.configClosedloopRamp(0.25);
+		this.elevatorLead.configClosedloopRamp(0.125);
 		this.elevatorLead.configOpenloopRamp(0.5);
 
 		this.elevatorLead.configVoltageCompSaturation(11.5);
@@ -223,18 +219,6 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
 	public int getMaxUpTravelPosition() {
 		return this.maxUpTravelPosition;
-	}
-
-	public int getScaleMiddlePosition() {
-		return this.scaleMiddlePosition;
-	}
-
-	public int getScaleBottomPosition() {
-		return this.scaleBottomPosition;
-	}
-
-	public int getScaleTopPosition() {
-		return this.scaleTopPosition;
 	}
 
 	public double getArbitraryFeedForward() {

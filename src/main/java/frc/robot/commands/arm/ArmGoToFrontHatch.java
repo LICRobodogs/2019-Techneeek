@@ -18,7 +18,7 @@ public class ArmGoToFrontHatch extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(3);
+        super.setTimeout(5);
         allowedToMove = Robot.arm.setTargetPosition(frontHatchPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 

@@ -20,7 +20,7 @@ public class ArmGoToFrontCargo extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-        setTimeout(3);
+        super.setTimeout(5);
         allowedToMove = Robot.arm.setTargetPosition(frontCargoPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
