@@ -70,7 +70,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
 
-	private MotionParameters upMotionParameters = new MotionParameters(2000, 2000, upGains);
+	private MotionParameters upMotionParameters = new MotionParameters(1000, 1000, upGains);
 	private MotionParameters downMotionParameters = new MotionParameters(1000, 1000, downGains);
 	
 	public double mAngle;

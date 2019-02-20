@@ -17,7 +17,7 @@ public class SetDriveSpeedSlow extends Command {
     
 
     public void initialize(){
-        Robot.driveTrain.setDesiredSpeed(0.2);
+        Robot.driveTrain.setDesiredSpeed(0.35);
     }
 
     public void execute() {

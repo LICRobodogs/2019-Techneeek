@@ -81,7 +81,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		comp.stop();
+		comp.start();
 		// autonomousCommand.cancel();
 		Scheduler.getInstance().removeAll();
 		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
