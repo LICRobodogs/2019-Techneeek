@@ -114,9 +114,12 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 		m_drive.curvatureDrive(m_moveInput, m_steerInput, true);
 	}
-	
+	public void drive(double steer) {
+		drive(0.5*OI.getInstance().getMoveInput(), steer);
+	}
 	public void drive(double move, double steer) {
-		m_drive.curvatureDrive(move, -steer, true);
+		// m_drive.curvatureDrive(move, -steer, true); //dont remember why steer is negated?
+		m_drive.curvatureDrive(move, steer, true);
 	}
 
 	@Override

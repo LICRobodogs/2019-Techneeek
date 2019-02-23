@@ -175,8 +175,20 @@ public class Constants {
 	public static final int LEFT_AXIS_UP_TRIGGER = 6;
 	public static final int LEFT_AXIS_DOWN_TRIGGER = 7;
 	public static final int LEFT_AXIS_RIGHT_TRIGGER = 8;
-    public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
-    
+	public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
+	
+
+	//GameField
+	public static final double TARGET_PORT_HEIGHT = 39.125; //inches | front of rocket ship
+	public static final double TARGET_HATCH_HEIGHT = 31.5; //inches  | rocket side && loading station && cargo ship
+	public static final double TARGET_PORT_RANGE = 1.0; // inches away from target for scoring
+	public static final double TARGET_HATCH_RANGE = 1.0; // inches away from target for scoring
+	
+	//LimeLight
+	public static final double CAMERA_HEIGHT = 0.0;
+	public static final double CAMERA_MOUNT_ANGLE = 0.0;
+	public static final double kp_ll = 1.0;
+
 
     
 }
