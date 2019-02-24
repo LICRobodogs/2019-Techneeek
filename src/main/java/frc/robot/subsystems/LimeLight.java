@@ -14,12 +14,6 @@ public class LimeLight {
     private NetworkTable table;
     private NetworkTableEntry tx, ty, ta, ts, tv;
     private static LimeLight instance = null;
-    public final double HORIZONTAL_FOV = 54; // degrees
-    public final double VERTICAL_FOV = 41; // degrees
-    public double vpH, vpW;
-    private Coordinate raw;
-    private Coordinate normalized;
-    private Coordinate target;
 
     private LimeLight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -28,11 +22,6 @@ public class LimeLight {
         ta = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
         ts = table.getEntry("ts"); // Target Skew, not sure of value range
         tv = table.getEntry("tv"); // Whether the limelight has any valid targets (0 or 1)
-        vpH = getViewPlaneHeight();
-        vpW = getViewPlaneWidth();
-        raw = new Coordinate();
-        normalized = new Coordinate();
-        target = new Coordinate();
     }
 
     public static LimeLight getInstance() {
@@ -40,9 +29,10 @@ public class LimeLight {
             instance = new LimeLight();
         return instance;
     }
-
+/**
+ * post tv, ts, tx, & ty data to Smart Dashboard from network table
+ */
     public void getData() {
-        // read values periodically
         double v = tv.getDouble(0.0);
         double s = ts.getDouble(0.0);
         double x = tx.getDouble(0.0);
@@ -51,33 +41,15 @@ public class LimeLight {
         setData(v, s, x, y, area);
 
     }
-
+/**
+ * // post to smart dashboard periodically
+ */
     public void setData(double v, double s, double x, double y, double area) {
-        // post to smart dashboard periodically
         SmartDashboard.putNumber("Valid Target", v);
         SmartDashboard.putNumber("LimelightSkew", s);
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
-    }
-
-    // public double xAngleToTarget() {
-    // double nX = tx.getDouble(0.0);
-    // }
-    public double getViewPlaneWidth() {
-        return 2.0 * Math.tan(this.HORIZONTAL_FOV / 2);
-    }
-
-    public double getViewPlaneHeight() {
-        return 2.0 * Math.tan(this.VERTICAL_FOV / 2);
-    }
-
-    public double xViewPlan(double normalizedX) {
-        return (vpW / 2) * normalizedX;
-    }
-
-    public double yViewPlane(double normalizedY) {
-        return (vpH / 2) * normalizedY;
     }
 
     /**
@@ -161,8 +133,9 @@ public class LimeLight {
 
     /**
      * drives to robots desired location based on distance to target
-     * @param desired_distance inches of distance desired 
-     * @param current_distance inches of current distance  
+     * 
+     * @param desired_distance inches of distance desired
+     * @param current_distance inches of current distance
      */
     public void getInRange(double desired_distance, double current_distance) {
         double KpDistance = 0.1; // Proportional control constant for distance
@@ -204,8 +177,24 @@ public class LimeLight {
         DriveTrain.getInstance().drive(distance_adjust, steering_adjust);
     }
 
+    public double xAngle_toPixelLocation(PixelCoord pixel) {
+        Coordinate coord = pixel.getNormalized().getViewPlaneCoordinates();
+        return Math.atan2(1, coord.getX());
+    }
+
+    public double yAngle_toPixelLocation(PixelCoord pixel) {
+        Coordinate coord = pixel.getNormalized().getViewPlaneCoordinates();
+        return Math.atan2(1, coord.getY());
+    }
+
 }
 
+/**
+ * Helper class in case we need to start translating coordinates or mapping
+ * coordinates onto virtual plane --Purpose of 3 classes is remapping raw pixels
+ * into coordinate locations then determining their location on a virtual plan
+ * and uses the two computed coordinate locations to determine angles
+ */
 class Coordinate {
     private double x, y;
 
@@ -237,8 +226,61 @@ class Coordinate {
         this.x = x;
         this.y = y;
     }
+}
 
-    public double normX() {
-        return (1 / 60) * (this.x - 159.5);
+/**
+ * pixel coordinates, 0,0 is the upper-left, positive down and to the righ
+ */
+class PixelCoord extends Coordinate {
+    public PixelCoord(double x, double y) {
+        super(x, y);
+    }
+    /**
+     * Normalize the X coordinate with respect to 320 horizontal fov
+     */
+    public double getX_normalized() {
+        return (1 / 160) * (getX() - ((Constants.HORIZONTAL_FOV - 1) / 2));
+    }
+
+    /**
+     * Normalize the Y coordinate with respect to 240 vertical fov
+     */
+    public double getY_normalized() {
+        return (1 / 120) * (getY() - ((Constants.VERTICAL_FOV - 1) / 2));
+    }
+
+    public NormalCoordinate getNormalized() {
+        return new NormalCoordinate(getX_normalized(), getY_normalized());
+    }
+}
+
+/**
+ * normalized pixel coordinates, 0,0 is the center, positive right and up
+ */
+class NormalCoordinate extends Coordinate {
+    public NormalCoordinate(double x, double y) {
+        super(x, y);
+    }
+
+    public double getX_ViewPlaneCoord() {
+        double x = getViewPlaneWidth() / 2 * getX();
+        return x;
+    }
+
+    public double getY_ViewPlaneCoord() {
+        double y = getViewPlaneHeight() / 2 * getY();
+        return y;
+    }
+
+    public Coordinate getViewPlaneCoordinates() {
+        return new Coordinate(getX_ViewPlaneCoord(), getY_ViewPlaneCoord());
+    }
+
+    private double getViewPlaneWidth() {
+        return 2.0 * Math.tan(Constants.HORIZONTAL_FOV / 2);
+    }
+
+    private double getViewPlaneHeight() {
+        return 2.0 * Math.tan(Constants.VERTICAL_FOV / 2);
     }
 }
