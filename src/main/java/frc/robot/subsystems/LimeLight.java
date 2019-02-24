@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.util.Constants;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -10,18 +12,55 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * Singleton Class LimeLight that instantiates the camera & provides
  * functionality
  */
-public class LimeLight {
+public class LimeLight extends Subsystem{
     private NetworkTable table;
-    private NetworkTableEntry tx, ty, ta, ts, tv;
+    public NetworkTableEntry tX_offset, tY_offset, tArea, tSkew, tValid, tLatency, tShort_length, tLong_length, tHor_length, tVert_length, getPipe, camtran;
+    private NetworkTableEntry ledMode, camMode, setPipe, streamMode, snapshot;
     private static LimeLight instance = null;
+    private static final double accepted_error_angle = 0.5;
+    private static final double accepted_error_distance = 0.5;
+
+    public static enum LED {
+        DEFAULT, OFF, BLINK, ON
+    }
+
+    public static enum CameraMode {
+        VISION_PROCESSOR, DRIVER_CAMERA
+    }
+
+    public static enum StreamMode {
+        STANDARD, PIP_MAIN, PIP_SECONDARY
+    }
+    public static enum TargetType {
+        PORT, HATCH
+    }
 
     private LimeLight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
-        tx = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
-        ty = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
-        ta = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
-        ts = table.getEntry("ts"); // Target Skew, not sure of value range
-        tv = table.getEntry("tv"); // Whether the limelight has any valid targets (0 or 1)
+        initRetrievableData();
+        initSetableData();
+
+    }
+    private void initRetrievableData() {
+        tValid = table.getEntry("tv"); // Whether the limelight has any valid targets (0 or 1)
+        tX_offset = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
+        tY_offset = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
+        tArea = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
+        tSkew = table.getEntry("ts"); // Target Skew, not sure of value range
+        tLatency = table.getEntry("tl"); //The pipeline’s latency contribution (ms) Add at least 11ms for image capture latency.
+        tShort_length = table.getEntry("tl"); //Sidelength of shortest side of the fitted bounding box (pixels)
+        tLong_length = table.getEntry("tlong"); //Sidelength of longest side of the fitted bounding box (pixels)
+        tHor_length = table.getEntry("thor"); //Horizontal sidelength of the rough bounding box (0 - 320 pixels
+        tVert_length = table.getEntry("tvert"); //Vertical sidelength of the rough bounding box (0 - 320 pixels)
+        getPipe = table.getEntry("getpipe"); // True active pipeline index of the camera (0 .. 9)
+        camtran = table.getEntry("camtran"); // Results of a 3D position solution, 6 numbers: Translation (x,y,y) Rotation(pitch,yaw,roll)
+    }
+    private void initSetableData() {
+        ledMode = table.getEntry("ledMode"); //sets limelights LED state
+        camMode = table.getEntry("camMode"); //sets limelights operation mode
+        setPipe = table.getEntry("pipeline"); //sets limelights current pipeline
+        streamMode = table.getEntry("stream"); // sets limelight's streaming mode
+        snapshot = table.getEntry("snapshot"); //allows snapshots
     }
 
     public static LimeLight getInstance() {
@@ -29,27 +68,104 @@ public class LimeLight {
             instance = new LimeLight();
         return instance;
     }
-/**
- * post tv, ts, tx, & ty data to Smart Dashboard from network table
- */
-    public void getData() {
-        double v = tv.getDouble(0.0);
-        double s = ts.getDouble(0.0);
-        double x = tx.getDouble(0.0);
-        double y = ty.getDouble(0.0);
-        double area = ta.getDouble(0.0);
-        setData(v, s, x, y, area);
 
+    /**
+     * post tv, ts, tx, & ty data to Smart Dashboard from network table
+     */
+    public void getBasicData() {
+        double v = tValid.getDouble(0.0);
+        double s = tSkew.getDouble(0.0);
+        double x = tX_offset.getDouble(0.0);
+        double y = tY_offset.getDouble(0.0);
+        double area = tArea.getDouble(0.0);
+        setData(v, s, x, y, area);
     }
-/**
- * // post to smart dashboard periodically
- */
+    public void getAllData() {
+    }
+    
+	@Override
+	protected void initDefaultCommand() {
+	}
+
+    /**
+     * post to smart dashboard periodically
+     */
     public void setData(double v, double s, double x, double y, double area) {
         SmartDashboard.putNumber("Valid Target", v);
         SmartDashboard.putNumber("LimelightSkew", s);
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+    }
+
+    public void setLEID(LED state) {
+        switch (state) {
+        case DEFAULT:
+        ledMode.setNumber(0);
+            break;
+        case OFF:
+        ledMode.setNumber(1);
+            break;
+        case BLINK:
+        ledMode.setNumber(2);
+            break;
+        case ON:
+        ledMode.setNumber(3);
+            break;
+        default:
+            System.err.println("UNKNOWN LEID STATE PASSED.");
+            break;
+        }
+    }
+    /** 
+     * starts taking 2 snapshots per second
+     */
+    public void startTakingSnapshots() {
+        snapshot.setNumber(1); //two per second
+    }
+    /**
+     * stops taking snapshots
+     */
+    public void stopTakingSnapshots() {
+        snapshot.setNumber(0); //two per second
+    }
+
+    public void switchCameraMode(CameraMode mode) {
+        switch (mode) {
+        case VISION_PROCESSOR:
+            camMode.setNumber(0);
+            break;
+        case DRIVER_CAMERA:
+            camMode.setNumber(1);
+            break;
+        default:
+            System.err.println("ERROR SETTING CAMERA MODE");
+            break;
+        }
+    }
+
+    public void setStream(StreamMode mode) {
+        switch (mode) {
+        case STANDARD:
+            streamMode.setNumber(0);
+            break;
+        case PIP_MAIN:
+            streamMode.setNumber(1);
+            break;
+        case PIP_SECONDARY:
+            streamMode.setNumber(2);
+            break;
+        default:
+            System.err.println("ERROR SETTING STREAM MODE");
+            break;
+        }
+    }
+    public double getPipeline() {
+        return getPipe.getDouble(0);
+    }
+    
+    public void setPipeline(double pipe) {
+        setPipe.setNumber(pipe);
     }
 
     /**
@@ -73,7 +189,7 @@ public class LimeLight {
      */
     public double distanceToHatch() {
         return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
-                ty.getDouble(0.0));
+                tY_offset.getDouble(0.0));
     }
 
     /**
@@ -83,19 +199,16 @@ public class LimeLight {
      */
     public double distanceToPort() {
         return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_PORT_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
-                ty.getDouble(0.0));
+                tY_offset.getDouble(0.0));
     }
 
     /**
      * Spins robot until a target is in view, then centers on it
      */
     public void seekTarget() {
-        if (tv.getDouble(0.0) == 0.0) {
-            // We don't see the target, seek for the target by spinning in place at a safe
-            // speed.
-            DriveTrain.getInstance().drive(0.3);
+        if (tValid.getDouble(0.0) == 0.0) {
+            Robot.driveTrain.drive(0.3);
         } else {
-            // We do see the target, execute aiming code
             aimAtTarget();
         }
     }
@@ -108,16 +221,17 @@ public class LimeLight {
         double min_power = 0.05;
         double min_threshold = 1.0;
         double steering_adjust = 0.0;
-        double xAngle = tx.getDouble(0.0);
+        double xAngle = tX_offset.getDouble(0.0);
         if (Math.abs(xAngle) > min_threshold) {
             steering_adjust = KpAim * xAngle - min_power;
         } else {
             steering_adjust = KpAim * xAngle + min_power;
         }
-        DriveTrain.getInstance().drive(steering_adjust);
+        Robot.driveTrain.drive(steering_adjust);
     }
 
     /**
+     * {@link #getInRange(double, double)}
      * get within a constant distance of a hatch for scoring
      */
     public void getInHatchRange() {
@@ -125,6 +239,7 @@ public class LimeLight {
     }
 
     /**
+     * {@link #getInRange(double, double)}
      * get within a constant distance of port for scoring
      */
     public void getInPortRange() {
@@ -134,14 +249,14 @@ public class LimeLight {
     /**
      * drives to robots desired location based on distance to target
      * 
-     * @param desired_distance inches of distance desired
+     * @param desired_distance inches of distance desired 
      * @param current_distance inches of current distance
      */
     public void getInRange(double desired_distance, double current_distance) {
         double KpDistance = 0.1; // Proportional control constant for distance
         double distance_error = current_distance - desired_distance;
         double driving_adjust = KpDistance * distance_error;
-        DriveTrain.getInstance().setSpeed(driving_adjust, driving_adjust);
+        Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
     }
 
     /**
@@ -150,8 +265,8 @@ public class LimeLight {
      */
     public void getInRange() {
         double KpDistance = 0.1; // Proportional control constant for distance
-        double driving_adjust = KpDistance * ty.getDouble(0.0);
-        DriveTrain.getInstance().setSpeed(driving_adjust, driving_adjust);
+        double driving_adjust = KpDistance * tY_offset.getDouble(0.0);
+        Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
     }
 
     /**
@@ -164,7 +279,7 @@ public class LimeLight {
         double min_threshold = 1.0; // used for angle & distance..for now
 
         double steering_adjust = 0.0;
-        double heading_error = tx.getDouble(0.0);
+        double heading_error = tX_offset.getDouble(0.0);
         double distance_error = distanceToHatch() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
 
         if (Math.abs(heading_error) > min_threshold) {
@@ -174,17 +289,32 @@ public class LimeLight {
         }
         double distance_adjust = KpDistance * distance_error;
 
-        DriveTrain.getInstance().drive(distance_adjust, steering_adjust);
+        Robot.driveTrain.drive(distance_adjust, steering_adjust);
     }
 
     public double xAngle_toPixelLocation(PixelCoord pixel) {
-        Coordinate coord = pixel.getNormalized().getViewPlaneCoordinates();
-        return Math.atan2(1, coord.getX());
+        return angle_toPixelLocation(pixel.getNormalized().getViewPlaneCoordinates().getX());
     }
 
     public double yAngle_toPixelLocation(PixelCoord pixel) {
-        Coordinate coord = pixel.getNormalized().getViewPlaneCoordinates();
-        return Math.atan2(1, coord.getY());
+        return angle_toPixelLocation(pixel.getNormalized().getViewPlaneCoordinates().getY());
+    }
+    public double angle_toPixelLocation(double loc) {
+        return Math.atan2(1, loc);
+    }
+    public boolean isAtTarget(TargetType target) {
+        switch(target) {
+            case HATCH:
+            return distanceToHatch() <= accepted_error_distance;
+            case PORT:
+            return distanceToPort() <= accepted_error_distance;
+            default:
+            System.err.println("INVALID TARGET TYPE PASSED");
+            return true;
+        }
+    }
+    public boolean isAimed() {
+        return tX_offset.getDouble(0.0) <= accepted_error_angle;
     }
 
 }
@@ -235,6 +365,7 @@ class PixelCoord extends Coordinate {
     public PixelCoord(double x, double y) {
         super(x, y);
     }
+
     /**
      * Normalize the X coordinate with respect to 320 horizontal fov
      */

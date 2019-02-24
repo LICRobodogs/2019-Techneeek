@@ -20,6 +20,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LimeLight;
 import frc.util.Constants;
 import frc.util.ControlLooper;
 
@@ -29,6 +30,7 @@ public class Robot extends TimedRobot {
 	public static Arm arm;
 	public static Elevator elevator;
 	public static Compressor comp;
+	public static LimeLight limeLight;
 
 	Command autonomousCommand;
 	public static SendableChooser<Command> autonChooser;
@@ -57,6 +59,7 @@ public class Robot extends TimedRobot {
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
 		CameraServer.getInstance().startAutomaticCapture();
+		limeLight = LimeLight.getInstance();
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
