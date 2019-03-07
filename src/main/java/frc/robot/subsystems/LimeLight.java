@@ -178,7 +178,8 @@ public class LimeLight extends Subsystem{
      * @return distance to a target
      */
     public double distanceToTarget(double h1, double h2, double a1, double a2) {
-        double distance = (h2 - h1) / Math.tan(a1 + a2);
+        double radianAngle = Math.toRadians(a1 + a2);
+        double distance = (h2 - h1) / Math.tan(radianAngle);
         return distance;
     }
 
@@ -408,10 +409,12 @@ class NormalCoordinate extends Coordinate {
     }
 
     private double getViewPlaneWidth() {
-        return 2.0 * Math.tan(Constants.HORIZONTAL_FOV / 2);
+        double radianAngle = Math.toRadians(Constants.HORIZONTAL_FOV / 2);
+        return 2.0 * Math.tan(radianAngle);
     }
 
     private double getViewPlaneHeight() {
-        return 2.0 * Math.tan(Constants.VERTICAL_FOV / 2);
+        double radianAngle = Math.toRadians(Constants.VERTICAL_FOV / 2);
+        return 2.0 * Math.tan(radianAngle);
     }
 }
