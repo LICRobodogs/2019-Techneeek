@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.DriveTrain.DriveTrainControlMode;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.LimeLight.LED;
 import frc.util.Constants;
 import frc.util.ControlLooper;
 
@@ -54,19 +54,19 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		driveTrain = DriveTrain.getInstance();
-		intake = Intake.getInstance();
-		arm = Arm.getInstance();
-		elevator = Elevator.getInstance();
+		// intake = Intake.getInstance();
+		// arm = Arm.getInstance();
+		// elevator = Elevator.getInstance();
 		oi = OI.getInstance();
 		CameraServer.getInstance().startAutomaticCapture();
 		limeLight = LimeLight.getInstance();
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
-		comp = new Compressor();
-		setupAutonChooser();
-		elevator.elevatorLead.setSelectedSensorPosition(4000);
-		arm.setStartConfigAngle();
+		// comp = new Compressor();
+		// setupAutonChooser();
+		// elevator.elevatorLead.setSelectedSensorPosition(4000);
+		// arm.setStartConfigAngle();
 	}
 
 	@Override
@@ -84,8 +84,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		comp.start();
+		// comp.start();
 		// autonomousCommand.cancel();
+		limeLight.setLEID(LED.ON);
 		Scheduler.getInstance().removeAll();
 		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
 		// arm.setControlMode(ArmControlMode.MANUAL);
@@ -100,6 +101,8 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledInit() {
+		limeLight.setLEID(LED.BLINK);
+		limeLight.setLEID(LED.OFF);
 		// arm.resetArmEncoder();
 		Scheduler.getInstance().removeAll();
 		// intake.setSuction(Intake.IntakeState.SUCC_OUT);
@@ -115,9 +118,10 @@ public class Robot extends TimedRobot {
 	}
 
 	public void updateStatus() {
-		arm.updateStatus(operationMode);
+		// arm.updateStatus(operationMode);
 		// driveTrain.updateStatus(operationMode);
-		intake.updateStatus(operationMode);
+		// intake.updateStatus(operationMode);
+		limeLight.getBasicData();
 	}
 
 	public void setupAutonChooser() {

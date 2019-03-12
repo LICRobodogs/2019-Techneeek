@@ -96,6 +96,7 @@ public class LimeLight extends Subsystem{
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+        SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
     }
 
     public void setLEID(LED state) {

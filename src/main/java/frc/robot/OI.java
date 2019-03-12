@@ -48,7 +48,7 @@ public class OI {
 		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
 
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
-		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
+		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
@@ -58,75 +58,75 @@ public class OI {
 		
 		// OPERATOR CONTROLS
 		DPadButton intakeOut = new DPadButton(m_operatorGamepad, DPadButton.Direction.LEFT);
-		intakeOut.whileHeld(new IntakeSpeed(-.6));
-		intakeOut.whenReleased(new IntakeSpeed(-.35));		
+		// intakeOut.whileHeld(new IntakeSpeed(-.6));
+		// intakeOut.whenReleased(new IntakeSpeed(-.35));		
 		
 		DPadButton intakeIn = new DPadButton(m_operatorGamepad, DPadButton.Direction.RIGHT);
-		intakeIn.whileHeld(new IntakeSpeed(.45));
-		intakeIn.whenReleased(new IntakeSpeed(.25));	
+		// intakeIn.whileHeld(new IntakeSpeed(.45));
+		// intakeIn.whenReleased(new IntakeSpeed(.25));	
 		
 		DPadButton intakeOff = new DPadButton(m_operatorGamepad, DPadButton.Direction.DOWN);
-		intakeOff.whenPressed(new IntakeSpeedOff());
+		// intakeOff.whenPressed(new IntakeSpeedOff());
 		
 		DPadButton intakeHold = new DPadButton(m_operatorGamepad,DPadButton.Direction.UP);
-		intakeHold.whenPressed(new ArmGoToDrivingPosition());
+		// intakeHold.whenPressed(new ArmGoToDrivingPosition());
 
 		JoystickButton suctionGrab = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.LEFT_BUMPER_BUTTON);
-		suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
+		// suctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 
 		JoystickButton scoreHatch = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.RIGHT_BUMPER_BUTTON);
-		scoreHatch.whenPressed(new ScoreHatch());
+		// scoreHatch.whenPressed(new ScoreHatch());
 
 		JoystickButton intakePosition = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.X_BUTTON);
-		intakePosition.whenPressed(new IntakePositionAvoidCollision());
+		// intakePosition.whenPressed(new IntakePositionAvoidCollision());
 		
 		JoystickButton toggleFrontSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
-		toggleFrontSide.whenPressed(new ArmToggleFront());
+		// toggleFrontSide.whenPressed(new ArmToggleFront());
 
 		JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.START_BUTTON);
-		toggleBackSide.whenPressed(new ArmToggleBack());
+		// toggleBackSide.whenPressed(new ArmToggleBack());
 
 		JoystickButton level1 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
-		level1.whenActive(new ScoreBottomHeight());
+		// level1.whenActive(new ScoreBottomHeight());
 
 		JoystickButton level2 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.B_BUTTON);
-		level2.whenActive(new ScoreMiddleHeight());
+		// level2.whenActive(new ScoreMiddleHeight());
 
 		JoystickButton level3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
-		level3.whenActive(new ScoreTopHeight());
+		// level3.whenActive(new ScoreTopHeight());
 
 		Button armRest = new InternalButton();
-		armRest.whenPressed(new ArmGoToRest());
+		// armRest.whenPressed(new ArmGoToRest());
 		SmartDashboard.putData("Arm Rest", armRest);
 
 		Button armBackCargo = new InternalButton();
-		armBackCargo.whenPressed(new ArmGoToBackCargo());
+		// armBackCargo.whenPressed(new ArmGoToBackCargo());
 		SmartDashboard.putData("Arm Back Cargo", armBackCargo);
 		
 		// Pneumatics Diagonostics
 
 		Button testSuctionGrab = new InternalButton();
-		testSuctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
+		// testSuctionGrab.whenPressed(new IntakeSuction(IntakeState.SUCC_IN));
 		SmartDashboard.putData("Suction Grab", testSuctionGrab);
 
 		Button testSuctionRelease = new InternalButton();
-		testSuctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
+		// testSuctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 		SmartDashboard.putData("Suction Release", testSuctionRelease);
 
 		Button testArmShoot = new InternalButton();
-		testArmShoot.whenPressed(new ArmPistonPosition(ArmPistonState.SHOOT));
+		// testArmShoot.whenPressed(new ArmPistonPosition(ArmPistonState.SHOOT));
 		SmartDashboard.putData("Arm Shoot", testArmShoot);
 
 		Button testArmReload = new InternalButton();
-		testArmReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
+		// testArmReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
         SmartDashboard.putData("Arm Reload", testArmReload);
         
         Button testArmBrake = new InternalButton();
-		testArmBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
+		// testArmBrake.whenPressed(new ArmPistonPosition(ArmPistonState.BRAKE));
 		SmartDashboard.putData("Arm Brake", testArmBrake);
 
 		Button testArmRelease = new InternalButton();
-		testArmRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
+		// testArmRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
 		SmartDashboard.putData("Arm Release", testArmRelease);
 
 		// Button testArmGearboxArmDog = new InternalButton();

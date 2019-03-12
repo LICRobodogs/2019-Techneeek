@@ -72,16 +72,16 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	private DriveTrain() {
 		try {
 			leftDrive1 = new CANSparkMax(2,CANSparkMaxLowLevel.MotorType.kBrushless);
-            leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
+            // leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
             rightDrive1 = new CANSparkMax(4,CANSparkMaxLowLevel.MotorType.kBrushless);
-            rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
+            // rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
 			leftDrive1.setIdleMode(IdleMode.kBrake);
-			leftDrive2.setIdleMode(IdleMode.kBrake);
+			// leftDrive2.setIdleMode(IdleMode.kBrake);
 			rightDrive1.setIdleMode(IdleMode.kBrake);
-			rightDrive2.setIdleMode(IdleMode.kBrake);
+			// rightDrive2.setIdleMode(IdleMode.kBrake);
 			
-			leftDrive2.follow(leftDrive1);
-            rightDrive2.follow(rightDrive1);
+			// leftDrive2.follow(leftDrive1);
+            // rightDrive2.follow(rightDrive1);
 			
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
 
