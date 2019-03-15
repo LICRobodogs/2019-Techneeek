@@ -12,9 +12,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  * Singleton Class LimeLight that instantiates the camera & provides
  * functionality
  */
-public class LimeLight extends Subsystem{
+public class LimeLight extends Subsystem {
     private NetworkTable table;
-    public NetworkTableEntry tX_offset, tY_offset, tArea, tSkew, tValid, tLatency, tShort_length, tLong_length, tHor_length, tVert_length, getPipe, camtran;
+    public NetworkTableEntry tX_offset, tY_offset, tArea, tSkew, tValid, tLatency, tShort_length, tLong_length,
+            tHor_length, tVert_length, getPipe, camtran;
     private NetworkTableEntry ledMode, camMode, setPipe, streamMode, snapshot;
     private static LimeLight instance = null;
     private static final double accepted_error_angle = 0.5;
@@ -31,6 +32,7 @@ public class LimeLight extends Subsystem{
     public static enum StreamMode {
         STANDARD, PIP_MAIN, PIP_SECONDARY
     }
+
     public static enum TargetType {
         PORT, HATCH
     }
@@ -41,26 +43,30 @@ public class LimeLight extends Subsystem{
         initSetableData();
 
     }
+
     private void initRetrievableData() {
         tValid = table.getEntry("tv"); // Whether the limelight has any valid targets (0 or 1)
         tX_offset = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
         tY_offset = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
         tArea = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
         tSkew = table.getEntry("ts"); // Target Skew, not sure of value range
-        tLatency = table.getEntry("tl"); //The pipeline’s latency contribution (ms) Add at least 11ms for image capture latency.
-        tShort_length = table.getEntry("tl"); //Sidelength of shortest side of the fitted bounding box (pixels)
-        tLong_length = table.getEntry("tlong"); //Sidelength of longest side of the fitted bounding box (pixels)
-        tHor_length = table.getEntry("thor"); //Horizontal sidelength of the rough bounding box (0 - 320 pixels
-        tVert_length = table.getEntry("tvert"); //Vertical sidelength of the rough bounding box (0 - 320 pixels)
+        tLatency = table.getEntry("tl"); // The pipeline’s latency contribution (ms) Add at least 11ms for image capture
+                                         // latency.
+        tShort_length = table.getEntry("tl"); // Sidelength of shortest side of the fitted bounding box (pixels)
+        tLong_length = table.getEntry("tlong"); // Sidelength of longest side of the fitted bounding box (pixels)
+        tHor_length = table.getEntry("thor"); // Horizontal sidelength of the rough bounding box (0 - 320 pixels
+        tVert_length = table.getEntry("tvert"); // Vertical sidelength of the rough bounding box (0 - 320 pixels)
         getPipe = table.getEntry("getpipe"); // True active pipeline index of the camera (0 .. 9)
-        camtran = table.getEntry("camtran"); // Results of a 3D position solution, 6 numbers: Translation (x,y,y) Rotation(pitch,yaw,roll)
+        camtran = table.getEntry("camtran"); // Results of a 3D position solution, 6 numbers: Translation (x,y,y)
+                                             // Rotation(pitch,yaw,roll)
     }
+
     private void initSetableData() {
-        ledMode = table.getEntry("ledMode"); //sets limelights LED state
-        camMode = table.getEntry("camMode"); //sets limelights operation mode
-        setPipe = table.getEntry("pipeline"); //sets limelights current pipeline
+        ledMode = table.getEntry("ledMode"); // sets limelights LED state
+        camMode = table.getEntry("camMode"); // sets limelights operation mode
+        setPipe = table.getEntry("pipeline"); // sets limelights current pipeline
         streamMode = table.getEntry("stream"); // sets limelight's streaming mode
-        snapshot = table.getEntry("snapshot"); //allows snapshots
+        snapshot = table.getEntry("snapshot"); // allows snapshots
     }
 
     public static LimeLight getInstance() {
@@ -80,12 +86,13 @@ public class LimeLight extends Subsystem{
         double area = tArea.getDouble(0.0);
         setData(v, s, x, y, area);
     }
+
     public void getAllData() {
     }
-    
-	@Override
-	protected void initDefaultCommand() {
-	}
+
+    @Override
+    protected void initDefaultCommand() {
+    }
 
     /**
      * post to smart dashboard periodically
@@ -102,33 +109,35 @@ public class LimeLight extends Subsystem{
     public void setLEID(LED state) {
         switch (state) {
         case DEFAULT:
-        ledMode.setNumber(0);
+            ledMode.setNumber(0);
             break;
         case OFF:
-        ledMode.setNumber(1);
+            ledMode.setNumber(1);
             break;
         case BLINK:
-        ledMode.setNumber(2);
+            ledMode.setNumber(2);
             break;
         case ON:
-        ledMode.setNumber(3);
+            ledMode.setNumber(3);
             break;
         default:
             System.err.println("UNKNOWN LEID STATE PASSED.");
             break;
         }
     }
-    /** 
+
+    /**
      * starts taking 2 snapshots per second
      */
     public void startTakingSnapshots() {
-        snapshot.setNumber(1); //two per second
+        snapshot.setNumber(1); // two per second
     }
+
     /**
      * stops taking snapshots
      */
     public void stopTakingSnapshots() {
-        snapshot.setNumber(0); //two per second
+        snapshot.setNumber(0); // two per second
     }
 
     public void switchCameraMode(CameraMode mode) {
@@ -161,10 +170,11 @@ public class LimeLight extends Subsystem{
             break;
         }
     }
+
     public double getPipeline() {
         return getPipe.getDouble(0);
     }
-    
+
     public void setPipeline(double pipe) {
         setPipe.setNumber(pipe);
     }
@@ -219,30 +229,29 @@ public class LimeLight extends Subsystem{
      * Aim at the largest target recognized in the limelight pipeline
      */
     public void aimAtTarget() {
-        double KpAim = 0.1; // Proportional control constant
         double min_power = 0.05;
         double min_threshold = 1.0;
         double steering_adjust = 0.0;
         double xAngle = tX_offset.getDouble(0.0);
         if (Math.abs(xAngle) > min_threshold) {
-            steering_adjust = KpAim * xAngle - min_power;
+            steering_adjust = Constants.KpSteer * xAngle - min_power;
         } else {
-            steering_adjust = KpAim * xAngle + min_power;
+            steering_adjust = Constants.KpSteer * xAngle + min_power;
         }
         Robot.driveTrain.drive(steering_adjust);
     }
 
     /**
-     * {@link #getInRange(double, double)}
-     * get within a constant distance of a hatch for scoring
+     * {@link #getInRange(double, double)} get within a constant distance of a hatch
+     * for scoring
      */
     public void getInHatchRange() {
         getInRange(Constants.TARGET_HATCH_RANGE, distanceToHatch());
     }
 
     /**
-     * {@link #getInRange(double, double)}
-     * get within a constant distance of port for scoring
+     * {@link #getInRange(double, double)} get within a constant distance of port
+     * for scoring
      */
     public void getInPortRange() {
         getInRange(Constants.TARGET_PORT_RANGE, distanceToPort());
@@ -251,13 +260,12 @@ public class LimeLight extends Subsystem{
     /**
      * drives to robots desired location based on distance to target
      * 
-     * @param desired_distance inches of distance desired 
+     * @param desired_distance inches of distance desired
      * @param current_distance inches of current distance
      */
     public void getInRange(double desired_distance, double current_distance) {
-        double KpDistance = 0.1; // Proportional control constant for distance
         double distance_error = current_distance - desired_distance;
-        double driving_adjust = KpDistance * distance_error;
+        double driving_adjust = Constants.KpDrive * distance_error;
         Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
     }
 
@@ -266,8 +274,7 @@ public class LimeLight extends Subsystem{
      * crosshair. This allows the angle to report "0.0" when at desired distance
      */
     public void getInRange() {
-        double KpDistance = 0.1; // Proportional control constant for distance
-        double driving_adjust = KpDistance * tY_offset.getDouble(0.0);
+        double driving_adjust = Constants.KpDrive * tY_offset.getDouble(0.0);
         Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
     }
 
@@ -275,8 +282,6 @@ public class LimeLight extends Subsystem{
      * aim at hatch target & drive towards it
      */
     public void aimAndDrive() {
-        double KpAim = 0.1; // Proportional control constant
-        double KpDistance = 0.1; // Proportional control constant
         double min_power = 0.05;
         double min_threshold = 1.0; // used for angle & distance..for now
 
@@ -285,11 +290,11 @@ public class LimeLight extends Subsystem{
         double distance_error = distanceToHatch() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
 
         if (Math.abs(heading_error) > min_threshold) {
-            steering_adjust = KpAim * heading_error - min_power;
+            steering_adjust = Constants.KpSteer * heading_error - min_power;
         } else {
-            steering_adjust = KpAim * heading_error + min_power;
+            steering_adjust = Constants.KpSteer * heading_error + min_power;
         }
-        double distance_adjust = KpDistance * distance_error;
+        double distance_adjust = Constants.KpDrive * distance_error;
 
         Robot.driveTrain.drive(distance_adjust, steering_adjust);
     }
@@ -301,22 +306,29 @@ public class LimeLight extends Subsystem{
     public double yAngle_toPixelLocation(PixelCoord pixel) {
         return angle_toPixelLocation(pixel.getNormalized().getViewPlaneCoordinates().getY());
     }
+
     public double angle_toPixelLocation(double loc) {
         return Math.atan2(1, loc);
     }
+
     public boolean isAtTarget(TargetType target) {
-        switch(target) {
-            case HATCH:
+        switch (target) {
+        case HATCH:
             return distanceToHatch() <= accepted_error_distance;
-            case PORT:
+        case PORT:
             return distanceToPort() <= accepted_error_distance;
-            default:
+        default:
             System.err.println("INVALID TARGET TYPE PASSED");
             return true;
         }
     }
+
     public boolean isAimed() {
         return tX_offset.getDouble(0.0) <= accepted_error_angle;
+    }
+
+    public void Update_Limelight_Tracking() {
+
     }
 
 }

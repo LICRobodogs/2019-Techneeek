@@ -189,7 +189,11 @@ public class Constants {
 	public static final double CAMERA_MOUNT_ANGLE = 0.0;
 	public static final double kp_ll = 1.0;
 	public static final double HORIZONTAL_FOV = 54; // degrees
-    public static final double VERTICAL_FOV = 41; // degrees
+	public static final double VERTICAL_FOV = 41; // degrees
+	
+	//Drivetrain
+	public static final double KpSteer = 0.1; // Proportional control constant for steering
+	public static final double KpDrive = 0.1; // Proportional control constant for steering
 
 
     

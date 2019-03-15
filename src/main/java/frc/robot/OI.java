@@ -50,6 +50,8 @@ public class OI {
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
 		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
+		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.)
+
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
 		

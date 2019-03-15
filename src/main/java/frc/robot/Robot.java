@@ -25,6 +25,17 @@ import frc.util.Constants;
 import frc.util.ControlLooper;
 
 public class Robot extends TimedRobot {
+	private static final String kDefaultAuto = "Default";
+	private static final String kCustomAuto = "My Auto";
+	private String m_autoSelected;
+	private final SendableChooser<String> m_chooser = new SendableChooser<>();
+
+	private boolean m_LimelightHasValidTarget = false;
+  	private double m_LimelightDriveCommand = 0.0;
+  	private double m_LimelightSteerCommand = 0.0;
+
+
+
 	public static DriveTrain driveTrain;
 	public static Intake intake;
 	public static Arm arm;
@@ -75,6 +86,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		m_autoSelected = m_chooser.getSelected();
 	}
 
 	@Override
@@ -125,9 +137,9 @@ public class Robot extends TimedRobot {
 	}
 
 	public void setupAutonChooser() {
-		autonChooser = new SendableChooser<>();
-		// autonChooser.addDefault("Straight Only", new StraightOnly());
-		autonChooser.addOption("Do Nothing", new CommandGroup());
-		SmartDashboard.putData("Auton Setting", autonChooser);
+		m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+        m_chooser.addOption("My Auto", kCustomAuto);
+        SmartDashboard.putData("Auto choices", m_chooser);
 	}
+	
 }
