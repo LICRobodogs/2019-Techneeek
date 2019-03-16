@@ -64,12 +64,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		driveTrain = DriveTrain.getInstance();
+		// driveTrain = DriveTrain.getInstance();
 		// intake = Intake.getInstance();
 		// arm = Arm.getInstance();
 		// elevator = Elevator.getInstance();
-		oi = OI.getInstance();
-		CameraServer.getInstance().startAutomaticCapture();
+		// oi = OI.getInstance();
+		// CameraServer.getInstance().startAutomaticCapture();
 		limeLight = LimeLight.getInstance();
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
+		// limeLight.postAllData();
 	}
 
 	@Override
@@ -134,6 +135,7 @@ public class Robot extends TimedRobot {
 		// driveTrain.updateStatus(operationMode);
 		// intake.updateStatus(operationMode);
 		limeLight.getBasicData();
+		// limeLight.postAllData();
 	}
 
 	public void setupAutonChooser() {

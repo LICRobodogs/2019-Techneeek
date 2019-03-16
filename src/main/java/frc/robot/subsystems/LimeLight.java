@@ -105,6 +105,15 @@ public class LimeLight extends Subsystem {
         SmartDashboard.putNumber("LimelightArea", area);
         SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
     }
+    public void postAllData() {
+        SmartDashboard.putNumber("Valid Target", tValid.getDouble(0.0));
+        SmartDashboard.putNumber("LimelightSkew", tSkew.getDouble(0.0));
+        SmartDashboard.putNumber("LimelightX", tX_offset.getDouble(0.0));
+        SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
+        SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
+        SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
+        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(new double[0]));
+    }
 
     public void setLEID(LED state) {
         switch (state) {
