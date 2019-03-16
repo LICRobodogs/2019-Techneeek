@@ -198,8 +198,17 @@ public class LimeLight extends Subsystem {
      * @return distance to a target
      */
     public double distanceToTarget(double h1, double h2, double a1, double a2) {
+        // System.out.println(h1 + h2+ a1 + a2);
+        System.out.println("a1 and a2\t"+a1+"\t"+a2);
         double radianAngle = Math.toRadians(a1 + a2);
-        double distance = (h2 - h1) / Math.tan(radianAngle);
+        System.out.println("radian angle\t"+radianAngle);
+        double tan = Math.tan(radianAngle);
+        System.out.println("tan\t"+tan);
+        if (tan == 0)
+            return 0;
+        if (a1 + a2 < 0.05)
+            return 0;
+        double distance = (h2 - h1) / tan;
         return distance;
     }
 

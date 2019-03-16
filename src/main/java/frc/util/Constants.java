@@ -116,9 +116,9 @@ public class Constants {
 	//  public static final int rightTriggerAxis = 4;
 	//  public static final int leftAnalogAxis = 0;
 	//  public static final double DEADZONE = 0.10;
-	 public static final int PS_SQUARE_BUTTON = 1;
-	 public static final int PS_X_BUTTON = 2;
-	 public static final int PS_CIRCLE_BUTTON = 3;
+	 public static final int PS_SQUARE_BUTTON = 3;
+	 public static final int PS_X_BUTTON = 1;
+	 public static final int PS_CIRCLE_BUTTON = 2;
 	 public static final int PS_TRIANGLE_BUTTON = 4;
 	 public static final int PS_LB_BUTTON = 5;
 	 public static final int PS_RB_BUTTON = 6;
