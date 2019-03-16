@@ -112,7 +112,7 @@ public class LimeLight extends Subsystem {
         SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
         SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
         SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
-        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(new double[0]));
+        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(new double [0]));
     }
 
     public void setLEID(LED state) {
@@ -199,14 +199,28 @@ public class LimeLight extends Subsystem {
      */
     public double distanceToTarget(double h1, double h2, double a1, double a2) {
         // System.out.println(h1 + h2+ a1 + a2);
-        System.out.println("a1 and a2\t"+a1+"\t"+a2);
+        // System.out.println("a1 and a2\t"+a1+"\t"+a2);
         double radianAngle = Math.toRadians(a1 + a2);
-        System.out.println("radian angle\t"+radianAngle);
+        // System.out.println("radian angle\t"+radianAngle);
         double tan = Math.tan(radianAngle);
-        System.out.println("tan\t"+tan);
+        // System.out.println("tan\t"+tan);
         if (tan == 0)
             return 0;
-        if (a1 + a2 < 0.05)
+        if (Math.abs(a1 + a2) < 0.05)
+            return 0;
+        double distance = (h2 - h1) / tan;
+        return distance;
+    }
+    public double distanceToTarget(double h1, double h2,double a1) {
+        // System.out.println(h1 + h2+ a1 + a2);
+        // System.out.println("a1 and a2\t"+a1+"\t"+a2);
+        double radianAngle = Math.toRadians(a1);
+        // System.out.println("radian angle\t"+radianAngle);
+        double tan = Math.tan(radianAngle);
+        // System.out.println("tan\t"+tan);
+        if (tan == 0)
+            return 0;
+        if (Math.abs(a1) < 0.05)
             return 0;
         double distance = (h2 - h1) / tan;
         return distance;
@@ -218,7 +232,9 @@ public class LimeLight extends Subsystem {
      * @return distance to Hatch Target
      */
     public double distanceToHatch() {
-        return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
+        // return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
+        //         tY_offset.getDouble(0.0));
+            return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT,
                 tY_offset.getDouble(0.0));
     }
 

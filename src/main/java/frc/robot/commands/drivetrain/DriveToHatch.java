@@ -11,7 +11,7 @@ public class DriveToHatch extends Command {
 
 	public DriveToHatch() {
 		requires(Robot.driveTrain);
-		requires(Robot.limeLight);
+		// requires(Robot.limeLight);
 	}
 
 	// Called just before this Command runs the first time

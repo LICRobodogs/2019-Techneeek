@@ -11,6 +11,9 @@ import frc.robot.Robot;
 import frc.robot.commands.JoystickDrive;
 import frc.util.Constants;
 import frc.util.ControlLoopable;
+import frc.util.drivers.DunkTalonSRX;
+import frc.util.drivers.DunkVictorSPX;
+
 
 public class DriveTrain extends Subsystem implements ControlLoopable {
 	private static DriveTrain instance = null;
@@ -59,10 +62,15 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	public static final double RIGHT_D = Constants.RIGHT_D;
 	public static final double RIGHT_F = Constants.RIGHT_F;
 
-    private CANSparkMax leftDrive1;
-    private CANSparkMax leftDrive2;
-    private CANSparkMax rightDrive1;
-    private CANSparkMax rightDrive2;
+    // private CANSparkMax leftDrive1;
+    // private CANSparkMax leftDrive2;
+    // private CANSparkMax rightDrive1;
+	// private CANSparkMax rightDrive2;
+	
+	private DunkTalonSRX leftDrive1;
+	private DunkTalonSRX leftDrive2;
+	private DunkTalonSRX rightDrive1;
+	private DunkVictorSPX rightDrive2;
 
 	private DifferentialDrive m_drive;
 

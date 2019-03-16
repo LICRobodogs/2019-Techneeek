@@ -115,7 +115,7 @@ public class Robot extends TimedRobot {
 	}
 
 	public void disabledInit() {
-		limeLight.setLEID(LED.BLINK);
+		limeLight.setLEID(LED.OFF);
 
 		// limeLight.setLEID(LED.OFF);
 		// arm.resetArmEncoder();
