@@ -25,6 +25,10 @@ import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleBack;
 import frc.robot.commands.arm.ArmToggleFront;
+import frc.robot.commands.drivetrain.DriveToHatch;
+import frc.robot.commands.drivetrain.DriveToPort;
+import frc.robot.commands.drivetrain.FindTarget;
+import frc.robot.commands.drivetrain.TurnToTarget;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.util.Constants;
@@ -50,7 +54,17 @@ public class OI {
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
 		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
-		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.)
+		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.PS_RB_BUTTON);
+		findTarget.whenPressed(new FindTarget());
+
+		JoystickButton turnToTarget = new JoystickButton(m_driverGamepad, Constants.PS_X_BUTTON);
+		findTarget.whenPressed(new TurnToTarget());
+
+		JoystickButton driveToPort = new JoystickButton(m_driverGamepad, Constants.PS_SQUARE_BUTTON);
+		findTarget.whenPressed(new DriveToPort());
+
+		JoystickButton driveToHatch = new JoystickButton(m_driverGamepad, Constants.PS_TRIANGLE_BUTTON);
+		findTarget.whenPressed(new DriveToHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));

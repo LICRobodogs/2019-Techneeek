@@ -49,7 +49,7 @@ public class LimeLight extends Subsystem {
         tX_offset = table.getEntry("tx"); // Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
         tY_offset = table.getEntry("ty"); // Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
         tArea = table.getEntry("ta"); // Target Area (0% of image to 100% of image)
-        tSkew = table.getEntry("ts"); // Target Skew, not sure of value range
+        tSkew = table.getEntry("ts"); // Target Skew, -90 -> 0 degrees
         tLatency = table.getEntry("tl"); // The pipeline’s latency contribution (ms) Add at least 11ms for image capture
                                          // latency.
         tShort_length = table.getEntry("tl"); // Sidelength of shortest side of the fitted bounding box (pixels)
