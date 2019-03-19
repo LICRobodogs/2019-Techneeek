@@ -6,13 +6,12 @@ import frc.robot.commands.drivetrain.DriveToHatch;
 import frc.robot.commands.limelight.BlinkLED;
 import frc.robot.commands.limelight.OffLED;
 import frc.robot.commands.limelight.OnLED;
-import frc.robot.commands.limelight.ReadyLED;
 
 public class DriveAndScoreHatch extends CommandGroup {
 	public DriveAndScoreHatch() {
-        addSequential(new ReadyLED());
+        addSequential(new OnLED());
         addSequential(new DriveToHatch());
-        addSequential(new ScoreHatch());
+        // addSequential(new ScoreHatch());
         addSequential(new BlinkLED());
         addSequential(new WaitCommand(1.0));
         addSequential(new OffLED());

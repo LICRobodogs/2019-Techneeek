@@ -75,18 +75,18 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	private DriveTrain() {
 		try {
 			leftDrive1 = new CANSparkMax(2,CANSparkMaxLowLevel.MotorType.kBrushless);
-            // leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
+            leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
             rightDrive1 = new CANSparkMax(4,CANSparkMaxLowLevel.MotorType.kBrushless);
-            // rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
+            rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
 			leftDrive1.setIdleMode(IdleMode.kBrake);
-			// leftDrive2.setIdleMode(IdleMode.kBrake);
+			leftDrive2.setIdleMode(IdleMode.kBrake);
 			rightDrive1.setIdleMode(IdleMode.kBrake);
-			// rightDrive2.setIdleMode(IdleMode.kBrake);
+			rightDrive2.setIdleMode(IdleMode.kBrake);
 			
-			// leftDrive2.follow(leftDrive1);
-			// rightDrive2.follow(rightDrive1);
-			leftDrive1.setOpenLoopRampRate(0.5);
-			rightDrive1.setOpenLoopRampRate(0.5);
+			leftDrive2.follow(leftDrive1);
+			rightDrive2.follow(rightDrive1);
+			leftDrive1.setOpenLoopRampRate(0.2);
+			rightDrive1.setOpenLoopRampRate(0.2);
 			
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
 
@@ -118,7 +118,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 		m_moveInput = 0.5*OI.getInstance().getMoveInput();
 		m_steerInput = 0.5*OI.getInstance().getSteerInput();
 
-		m_drive.curvatureDrive(m_moveInput, m_steerInput, true);
+		m_drive.curvatureDrive(m_moveInput, -m_steerInput, true);
 	}
 	public void drive(double steer) {
 		drive(0.5*OI.getInstance().getMoveInput(), steer);

@@ -11,8 +11,8 @@ import frc.robot.subsystems.LimeLight.LED;
 public class ReadyLED extends ConditionalCommand {
     @Override
     protected boolean condition() {
-            return Robot.limeLight.is3dCompute();
-        }
+        return Robot.limeLight.is3dCompute();
+    }
     
     public ReadyLED() {
         super(new OnLED(), new OffLED());
