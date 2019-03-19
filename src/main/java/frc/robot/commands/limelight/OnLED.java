@@ -1,21 +1,14 @@
 package frc.robot.commands.limelight;
 
-import edu.wpi.first.wpilibj.command.ConditionalCommand;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Arm.ArmSide;
 import frc.robot.subsystems.LimeLight.LED;
 
 /**
  * Turn LED Onn
  */
-public class OnLED extends ConditionalCommand {
-    @Override
-    protected boolean condition() {
-            return Robot.arm.getDesiredSide() == ArmSide.FRONT && Robot.arm.getSide() == ArmSide.BACK;
-        }
-    
+public class OnLED extends Command {
     public OnLED() {
-        super(new OnLED(), new OffLED());
         requires(Robot.limeLight);
     }
 

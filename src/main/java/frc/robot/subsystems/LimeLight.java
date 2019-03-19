@@ -112,13 +112,7 @@ public class LimeLight extends Subsystem {
         SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
         SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
         SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
-        // System.out.println("\nCamtranData:\t"+camtran.getNumber(0.0));
-        Number[] emptyNumber = {};
         Double[] emptyDouble = {};
-        // System.out.println("\nCamtranDataArray:\t"+camtran.getDouble(0.0));
-        // System.out.println("\nCamtranNUMArray:\t"+camtran.getNumberArray(emptyNumber));
-        // System.out.println("\nCamtranDUBArray:\t"+camtran.getDoubleArray(emptyDouble));
-        
         SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
         SmartDashboard.putNumber("real Distance", getCamtranDistance());
         SmartDashboard.putNumber("real YAW", getCamtranYaw());
@@ -225,12 +219,8 @@ public class LimeLight extends Subsystem {
      * @return distance to a target
      */
     public double distanceToTarget(double h1, double h2, double a1, double a2) {
-        // System.out.println(h1 + h2+ a1 + a2);
-        // System.out.println("a1 and a2\t"+a1+"\t"+a2);
         double radianAngle = Math.toRadians(a1 + a2);
-        // System.out.println("radian angle\t"+radianAngle);
         double tan = Math.tan(radianAngle);
-        // System.out.println("tan\t"+tan);
         if (tan == 0)
             return 0;
         if (Math.abs(a1 + a2) < 0.05)
@@ -239,12 +229,8 @@ public class LimeLight extends Subsystem {
         return distance;
     }
     public double distanceToTarget(double h1, double h2,double a1) {
-        // System.out.println(h1 + h2+ a1 + a2);
-        // System.out.println("a1 and a2\t"+a1+"\t"+a2);
         double radianAngle = Math.toRadians(a1);
-        // System.out.println("radian angle\t"+radianAngle);
         double tan = Math.tan(radianAngle);
-        // System.out.println("tan\t"+tan);
         if (tan == 0)
             return 0;
         if (Math.abs(a1) < 0.05)
@@ -259,8 +245,6 @@ public class LimeLight extends Subsystem {
      * @return distance to Hatch Target
      */
     public double distanceToHatch() {
-        // return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
-        //         tY_offset.getDouble(0.0));
             return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT,
                 tY_offset.getDouble(0.0));
     }
@@ -313,8 +297,10 @@ public class LimeLight extends Subsystem {
      * for scoring
      */
     public void getInHatchRange() {
-        // getInRange(Constants.TARGET_HATCH_RANGE, distanceToHatch());
         getInRange(Constants.TARGET_HATCH_RANGE, getCamtranDistance());
+    }
+    public void fancyGetInHatchRange() {
+        fancyGetInRange(Constants.TARGET_HATCH_RANGE, getCamtranDistance(), getCamtranYaw());
     }
 
     /**
@@ -336,6 +322,11 @@ public class LimeLight extends Subsystem {
         double driving_adjust = Constants.KpDrive * distance_error;
         Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
     }
+    public void fancyGetInRange(double desired_distance, double current_distance, double steer) {
+        double distance_error = current_distance - desired_distance;
+        double driving_adjust = Constants.KpDrive * distance_error;
+        Robot.driveTrain.drive(driving_adjust, steer);
+    }
 
     /**
      * To use, put robot at desired distance & calibrate the y-position of the
@@ -350,6 +341,26 @@ public class LimeLight extends Subsystem {
      * aim at hatch target & drive towards it
      */
     public void aimAndDrive() {
+        double min_power = 0.05;
+        double min_threshold = 1.0; // used for angle & distance..for now
+
+        double steering_adjust = 0.0;
+        double heading_error = tX_offset.getDouble(0.0);
+        double distance_error = distanceToHatch() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
+
+        if (Math.abs(heading_error) > min_threshold) {
+            steering_adjust = Constants.KpSteer * heading_error - min_power;
+        } else {
+            steering_adjust = Constants.KpSteer * heading_error + min_power;
+        }
+        double distance_adjust = Constants.KpDrive * distance_error;
+
+        Robot.driveTrain.drive(distance_adjust, steering_adjust);
+    }
+     /**
+     * aim at hatch target & drive towards it
+     */
+    public void fancyDrive() {
         double min_power = 0.05;
         double min_threshold = 1.0; // used for angle & distance..for now
 
