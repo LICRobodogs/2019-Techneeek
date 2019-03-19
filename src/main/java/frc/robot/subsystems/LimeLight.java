@@ -125,19 +125,21 @@ public class LimeLight extends Subsystem {
     }
 
     public double getCamtranDistance() {
-        Double[] emptyDouble = {-1000.0};
-        Double[] values = camtran.getDoubleArray(emptyDouble);
+        Double[] values = getCamtranValues();
         if (values.length != 1)
             return -values[2];
         return 0.0;
     }
 
     public double getCamtranYaw() {
-        Double[] emptyDouble = {-1000.0};
-        Double[] values = camtran.getDoubleArray(emptyDouble);
+        Double[] values = getCamtranValues();
         if (values.length != 1)
-            return camtran.getDoubleArray(emptyDouble)[4];
+            return values[4];
         return 0.0;
+    }
+    public Double[] getCamtranValues() {
+        Double[] emptyDouble = {-1000.0};
+        return camtran.getDoubleArray(emptyDouble);
     }
 
     public void setLEID(LED state) {
@@ -287,7 +289,7 @@ public class LimeLight extends Subsystem {
         return tValid.getDouble(0.0) != 0.0;
     }
     public boolean is3dCompute() {
-        return true;
+        return getCamtranValues().length > 1;
     }
 
     /**
