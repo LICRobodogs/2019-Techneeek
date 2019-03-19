@@ -283,6 +283,12 @@ public class LimeLight extends Subsystem {
             aimAtTarget();
         }
     }
+    public boolean isSeeingTarget() {
+        return tValid.getDouble(0.0) != 0.0;
+    }
+    public boolean is3dCompute() {
+        return true;
+    }
 
     /**
      * Aim at the largest target recognized in the limelight pipeline

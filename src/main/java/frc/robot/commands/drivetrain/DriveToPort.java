@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveToPort extends Command {
     public DriveToPort() {
         requires(Robot.driveTrain);
-        // requires(Robot.limeLight);
+        requires(Robot.limeLight);
     }
 
     // Called just before this Command runs the first time
