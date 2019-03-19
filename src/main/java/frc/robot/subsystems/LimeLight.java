@@ -112,7 +112,32 @@ public class LimeLight extends Subsystem {
         SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
         SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
         SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
-        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(new double [0]));
+        // System.out.println("\nCamtranData:\t"+camtran.getNumber(0.0));
+        Number[] emptyNumber = {};
+        Double[] emptyDouble = {};
+        // System.out.println("\nCamtranDataArray:\t"+camtran.getDouble(0.0));
+        // System.out.println("\nCamtranNUMArray:\t"+camtran.getNumberArray(emptyNumber));
+        // System.out.println("\nCamtranDUBArray:\t"+camtran.getDoubleArray(emptyDouble));
+        
+        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
+        SmartDashboard.putNumber("real Distance", getCamtranDistance());
+        SmartDashboard.putNumber("real YAW", getCamtranYaw());
+    }
+
+    public double getCamtranDistance() {
+        Double[] emptyDouble = {-1000.0};
+        Double[] values = camtran.getDoubleArray(emptyDouble);
+        if (values.length != 1)
+            return -values[2];
+        return 0.0;
+    }
+
+    public double getCamtranYaw() {
+        Double[] emptyDouble = {-1000.0};
+        Double[] values = camtran.getDoubleArray(emptyDouble);
+        if (values.length != 1)
+            return camtran.getDoubleArray(emptyDouble)[4];
+        return 0.0;
     }
 
     public void setLEID(LED state) {
@@ -280,7 +305,8 @@ public class LimeLight extends Subsystem {
      * for scoring
      */
     public void getInHatchRange() {
-        getInRange(Constants.TARGET_HATCH_RANGE, distanceToHatch());
+        // getInRange(Constants.TARGET_HATCH_RANGE, distanceToHatch());
+        getInRange(Constants.TARGET_HATCH_RANGE, getCamtranDistance());
     }
 
     /**
@@ -344,13 +370,26 @@ public class LimeLight extends Subsystem {
     public double angle_toPixelLocation(double loc) {
         return Math.atan2(1, loc);
     }
-
+/*
     public boolean isAtTarget(TargetType target) {
         switch (target) {
         case HATCH:
             return distanceToHatch() <= accepted_error_distance;
         case PORT:
             return distanceToPort() <= accepted_error_distance;
+        default:
+            System.err.println("INVALID TARGET TYPE PASSED");
+            return true;
+        }
+    }*/
+
+    
+    public boolean isAtTarget(TargetType target) {
+        switch (target) {
+        case HATCH:
+            return Math.floor(getCamtranDistance()) <= 23.0;
+        case PORT:
+            return getCamtranDistance() <= accepted_error_distance;
         default:
             System.err.println("INVALID TARGET TYPE PASSED");
             return true;

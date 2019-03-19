@@ -206,7 +206,7 @@ public class Constants {
 	
 	//Drivetrain
 	public static final double KpSteer = 0.1; // Proportional control constant for steering
-	public static final double KpDrive = 0.1; // Proportional control constant for steering
+	public static final double KpDrive = 0.005; // Proportional control constant for steering
 
 
     

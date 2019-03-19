@@ -16,6 +16,8 @@ public class DriveToHatch extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
+		setTimeout(5.0);
+		System.out.println("starting command");
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -30,10 +32,12 @@ public class DriveToHatch extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
+		System.out.println("done driving command");
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
+		System.out.println("interrupted driving command");
 	}
 }

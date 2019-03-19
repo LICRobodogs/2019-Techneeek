@@ -62,51 +62,37 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	public static final double RIGHT_D = Constants.RIGHT_D;
 	public static final double RIGHT_F = Constants.RIGHT_F;
 
-    // private CANSparkMax leftDrive1;
-    // private CANSparkMax leftDrive2;
-    // private CANSparkMax rightDrive1;
-	// private CANSparkMax rightDrive2;
+    private CANSparkMax leftDrive1;
+    private CANSparkMax leftDrive2;
+    private CANSparkMax rightDrive1;
+	private CANSparkMax rightDrive2;
 	
-	private DunkTalonSRX leftDrive1;
-	private DunkTalonSRX leftDrive2;
-	private DunkTalonSRX rightDrive1;
-	private DunkVictorSPX rightDrive2;
-
 	private DifferentialDrive m_drive;
 
 	@SuppressWarnings("unused")
 	private static boolean isRunning;
 
 	private DriveTrain() {
-		// try {
-		// 	leftDrive1 = new CANSparkMax(2,CANSparkMaxLowLevel.MotorType.kBrushless);
-        //     // leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
-        //     rightDrive1 = new CANSparkMax(4,CANSparkMaxLowLevel.MotorType.kBrushless);
-        //     // rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
-		// 	leftDrive1.setIdleMode(IdleMode.kBrake);
-		// 	// leftDrive2.setIdleMode(IdleMode.kBrake);
-		// 	rightDrive1.setIdleMode(IdleMode.kBrake);
-		// 	// rightDrive2.setIdleMode(IdleMode.kBrake);
-			
-		// 	// leftDrive2.follow(leftDrive1);
-        //     // rightDrive2.follow(rightDrive1);
-			
-		// 	m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
-
-		// 	m_drive.setSafetyEnabled(false);
-		// } 
 		try {
-			leftDrive1 = new DunkTalonSRX(0);
-        	leftDrive2 = new DunkTalonSRX(3);
-        	rightDrive1 = new DunkTalonSRX(1);
-        	rightDrive2 = new DunkVictorSPX(2);
-        	leftDrive2.follow(leftDrive1);
-        	rightDrive2.follow(rightDrive1);
+			leftDrive1 = new CANSparkMax(2,CANSparkMaxLowLevel.MotorType.kBrushless);
+            // leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
+            rightDrive1 = new CANSparkMax(4,CANSparkMaxLowLevel.MotorType.kBrushless);
+            // rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
+			leftDrive1.setIdleMode(IdleMode.kBrake);
+			// leftDrive2.setIdleMode(IdleMode.kBrake);
+			rightDrive1.setIdleMode(IdleMode.kBrake);
+			// rightDrive2.setIdleMode(IdleMode.kBrake);
+			
+			// leftDrive2.follow(leftDrive1);
+			// rightDrive2.follow(rightDrive1);
+			leftDrive1.setOpenLoopRampRate(0.5);
+			rightDrive1.setOpenLoopRampRate(0.5);
+			
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
-			// mxp = new AHRS(SPI.Port.kMXP);
 
 			m_drive.setSafetyEnabled(false);
-		} catch (Exception e) {
+		} 
+		 catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
 		}
 	}

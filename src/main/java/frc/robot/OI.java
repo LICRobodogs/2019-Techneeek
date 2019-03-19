@@ -47,16 +47,16 @@ public class OI {
 		// DRIVER CONTROLS
 		
 		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad, Constants.BACK_BUTTON);
-		setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
+		// setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
 
 		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad, Constants.START_BUTTON);
-		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
+		// setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
 
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
 		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
 		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.PS_RB_BUTTON);
-		findTarget.whenPressed(new FindTarget());
+		// findTarget.whenPressed(new FindTarget());
 
 		// JoystickButton turnToTarget = new JoystickButton(m_driverGamepad, Constants.PS_X_BUTTON);
 		// findTarget.whenPressed(new TurnToTarget());
@@ -65,10 +65,10 @@ public class OI {
 		// findTarget.whenPressed(limeLight.recalibrate());
 
 		JoystickButton driveToPort = new JoystickButton(m_driverGamepad, Constants.PS_SQUARE_BUTTON);
-		findTarget.whenPressed(new DriveToPort());
+		// findTarget.whenPressed(new DriveToPort());
 
 		JoystickButton driveToHatch = new JoystickButton(m_driverGamepad, Constants.PS_TRIANGLE_BUTTON);
-		findTarget.whenPressed(new DriveToHatch());
+		driveToHatch.whenPressed(new DriveToHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
