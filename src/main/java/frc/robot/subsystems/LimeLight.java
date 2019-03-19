@@ -320,12 +320,13 @@ public class LimeLight extends Subsystem {
     public void getInRange(double desired_distance, double current_distance) {
         double distance_error = current_distance - desired_distance;
         double driving_adjust = Constants.KpDrive * distance_error;
-        Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
+        Robot.driveTrain.setSpeed(-driving_adjust, driving_adjust);
     }
     public void fancyGetInRange(double desired_distance, double current_distance, double steer) {
         double distance_error = current_distance - desired_distance;
         double driving_adjust = Constants.KpDrive * distance_error;
-        Robot.driveTrain.drive(driving_adjust, steer);
+        steer = Constants.KpSteer * steer;
+        Robot.driveTrain.arcadeDrive(0.7*-driving_adjust, -steer);
     }
 
     /**
@@ -406,7 +407,7 @@ public class LimeLight extends Subsystem {
     public boolean isAtTarget(TargetType target) {
         switch (target) {
         case HATCH:
-            return Math.floor(getCamtranDistance()) <= 23.0;
+            return Math.floor(getCamtranDistance()) <= 15.0;
         case PORT:
             return getCamtranDistance() <= accepted_error_distance;
         default:

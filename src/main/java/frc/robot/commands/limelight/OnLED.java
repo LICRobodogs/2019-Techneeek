@@ -9,11 +9,11 @@ import frc.robot.subsystems.LimeLight.LED;
  */
 public class OnLED extends Command {
     public OnLED() {
-        requires(Robot.limeLight);
+        // requires(Robot.limeLight);
     }
 
     // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
+    protected void initialize() {
         Robot.limeLight.setLEID(LED.ON);
     }
 

@@ -11,7 +11,7 @@ public class FancyDriveToHatch extends Command {
 
 	public FancyDriveToHatch() {
 		requires(Robot.driveTrain);
-		requires(Robot.limeLight);
+		// requires(Robot.limeLight);
 	}
 
 	// Called just before this Command runs the first time
@@ -22,7 +22,9 @@ public class FancyDriveToHatch extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		Robot.limeLight.fancyGetInHatchRange();
+		if(Robot.limeLight.is3dCompute()){
+			Robot.limeLight.fancyGetInHatchRange();
+		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -33,11 +35,13 @@ public class FancyDriveToHatch extends Command {
 	// Called once after isFinished returns true
 	protected void end() {
 		System.out.println("done driving command");
+		Robot.driveTrain.setSpeed(0);
 	}
 
 	// Called when another command which requires one or more of the same
 	// subsystems is scheduled to run
 	protected void interrupted() {
 		System.out.println("interrupted driving command");
+		Robot.driveTrain.setSpeed(0);
 	}
 }

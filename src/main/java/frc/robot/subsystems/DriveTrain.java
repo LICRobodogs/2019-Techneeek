@@ -128,6 +128,11 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 		m_drive.curvatureDrive(move, steer, true);
 	}
 
+	public void arcadeDrive(double move, double steer) {
+		// m_drive.curvatureDrive(move, -steer, true); //dont remember why steer is negated?
+		m_drive.arcadeDrive(move, steer, false);
+	}
+
 	@Override
     protected void initDefaultCommand() {
         setDefaultCommand(new JoystickDrive());

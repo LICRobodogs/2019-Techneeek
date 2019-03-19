@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class OffLED extends Command {
     public OffLED() {
-        requires(Robot.limeLight);
+        // requires(Robot.limeLight);
     }
 
     // Called repeatedly when this Command is scheduled to run
-    protected void execute() {
+    protected void initialize() {
         Robot.limeLight.setLEID(LED.OFF);
     }
 

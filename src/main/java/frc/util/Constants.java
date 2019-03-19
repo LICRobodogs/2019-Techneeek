@@ -205,8 +205,8 @@ public class Constants {
 	public static final double VERTICAL_FOV = 41; // degrees
 	
 	//Drivetrain
-	public static final double KpSteer = 0.1; // Proportional control constant for steering
-	public static final double KpDrive = 0.005; // Proportional control constant for steering
+	public static final double KpSteer = 0.0375; // Proportional control constant for steering
+	public static final double KpDrive = 0.020; // Proportional control constant for steering
 
 
     

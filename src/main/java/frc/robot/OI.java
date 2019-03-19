@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.controller.GamePad;
 import frc.controller.GamePad.DPadButton;
 import frc.controller.Ps4_Controller;
+import frc.robot.commands.DriveAndScoreHatch;
 import frc.robot.commands.IntakePositionAvoidCollision;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
@@ -27,6 +28,7 @@ import frc.robot.commands.arm.ArmToggleBack;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.drivetrain.DriveToHatch;
 import frc.robot.commands.drivetrain.DriveToPort;
+import frc.robot.commands.drivetrain.FancyDriveToHatch;
 import frc.robot.commands.drivetrain.FindTarget;
 import frc.robot.commands.drivetrain.TurnToTarget;
 import frc.robot.subsystems.LimeLight;
@@ -68,7 +70,7 @@ public class OI {
 		// findTarget.whenPressed(new DriveToPort());
 
 		JoystickButton driveToHatch = new JoystickButton(m_driverGamepad, Constants.PS_TRIANGLE_BUTTON);
-		driveToHatch.whenPressed(new DriveToHatch());
+		driveToHatch.whenPressed(new DriveAndScoreHatch());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
