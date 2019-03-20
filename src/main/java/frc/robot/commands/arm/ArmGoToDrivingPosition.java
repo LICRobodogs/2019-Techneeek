@@ -1,12 +1,8 @@
 package frc.robot.commands.arm;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.Arm.ArmPistonState;
-import frc.robot.subsystems.Arm.ArmSide;
 
 /**
  *

@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.commands.arm.ArmGoToFrontCargo;
-import frc.robot.commands.arm.ArmGoToFrontCargo;
 import frc.robot.commands.arm.ArmGoToHome;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.elevator.ElevatorGoToIntake;

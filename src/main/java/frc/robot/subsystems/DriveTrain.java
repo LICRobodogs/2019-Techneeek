@@ -11,6 +11,9 @@ import frc.robot.Robot;
 import frc.robot.commands.JoystickDrive;
 import frc.util.Constants;
 import frc.util.ControlLoopable;
+import frc.util.drivers.DunkTalonSRX;
+import frc.util.drivers.DunkVictorSPX;
+
 
 public class DriveTrain extends Subsystem implements ControlLoopable {
 	private static DriveTrain instance = null;
@@ -62,8 +65,8 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
     private CANSparkMax leftDrive1;
     private CANSparkMax leftDrive2;
     private CANSparkMax rightDrive1;
-    private CANSparkMax rightDrive2;
-
+	private CANSparkMax rightDrive2;
+	
 	private DifferentialDrive m_drive;
 
 	@SuppressWarnings("unused")
@@ -81,12 +84,15 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 			rightDrive2.setIdleMode(IdleMode.kBrake);
 			
 			leftDrive2.follow(leftDrive1);
-            rightDrive2.follow(rightDrive1);
+			rightDrive2.follow(rightDrive1);
+			leftDrive1.setOpenLoopRampRate(0.2);
+			rightDrive1.setOpenLoopRampRate(0.2);
 			
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
 
 			m_drive.setSafetyEnabled(false);
-		} catch (Exception e) {
+		} 
+		 catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
 		}
 	}
@@ -112,11 +118,19 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 		m_moveInput = 0.5*OI.getInstance().getMoveInput();
 		m_steerInput = 0.5*OI.getInstance().getSteerInput();
 
-		m_drive.curvatureDrive(m_moveInput, m_steerInput, true);
+		m_drive.curvatureDrive(m_moveInput, -m_steerInput, true);
 	}
-	
+	public void drive(double steer) {
+		drive(0.5*OI.getInstance().getMoveInput(), steer);
+	}
 	public void drive(double move, double steer) {
-		m_drive.curvatureDrive(move, -steer, true);
+		// m_drive.curvatureDrive(move, -steer, true); //dont remember why steer is negated?
+		m_drive.curvatureDrive(move, steer, true);
+	}
+
+	public void arcadeDrive(double move, double steer) {
+		// m_drive.curvatureDrive(move, -steer, true); //dont remember why steer is negated?
+		m_drive.arcadeDrive(move, steer, false);
 	}
 
 	@Override

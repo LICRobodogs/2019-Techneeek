@@ -45,17 +45,14 @@ public class Constants {
 
 	public static final int SHIFT_ELEVATOR_PCM_ID = 6;
     public static final int SHIFT_FORK_PCM_ID = 7;
-    
-
-    //Loops
+	
+	//Loops
 	public static final int kTimeoutMs = 20;    
 	public static final int kTalonRetryCount = 3;
-
-
+	
     //Intake -- need units
     public static final double INTAKE_LOAD_SPEED = 0.65;
     public static final double INTAKE_EJECT_SPEED = -0.55;
-	
 	
 	//Kinematics
 	public static final double kSensorUnitsPerRotation = 4096.0;
@@ -95,7 +92,8 @@ public class Constants {
     public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
     //DT PID
-    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
+    // public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
+    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 4.0; //radius of wheel needed
 	public static final int DRIVE_TICKS_PER_FOOT = 3978; //Move robot 10 feet, get position from sensor, divide by 10
 
 	public static final double LEFT_P = 1.0;
@@ -110,6 +108,21 @@ public class Constants {
     
 
     // Input Device Constants
+
+	//ps4 controller
+	///********************* */
+	 //Controller
+	//  public static final int leftTriggerAxis = 3;
+	//  public static final int rightTriggerAxis = 4;
+	//  public static final int leftAnalogAxis = 0;
+	//  public static final double DEADZONE = 0.10;
+	 public static final int PS_SQUARE_BUTTON = 3;
+	 public static final int PS_X_BUTTON = 1;
+	 public static final int PS_CIRCLE_BUTTON = 2;
+	 public static final int PS_TRIANGLE_BUTTON = 4;
+	 public static final int PS_LB_BUTTON = 5;
+	 public static final int PS_RB_BUTTON = 6;
+
 
 	public static final double DRIVER_JOY1_C1 = .0089;
 	public static final double DRIVER_JOY1_C2 = .0737;
@@ -175,8 +188,26 @@ public class Constants {
 	public static final int LEFT_AXIS_UP_TRIGGER = 6;
 	public static final int LEFT_AXIS_DOWN_TRIGGER = 7;
 	public static final int LEFT_AXIS_RIGHT_TRIGGER = 8;
-    public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
-    
+	public static final int LEFT_AXIS_LEFT_TRIGGER = 9;
+	
+
+	//GameField
+	public static final double TARGET_PORT_HEIGHT = 39.125; //inches | front of rocket ship
+	public static final double TARGET_HATCH_HEIGHT = 31.0; //inches  | rocket side && loading station && cargo ship
+	public static final double TARGET_PORT_RANGE = 1.0; // inches away from target for scoring
+	public static final double TARGET_HATCH_RANGE = 23.0; // inches away from target for scoring
+	
+	//LimeLight
+	public static final double CAMERA_HEIGHT = 32.00;
+	public static final double CAMERA_MOUNT_ANGLE = 0.0;
+	public static final double kp_ll = 1.0;
+	public static final double HORIZONTAL_FOV = 54; // degrees
+	public static final double VERTICAL_FOV = 41; // degrees
+	
+	//Drivetrain
+	public static final double KpSteer = 0.0375; // 0.04 Proportional control constant for steering
+	public static final double KpDrive = 0.02; // 0.0175 Proportional control constant for steering
+
 
     
 }
