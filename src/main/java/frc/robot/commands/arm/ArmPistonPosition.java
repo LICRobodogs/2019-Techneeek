@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -8,7 +8,6 @@ public class ArmPistonPosition extends Command {
 	private ArmPistonState state;
 
 	public ArmPistonPosition(ArmPistonState state) {
-		requires(Robot.arm);
 		this.state = state;
 	}
 

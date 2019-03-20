@@ -19,23 +19,23 @@ public class Constants {
 	public static final int DRIVETRAIN_RIGHT_MOTOR1_ID = 4;
 	public static final int DRIVETRAIN_RIGHT_MOTOR2_ID = 5;
 
-	public static final int TOP_INTAKE_TALON_ID = 1;
+	public static final int TOP_INTAKE_TALON_ID = 2;
 	public static final int BOTTOM_INTAKE_VICTOR_ID = 7;
 
-	public static final int ELEVATOR_TALON1_ID = 1;
-	public static final int ELEVATOR_TALON2_ID = 2;
-    public static final int ELEVATOR_VICTOR1_ID = 1;
+	public static final int ELEVATOR_TALON1_ID = 5;
+	public static final int ELEVATOR_TALON2_ID = 6;
+    public static final int ELEVATOR_VICTOR1_ID = 8;
     
-	public static final int WRIST_TALON_ID = 3;
-	public static final int WRIST_VICTOR_ID = 2;
+	public static final int WRIST_TALON_ID = 1;
+	public static final int WRIST_VICTOR_ID = 9;
 
 	public static final int LEFT_SUCTION_TALON_ID = 3;
 	public static final int RIGHT_SUCTION_TALON_ID = 4;
 
 
 	// PNEUMATICS
-	public static final int BRAKE_DEPLOY_PCM_ID = 4;
-	public static final int BRAKE_RELEASE_PCM_ID = 5;
+	public static final int BRAKE_DEPLOY_PCM_ID = 5;
+	public static final int BRAKE_RELEASE_PCM_ID = 4;
 
 	public static final int LEFT_SUCTION_PCM_ID = 0;
 	public static final int RIGHT_SUCTION_PCM_ID = 1;
@@ -48,30 +48,54 @@ public class Constants {
     
 
     //Loops
-    public static final int loopMsTime = 10;
+	public static final int kTimeoutMs = 20;    
+	public static final int kTalonRetryCount = 3;
+
 
     //Intake -- need units
     public static final double INTAKE_LOAD_SPEED = 0.65;
     public static final double INTAKE_EJECT_SPEED = -0.55;
-    
+	
+	
+	//Kinematics
+	public static final double kSensorUnitsPerRotation = 4096.0;
+    public static final double k100msPerMinute = 600.0;
 
     //Arm
     public final double SCALE_ANGLE_SETPOINT = 230;
 	public final double SWITCH_ANGLE_SETPOINT = 80;
 	public static double mArmOnTargetTolerance = 10;
-	public static double mArmKp = 1;// .45
-	public static double mArmKi = 0.0;
-	public static double mArmKd = 0.25;// .25
-	public static double mArmKf = 0.0;
-	public static int mArmIZone = (int) (1023.0 / mArmKp);
-	public static double mArmRampRate = .2;
-    public static int mArmAllowableError = 0;
-    public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 2.0 / 12.0;
-    public static final double NATIVE_TO_ANGLE_FACTOR = (80 / 12) * (60 / 14);
+	public static double mArmUpKp = 4.5;// .45
+	public static double mArmUpKi = 0.0;
+	public static double mArmUpKd = 0.0;// .25
+	public static double mArmUpKf = 0.0;
+	public static int mArmUpIZone = (int) (1023.0 / mArmUpKp);
 
+	public static double mArmDownKp = 4;// .45
+	public static double mArmDownKi = 0.0;
+	public static double mArmDownKd = 0.0;// .25
+	public static double mArmDownKf = 0.0;
+	public static int mArmDownIZone = (int) (1023.0 / mArmDownKp);
+
+	public static double mArmRampRate = .2;
+    public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 4.0 / 12.0;
+    public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
+	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
+	// public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	public static final double ARM_HOLDING_PWM = 0.3;
+
+	//Elevator
+	public static final double ELEVATOR_NATIVE_TO_ANGLE_FACTOR = (100 / 12) * (84 / 14) * (84 / 32) * (20 / 32) * (16 / 18);
+    public static final int HATCH_LEVEL1_SETPOINT = 4000;
+    public static final int HATCH_LEVEL2_SETPOINT = 26500;
+    public static final int HATCH_LEVEL3_SETPOINT = 49000;
+
+	public static final int CARGO_LEVEL1_SETPOINT = 9500;
+	public static final int CARGO_LEVEL2_SETPOINT = 31000;
+    public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
     //DT PID
-    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 4.0;
+    public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
 	public static final int DRIVE_TICKS_PER_FOOT = 3978; //Move robot 10 feet, get position from sensor, divide by 10
 
 	public static final double LEFT_P = 1.0;
@@ -98,6 +122,8 @@ public class Constants {
     public static final int LEFT_X_AXIS = 0;
 	public static final int LEFT_Y_AXIS = 1;
 	public static final int LEFT_TRIGGER_AXIS = 2;
+	public static final int LEFT_PS4_TRIGGER_AXIS = 3;
+	public static final int RIGHT_PS4_TRIGGER_AXIS = 4;
 	public static final int RIGHT_TRIGGER_AXIS = 3;
 	public static final int RIGHT_X_AXIS = 4;
 	public static final int RIGHT_Y_AXIS = 5;
@@ -135,7 +161,7 @@ public class Constants {
 	public static final double LEFT_AXIS_RIGHT_TOLERANCE = 0.9;
 	public static final double LEFT_AXIS_LEFT_TOLERANCE = -0.9;
 
-    public static final double DEADZONE = 0.10;
+    public static final double DEADZONE = 0.025;
     
 
     //Gamepad Trigger

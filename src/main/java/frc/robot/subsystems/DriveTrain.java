@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -33,6 +34,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 	private double m_moveInput = Constants.m_moveInput;
 	private double m_steerInput = Constants.m_steerInput;
+	private double desiredSpeed = 0.4;
 
 	// NavX
 
@@ -73,7 +75,12 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
             leftDrive2 = new CANSparkMax(3,CANSparkMaxLowLevel.MotorType.kBrushless);
             rightDrive1 = new CANSparkMax(4,CANSparkMaxLowLevel.MotorType.kBrushless);
             rightDrive2 = new CANSparkMax(5,CANSparkMaxLowLevel.MotorType.kBrushless);
-            leftDrive2.follow(leftDrive1);
+			leftDrive1.setIdleMode(IdleMode.kBrake);
+			leftDrive2.setIdleMode(IdleMode.kBrake);
+			rightDrive1.setIdleMode(IdleMode.kBrake);
+			rightDrive2.setIdleMode(IdleMode.kBrake);
+			
+			leftDrive2.follow(leftDrive1);
             rightDrive2.follow(rightDrive1);
 			
 			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
@@ -109,7 +116,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	}
 	
 	public void drive(double move, double steer) {
-		m_drive.curvatureDrive(move, steer, true);
+		m_drive.curvatureDrive(move, -steer, true);
 	}
 
 	@Override
@@ -131,7 +138,7 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 	@Override
 	public void controlLoopUpdate() {
 		if (controlMode == DriveTrainControlMode.JOYSTICK) {
-			driveWithJoystick();
+			// driveWithJoystick();
 		} else if (controlMode == DriveTrainControlMode.AUTON) {
 			// executeMovement();
 			//leftDrive1.getMotionProfileStatus(statusLeft);
@@ -168,5 +175,13 @@ public class DriveTrain extends Subsystem implements ControlLoopable {
 
 	public static void setRunning(boolean isRunning) {
 		DriveTrain.isRunning = isRunning;
+	}
+
+	public double getDesiredSpeed(){
+		return this.desiredSpeed;
+	}
+
+	public void setDesiredSpeed(double speed){
+		this.desiredSpeed = speed;
 	}
 }

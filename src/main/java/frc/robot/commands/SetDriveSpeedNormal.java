@@ -4,24 +4,24 @@ import frc.robot.*;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class JoystickArm extends Command {
+public class SetDriveSpeedNormal extends Command {
 
 	@Override
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 
-    public JoystickArm(){
-        requires(Robot.arm);
+    public SetDriveSpeedNormal(){
+        requires(Robot.driveTrain);
     }
     
 
     public void initialize(){
-        
+        Robot.driveTrain.setDesiredSpeed(0.75);
     }
 
     public void execute() {
-       Robot.arm.moveWithJoystick();
+
     }
 
 }

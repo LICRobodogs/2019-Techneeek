@@ -8,13 +8,14 @@ public class IntakeSuction extends Command {
 	private IntakeState state;
 
 	public IntakeSuction(IntakeState state) {
-		requires(Robot.intake);
 		this.state = state;
 	}
 
 	@Override
 	protected void initialize() {
+		// System.out.println("suction " + state.toString());
 		Robot.intake.setSuction(state);
+
 	}
 
 	@Override

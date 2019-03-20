@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.OI;
@@ -23,7 +24,7 @@ public class Intake extends Subsystem implements ControlLoopable {
         SUCC_IN, SUCC_OUT
     };
 
-	
+	private IntakeState succState = IntakeState.SUCC_OUT;
 
 	private static Solenoid leftSuctionSolenoid;
 	private static Solenoid rightSuctionSolenoid;
@@ -61,8 +62,8 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSpeed(double speed) {
-		topIntake.set(ControlMode.PercentOutput, -speed);
-		bottomIntake.set(ControlMode.PercentOutput, speed);
+		topIntake.set(ControlMode.PercentOutput, speed);
+		bottomIntake.set(ControlMode.PercentOutput, -speed);
 	}
 
 	@Override
@@ -88,12 +89,13 @@ public class Intake extends Subsystem implements ControlLoopable {
 	}
 
 	public void setSuction(IntakeState state) {
-		if (state == IntakeState.SUCC_IN) {
+		this.succState = state;
+		if (succState == IntakeState.SUCC_IN) {
 			leftSuctionSolenoid.set(false);
             rightSuctionSolenoid.set(false);
             leftSuction.set(ControlMode.PercentOutput, 1);
             rightSuction.set(ControlMode.PercentOutput, 1);
-		} else if (state == IntakeState.SUCC_OUT) {
+		} else if (succState == IntakeState.SUCC_OUT) {
 			leftSuctionSolenoid.set(true);
             rightSuctionSolenoid.set(true);
             leftSuction.set(ControlMode.PercentOutput, 0);
@@ -103,9 +105,22 @@ public class Intake extends Subsystem implements ControlLoopable {
 
 	@Override
 	public void controlLoopUpdate() {
-		// if(Math.abs(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis())>0&&innerWheelPiston.get()==Value.kReverse)
-		// setIntakePiston(IntakePistonState.IN);
-		// setSpeed(0.6*(OI.getInstance().getDriverGamepad().getRightTriggerAxis()-OI.getInstance().getDriverGamepad().getLeftTriggerAxis()));
+		// if(getSuccState() == IntakeState.SUCC_IN){
+		// 	if(leftSuction.getOutputCurrent()>=0.375 && rightSuction.getOutputCurrent()>0.24){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 1);
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 1);
+		// 	}else if(leftSuction.getOutputCurrent()>=0.38){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0.5);				
+		// 	}else if(rightSuction.getOutputCurrent()>=0.24){
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0.25);
+		// 	}else{
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+		// 		Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);				
+		// 	}
+		// }else{
+		// 	Robot.oi.getDriverGamepad().setRumble(RumbleType.kLeftRumble, 0);
+		// 	Robot.oi.getDriverGamepad().setRumble(RumbleType.kRightRumble, 0);
+		// }
 	}
 
 	@Override
@@ -126,5 +141,9 @@ public class Intake extends Subsystem implements ControlLoopable {
 
 	public void setBottomSpeed(double speed) {
 		bottomIntake.set(ControlMode.PercentOutput, -speed);
+	}
+
+	public IntakeState getSuccState() {
+		return succState;
 	}
 }
