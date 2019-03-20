@@ -1,15 +1,15 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.InternalButton;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.controller.GamePad;
 import frc.controller.GamePad.DPadButton;
-import frc.controller.Ps4_Controller;
 import frc.robot.commands.DriveAndScoreHatch;
+import frc.robot.commands.limelight.OffLED;
 import frc.robot.commands.IntakePositionAvoidCollision;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
@@ -60,17 +60,20 @@ public class OI {
 		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.PS_RB_BUTTON);
 		// findTarget.whenPressed(new FindTarget());
 
-		// JoystickButton turnToTarget = new JoystickButton(m_driverGamepad, Constants.PS_X_BUTTON);
+		// JoystickButton turnToTarget = new JoystickButton(m_driverGamepad,
+		// Constants.PS_X_BUTTON);
 		// findTarget.whenPressed(new TurnToTarget());
 
-		// JoystickButton turnToTarget = new JoystickButton(m_driverGamepad, Constants.PS_X_BUTTON);
+		// JoystickButton turnToTarget = new JoystickButton(m_driverGamepad,
+		// Constants.PS_X_BUTTON);
 		// findTarget.whenPressed(limeLight.recalibrate());
 
 		JoystickButton driveToPort = new JoystickButton(m_driverGamepad, Constants.PS_SQUARE_BUTTON);
 		// findTarget.whenPressed(new DriveToPort());
 
 		JoystickButton driveToHatch = new JoystickButton(m_driverGamepad, Constants.PS_TRIANGLE_BUTTON);
-		driveToHatch.whenPressed(new DriveAndScoreHatch());
+		driveToHatch.whileHeld(new DriveAndScoreHatch());
+		driveToHatch.whenReleased(new OffLED());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));

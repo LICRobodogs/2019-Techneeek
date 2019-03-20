@@ -325,7 +325,19 @@ public class LimeLight extends Subsystem {
     public void fancyGetInRange(double desired_distance, double current_distance, double steer) {
         double distance_error = current_distance - desired_distance;
         double driving_adjust = Constants.KpDrive * distance_error;
+        // if(driving_adjust > 0.3){
+        //     driving_adjust = 0.3;
+        // }
         steer = Constants.KpSteer * steer;
+        // if(Math.abs(steer) > 0.6){
+        //     if(steer > 0.6){
+        //         steer = 0.6;
+        //     }
+        //     if(steer < -0.6){
+        //         steer = -0.6;
+        //     }
+        // }
+        // Robot.driveTrain.arcadeDrive(-driving_adjust, -steer);
         Robot.driveTrain.arcadeDrive(0.7*-driving_adjust, -steer);
     }
 

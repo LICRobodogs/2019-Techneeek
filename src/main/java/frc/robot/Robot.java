@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot {
   	private double m_LimelightDriveCommand = 0.0;
   	private double m_LimelightSteerCommand = 0.0;
 
-
+	private Spark pump;
 
 	public static DriveTrain driveTrain;
 	public static Intake intake;
@@ -71,6 +72,7 @@ public class Robot extends TimedRobot {
 		oi = OI.getInstance();
 		// CameraServer.getInstance().startAutomaticCapture();
 		limeLight = LimeLight.getInstance();
+		pump = new Spark(0);
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
@@ -112,6 +114,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		updateStatus();
 		Scheduler.getInstance().run();
+		if(oi.getDriverGamepad().getAButton()){
+			pump.set(0.4);
+		}else{
+			pump.set(0);
+		}
 	}
 
 	public void disabledInit() {
