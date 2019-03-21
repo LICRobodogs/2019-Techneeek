@@ -10,6 +10,7 @@ import frc.robot.subsystems.Intake.IntakeState;
 public class ScoreBottomHeight extends Command {    
     public ScoreBottomHeight() {
         requires(Robot.arm);
+        requires(Robot.elevator);
     }
 
     protected void initialize() {
@@ -47,6 +48,10 @@ public class ScoreBottomHeight extends Command {
     }
 
     protected boolean isFinished() {
-        return (Robot.arm.getSide() == ArmSide.BACK && Robot.arm.getDesiredSide() == ArmSide.BACK) || (Robot.arm.getSide() == ArmSide.FRONT && Robot.arm.getDesiredSide() == ArmSide.FRONT);
+        // if((Robot.arm.getSide() == ArmSide.BACK && Robot.arm.getDesiredSide() == ArmSide.BACK) || (Robot.arm.getSide() == ArmSide.FRONT && Robot.arm.getDesiredSide() == ArmSide.FRONT)){
+        //     System.out.println("~~~ BOTTOM HEIGHT DONE ~~~");
+        //     return true;
+        // }
+        return false;
     }
 }

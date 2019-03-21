@@ -57,9 +57,6 @@ public class ArmGoToHome extends Command {
     protected void end() {
         Robot.arm.setHasMoved(true);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
-        Robot.arm.getMasterTalon().set(ControlMode.PercentOutput,0);
-        new WaitCommand("before braking",3).start();
-        Robot.arm.setArmPiston(ArmPistonState.RELEASE);
     }
 
     // Called when another command which requires one or more of the same

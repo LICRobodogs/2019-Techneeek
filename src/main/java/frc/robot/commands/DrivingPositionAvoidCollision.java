@@ -4,17 +4,14 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
+import frc.robot.commands.arm.ArmGoToDrivingPosition;
 import frc.robot.commands.arm.ArmGoToFrontCargo;
-import frc.robot.commands.arm.ArmGoToHome;
-import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleFront;
-import frc.robot.commands.arm.ReleaseArm;
-import frc.robot.commands.elevator.ElevatorGoToIntake;
-import frc.robot.subsystems.Arm.ArmPistonState;
+import frc.robot.commands.elevator.ElevatorGoToDriving;
 import frc.robot.subsystems.Arm.ArmSide;
 
-public class IntakePositionAvoidCollision extends Command {
-    public IntakePositionAvoidCollision() {
+public class DrivingPositionAvoidCollision extends Command {
+    public DrivingPositionAvoidCollision() {
         requires(Robot.arm);
         requires(Robot.elevator);
     }
@@ -32,22 +29,16 @@ public class IntakePositionAvoidCollision extends Command {
             addSequential(new PreventElevatorCollision());
             addSequential(new ArmGoToFrontCargo());
             addSequential(new WaitCommand(0.25));
-            addSequential(new ElevatorGoToIntake());
-            addSequential(new ArmGoToHome());
-            addSequential(new ReleaseArm());
+            addSequential(new ElevatorGoToDriving());
+            addSequential(new ArmGoToDrivingPosition());
             addSequential(new ArmToggleFront());
-            addSequential(new WaitCommand(1));
-            addSequential(new ArmPistonPosition(ArmPistonState.BRAKE));
         }
     }
 
     private static class GoToIntake extends CommandGroup {
         public GoToIntake() {
-            addSequential(new ArmGoToHome());
-            addSequential(new ElevatorGoToIntake());
-            addSequential(new ReleaseArm());
-            addSequential(new WaitCommand(1));
-            addSequential(new ArmPistonPosition(ArmPistonState.BRAKE));
+            addParallel(new ElevatorGoToDriving());
+            addParallel(new ArmGoToDrivingPosition());
         }
     }
 

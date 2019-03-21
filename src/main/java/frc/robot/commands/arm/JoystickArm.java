@@ -11,7 +11,7 @@ public class JoystickArm extends Command {
 
 	@Override
     protected boolean isFinished() {
-        return true;
+        return Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())<0.15;
     }
 
     protected void end(){
@@ -24,7 +24,9 @@ public class JoystickArm extends Command {
     
 
     public void initialize(){
-        Robot.arm.setArmPiston(ArmPistonState.RELEASE);
+        if(Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())>0.15){
+            Robot.arm.setArmPiston(ArmPistonState.RELEASE);
+        }
     }
 
     @Override
@@ -32,15 +34,13 @@ public class JoystickArm extends Command {
         if(Robot.oi.getOperatorGamepad().getRightYAxis()>0){
 			signal = -0.3*Robot.oi.getOperatorGamepad().getRightYAxis();
 		}else{
-			signal = -0.95*Robot.oi.getOperatorGamepad().getRightYAxis();
+			signal = -0.3*Robot.oi.getOperatorGamepad().getRightYAxis();
 
         }
         SmartDashboard.putNumber("signal", signal);
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
         // Robot.elevator.motionMagicControl();
-        if(Robot.arm.isValidPosition(signal,true)){
-            Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
-        }
+        Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
     }
 
 }

@@ -74,11 +74,11 @@ public class Constants {
 	public static double mArmDownKf = 0.0;
 	public static int mArmDownIZone = (int) (1023.0 / mArmDownKp);
 
-	public static double mArmRampRate = .2;
+	public static double mArmRampRate = .1;
     public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 4.0 / 12.0;
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
 	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
-	// public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	// public static final int START_CONFIG_ANGLE = 1850; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	public static final double ARM_HOLDING_PWM = 0.3;
 
 	//Elevator
@@ -90,6 +90,8 @@ public class Constants {
 	public static final int CARGO_LEVEL1_SETPOINT = 9500;
 	public static final int CARGO_LEVEL2_SETPOINT = 31000;
     public static final int CARGO_LEVEL3_SETPOINT = 51500;
+
+	public static final int DRIVING_SETPOINT = 11500;
 
     //DT PID
     // public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;

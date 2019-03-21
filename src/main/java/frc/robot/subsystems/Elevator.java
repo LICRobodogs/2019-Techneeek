@@ -34,7 +34,6 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
     private int homePosition = 5000;
 	private int collectPosition = 4300;
-	private int switchPosition = 16000;
 	private int autoSwitchPostion = 20000;
 	private int topOfFirstStagePosition = 32000;
 	private int minimumDunkHeight = 26500;
@@ -175,8 +174,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		return this.collectPosition;
 	}
 
-	public int getSwitchPosition() {
-		return this.switchPosition;
+	public int getDrivingPosition() {
+		return Constants.DRIVING_SETPOINT;
 	}
 
 	public int getAutoSwitchPosition() {

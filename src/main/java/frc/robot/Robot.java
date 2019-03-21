@@ -66,19 +66,18 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		driveTrain = DriveTrain.getInstance();
-		// intake = Intake.getInstance();
-		// arm = Arm.getInstance();
-		// elevator = Elevator.getInstance();
+		intake = Intake.getInstance();
+		arm = Arm.getInstance();
+		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
-		// CameraServer.getInstance().startAutomaticCapture();
 		limeLight = LimeLight.getInstance();
-		pump = new Spark(0);
+		// pump = new Spark(0);
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
-		// comp = new Compressor();
+		comp = new Compressor();
 		// setupAutonChooser();
-		// elevator.elevatorLead.setSelectedSensorPosition(4000);
+		elevator.elevatorLead.setSelectedSensorPosition(4000);
 		// arm.setStartConfigAngle();
 	}
 
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		// comp.start();
+		comp.start();
 		// autonomousCommand.cancel();
 		limeLight.setLEID(LED.ON);
 		Scheduler.getInstance().removeAll();
@@ -114,11 +113,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		updateStatus();
 		Scheduler.getInstance().run();
-		if(oi.getDriverGamepad().getAButton()){
-			pump.set(0.4);
-		}else{
-			pump.set(0);
-		}
+		// if(oi.getDriverGamepad().getAButton()){
+		// 	pump.set(0.4);
+		// }else{
+		// 	pump.set(0);
+		// }
 	}
 
 	public void disabledInit() {
@@ -140,17 +139,17 @@ public class Robot extends TimedRobot {
 	}
 
 	public void updateStatus() {
-		// arm.updateStatus(operationMode);
+		arm.updateStatus(operationMode);
 		// driveTrain.updateStatus(operationMode);
-		// intake.updateStatus(operationMode);
+		intake.updateStatus(operationMode);
 		// limeLight.getBasicData();
 		limeLight.postAllData();
 	}
 
-	public void setupAutonChooser() {
-		m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
-        SmartDashboard.putData("Auto choices", m_chooser);
-	}
+	// public void setupAutonChooser() {
+	// 	m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    //     m_chooser.addOption("My Auto", kCustomAuto);
+    //     SmartDashboard.putData("Auto choices", m_chooser);
+	// }
 	
 }

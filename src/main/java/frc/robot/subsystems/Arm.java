@@ -4,14 +4,13 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.commands.arm.JoystickArm;
 import frc.util.Constants;
 import frc.util.drivers.DunkVictorSPX;
 import frc.util.drivers.IPositionControlledSubsystem;
@@ -65,7 +64,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public final static int WRIST_PROFILE_DOWN = 1;
 
 	private int targetPosition = homePosition;
-	private final static int onTargetThreshold = 20;
+	private final static int onTargetThreshold = 50;
 
 	private SRXGains upGains = new SRXGains(WRIST_PROFILE_UP, Constants.mArmUpKp, Constants.mArmUpKi, Constants.mArmUpKd, Constants.mArmUpKf, Constants.mArmUpIZone);
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
@@ -74,10 +73,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private MotionParameters downMotionParameters = new MotionParameters(1000, 1000, downGains);
 	
 	public double mAngle;
-
-
-	private DigitalInput homeLimit;
-
+	
 	private Arm() {
 		try {
 			armTalon = new LeaderDunkTalonSRX(Constants.WRIST_TALON_ID);
@@ -87,8 +83,8 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 			armFollower.follow(armTalon);
 			armFollower.setInverted(true);
 			
-			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
-			this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
+			// this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10);
+			// this.armTalon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10);
 
 			this.armTalon.configForwardSoftLimitEnable(true);
 			this.armTalon.configForwardSoftLimitThreshold(upPositionLimit);
@@ -143,7 +139,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		// 	setControlMode(ArmControlMode.HOLD);
 		// }
 		// if (this.controlMode == ArmControlMode.MANUAL && Math.abs(angle) > Constants.ARM_HOLDING_PWM) {
-		// 	armTalon.set(ControlMode.PercentOutput, angle, DemandType.ArbitraryFeedForward,getFeedForward());
+			armTalon.set(ControlMode.PercentOutput, angle);
 		// } else if (this.controlMode == ArmControlMode.TEST) {
 
 		// } else if (this.controlMode == ArmControlMode.HOLD) {
@@ -190,7 +186,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	@Override
 	protected void initDefaultCommand() {
-		// setDefaultCommand(new JoystickArm());
+		setDefaultCommand(new JoystickArm());
 	}
 
 	//sets control mode to motion magic
@@ -257,6 +253,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public boolean setTargetPosition(int position) {
 		manageLimits();
 		if (!isValidPosition(position)) {
+			System.out.println("~~~~NOT A VALID POSITION~~~~");
 			return false;
 		} else {
 			this.targetPosition = position;
@@ -269,7 +266,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		SmartDashboard.putString("Side: ", getSide().toString());
 		SmartDashboard.putString("Desired Side: ", getDesiredSide().toString());
 		SmartDashboard.putNumber("Arm RAW Angle: ", getCurrentPosition());
-		// SmartDashboard.putBoolean("onTarget", isOnTarget());
+		SmartDashboard.putBoolean("onTarget", isOnTarget());
 		SmartDashboard.putNumber("Arm Motor Current", armTalon.getOutputCurrent());
 		SmartDashboard.putNumber("PWM:", armTalon.getMotorOutputVoltage());
 		SmartDashboard.putNumber("FeedForward:", getFeedForward());
@@ -289,12 +286,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	public boolean isOnTarget() {
-		if ((getAngleSetpoint() == 0 && isHome())
-				|| (armTalon.getControlMode() == ControlMode.PercentOutput && controlMode == ArmControlMode.MANUAL))
-			return true;
-		else
-			return (armTalon.getControlMode() == ControlMode.Position
-					&& Math.abs(getAngleSetpoint() - Math.abs(getArmAngle())) < Constants.mArmOnTargetTolerance);
+		return armTalon.getClosedLoopError() <= onTargetThreshold;
 	}
 
 	public double getAngleSetpoint() {
@@ -385,7 +377,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	}
 
 	public boolean isHome() {
-		return homeLimit.get();
+		return Math.abs(getArmAngle()-getHomePosition())==onTargetThreshold;
 	}
 
 	public int getFrontCargoPosition(){
@@ -446,6 +438,6 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	public boolean isInPosition(int targetPosition) {
 		int currentPosition = getCurrentPosition();
 		int positionError = Math.abs(currentPosition - targetPosition);
-		return positionError < onTargetThreshold;
+		return positionError <= onTargetThreshold;
 	}
 }
