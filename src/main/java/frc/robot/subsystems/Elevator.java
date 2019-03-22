@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.elevator.JoystickElevator;
@@ -50,6 +52,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	private double arbitraryFeedForward = 0.07;
 
 	private final static int onTargetThreshold = 700; // changed to 500 from 100 for testing on practice field
+	
+	public static DoubleSolenoid shiftPiston;
     
     //                                            slot          p      i     d      f    izone
 	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.30, 0.0, 0.0, 0.0, 0);
@@ -94,6 +98,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		// this.elevatorLead.configPeakOutputForward(0.2);
 
 		this.elevatorLead.setSelectedSensorPosition(0);
+
+		shiftPiston = new DoubleSolenoid(Constants.SHIFT_ELEVATOR_PCM_ID, Constants.SHIFT_CLIMBER_PCM_ID);
 	}
 
 	public void initDefaultCommand() {
@@ -164,6 +170,14 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public boolean isValidPosition(int position) {
 		boolean withinBounds = position <= upPositionLimit && position >= downPositionLimit;
 		return withinBounds;
+	}
+
+	// public boolean isSensorPresent(){
+	// 	return elevatorLead.isAlive()
+	// }
+
+	public boolean isClimberEngaged(){
+		return shiftPiston.get() == Value.kForward;
 	}
 
 	public int getHomePosition() {

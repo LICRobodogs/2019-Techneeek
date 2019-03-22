@@ -9,9 +9,9 @@ import frc.robot.*;
 /**
  *
  */
-public class ElevatorStop extends Command {
+public class KillElevator extends Command {
 
-	public ElevatorStop() {
+	public KillElevator() {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.elevator);
 	}
@@ -32,6 +32,7 @@ public class ElevatorStop extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
+        System.out.println("~~~ELEVATOR EMERGENCY STOPPED~~~");
 	}
 
 	// Called when another command which requires one or more of the same

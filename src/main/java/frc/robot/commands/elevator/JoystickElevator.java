@@ -36,8 +36,11 @@ public class JoystickElevator extends Command {
 		}
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
 		// Robot.elevator.motionMagicControl();
-		Robot.elevator.setElevator(ControlMode.PercentOutput, signal);
-
+		if(!Robot.elevator.isClimberEngaged()){
+			Robot.elevator.setElevator(ControlMode.PercentOutput, signal);
+		}else{
+			
+		}
 		// System.out.println("Elevator Velocity" +
 		// Robot.elevator.elevatorLead.getSelectedSensorVelocity(0));
 	}

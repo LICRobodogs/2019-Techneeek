@@ -13,6 +13,7 @@ import frc.robot.commands.IntakePositionAvoidCollision;
 import frc.robot.commands.IntakeSpeed;
 import frc.robot.commands.IntakeSpeedOff;
 import frc.robot.commands.IntakeSuction;
+import frc.robot.commands.KillAll;
 import frc.robot.commands.ScoreBottomHeight;
 import frc.robot.commands.ScoreHatch;
 import frc.robot.commands.ScoreMiddleHeight;
@@ -24,6 +25,9 @@ import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleBack;
 import frc.robot.commands.arm.ArmToggleFront;
+import frc.robot.commands.arm.KillArm;
+import frc.robot.commands.drivetrain.KillDrive;
+import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.limelight.OffLED;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -109,14 +113,26 @@ public class OI {
 		JoystickButton level3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
 		level3.whenPressed(new ScoreTopHeight());
 
-		Button armRest = new InternalButton();
-		armRest.whenPressed(new ArmGoToRest());
-		SmartDashboard.putData("Arm Rest", armRest);
+		Button armDriving = new InternalButton();
+		armDriving.whenPressed(new DrivingPositionAvoidCollision());
+		SmartDashboard.putData("Arm Driving", armDriving);
 
-		Button armBackCargo = new InternalButton();
-		armBackCargo.whenPressed(new ArmGoToBackCargo());
-		SmartDashboard.putData("Arm Back Cargo", armBackCargo);
+		Button killArm = new InternalButton();
+		killArm.whenPressed(new KillArm());
+		SmartDashboard.putData("KILL ARM", killArm);
+
+		Button killElevator = new InternalButton();
+		killElevator.whenPressed(new KillElevator());
+		SmartDashboard.putData("KILL ELEVATOR", killElevator);
 		
+		Button killDrive = new InternalButton();
+		killDrive.whenPressed(new KillDrive());
+		SmartDashboard.putData("KILL DRIVE", killDrive);
+
+		Button killAll = new InternalButton();
+		killAll.whenPressed(new KillAll());
+		SmartDashboard.putData("KILL ALL", killAll);
+
 		// Pneumatics Diagonostics
 
 		Button testSuctionGrab = new InternalButton();

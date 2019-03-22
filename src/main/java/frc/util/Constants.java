@@ -44,7 +44,7 @@ public class Constants {
 	public static final int SHOOT_OUT_PCM_ID = 2;
 
 	public static final int SHIFT_ELEVATOR_PCM_ID = 6;
-    public static final int SHIFT_FORK_PCM_ID = 7;
+    public static final int SHIFT_CLIMBER_PCM_ID = 7;
 	
 	//Loops
 	public static final int kTimeoutMs = 20;    
