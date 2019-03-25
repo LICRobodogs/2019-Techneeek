@@ -79,6 +79,10 @@ public class Robot extends TimedRobot {
 		// setupAutonChooser();
 		elevator.elevatorLead.setSelectedSensorPosition(4000);
 		// arm.setStartConfigAngle();
+
+		elevator.disEngageClimber();
+		elevator.disEngageGravity();
+		elevator.disEngageRope();
 	}
 
 	@Override

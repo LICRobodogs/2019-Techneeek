@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -53,7 +54,9 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 
 	private final static int onTargetThreshold = 700; // changed to 500 from 100 for testing on practice field
 	
-	public static DoubleSolenoid shiftPiston;
+	public static DoubleSolenoid shiftPiston, ropePiston, gPiston;
+
+	public static DigitalOutput climbLimitSwitch;
     
     //                                            slot          p      i     d      f    izone
 	private final SRXGains upGains = new SRXGains(ELEVATOR_UP, 0.30, 0.0, 0.0, 0.0, 0);
@@ -66,6 +69,8 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public final DunkVictorSPX elevatorVictorFollower = new DunkVictorSPX(Constants.ELEVATOR_VICTOR1_ID);
 	public final DunkTalonSRX elevatorTalonFollower = new DunkTalonSRX(Constants.ELEVATOR_TALON2_ID);
 	public final LeaderDunkTalonSRX elevatorLead = new LeaderDunkTalonSRX(Constants.ELEVATOR_TALON1_ID, elevatorTalonFollower, elevatorVictorFollower);
+
+	public final DunkTalonSRX climbSUCC = new DunkTalonSRX(Constants.SUCC_TALON1_ID);
 
 	public Elevator() {
 		this.elevatorLead.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
@@ -100,6 +105,9 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		this.elevatorLead.setSelectedSensorPosition(0);
 
 		shiftPiston = new DoubleSolenoid(Constants.SHIFT_ELEVATOR_PCM_ID, Constants.SHIFT_CLIMBER_PCM_ID);
+		ropePiston = new DoubleSolenoid(1,Constants.ROPE_IN_PCM_ID, Constants.ROPE_OUT_PCM_ID); //todo change
+		gPiston = new DoubleSolenoid(1,Constants.G_IN_PCM_ID, Constants.G_OUT_PCM_ID);
+		climbLimitSwitch = new DigitalOutput(Constants.CLIMB_LIMIT_SWITCH_ID);
 	}
 
 	public void initDefaultCommand() {
@@ -154,6 +162,20 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 			return true;
 		}
 	}
+	public void stopSUCC() {
+		climbSUCC.set(0);
+	}
+	public void startSUCC() {
+		climbSUCC.set(ControlMode.PercentOutput, 40);
+	}
+
+	public boolean isDoneSUCCing() {
+		return climbSUCC.getOutputCurrent() > Constants.SUCC_DONE_CURRENT;
+	}
+
+	public boolean isAtClimbLimit() {
+		return climbLimitSwitch.get() == true;
+	}
 
 	public void forceSetTargetPosition(int position) {
 		this.targetPosition = position;
@@ -179,7 +201,24 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 	public boolean isClimberEngaged(){
 		return shiftPiston.get() == Value.kForward;
 	}
-
+	public void engageClimber() {
+		shiftPiston.set(Value.kForward);
+	}
+	public void engageRope() {
+		ropePiston.set(Value.kForward);
+	}
+	public void engageGravity() {
+		gPiston.set(Value.kForward);
+	}
+	public void disEngageClimber() {
+		shiftPiston.set(Value.kReverse);
+	}
+	public void disEngageRope() {
+		ropePiston.set(Value.kReverse);
+	}
+	public void disEngageGravity() {
+		gPiston.set(Value.kReverse);
+	}
 	public int getHomePosition() {
 		return this.homePosition;
 	}

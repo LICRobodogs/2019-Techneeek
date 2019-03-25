@@ -19,15 +19,14 @@ import frc.robot.commands.ScoreHatch;
 import frc.robot.commands.ScoreMiddleHeight;
 import frc.robot.commands.ScoreTopHeight;
 import frc.robot.commands.SetDriveSpeedNormal;
-import frc.robot.commands.SetDriveSpeedSlow;
-import frc.robot.commands.arm.ArmGoToBackCargo;
-import frc.robot.commands.arm.ArmGoToRest;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleBack;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.arm.KillArm;
 import frc.robot.commands.drivetrain.KillDrive;
+import frc.robot.commands.elevator.EngageGravity;
 import frc.robot.commands.elevator.KillElevator;
+import frc.robot.commands.elevator.PrepareClimber;
 import frc.robot.commands.limelight.OffLED;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
@@ -46,10 +45,10 @@ public class OI {
 		// DRIVER CONTROLS
 		
 		JoystickButton setDriveSpeedSlow = new JoystickButton(m_driverGamepad, Constants.BACK_BUTTON);
-		setDriveSpeedSlow.whenPressed(new SetDriveSpeedSlow());
+		setDriveSpeedSlow.whenPressed(new EngageGravity());
 
 		JoystickButton setDriveSpeedNormal = new JoystickButton(m_driverGamepad, Constants.START_BUTTON);
-		setDriveSpeedNormal.whenPressed(new SetDriveSpeedNormal());
+		setDriveSpeedNormal.whenPressed(new PrepareClimber());
 
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
 		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));

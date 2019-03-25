@@ -24,7 +24,9 @@ public class Constants {
 
 	public static final int ELEVATOR_TALON1_ID = 5;
 	public static final int ELEVATOR_TALON2_ID = 6;
-    public static final int ELEVATOR_VICTOR1_ID = 8;
+	public static final int ELEVATOR_VICTOR1_ID = 8;
+	
+	public static final int SUCC_TALON1_ID = 10;
     
 	public static final int WRIST_TALON_ID = 1;
 	public static final int WRIST_VICTOR_ID = 9;
@@ -44,7 +46,15 @@ public class Constants {
 	public static final int SHOOT_OUT_PCM_ID = 2;
 
 	public static final int SHIFT_ELEVATOR_PCM_ID = 6;
-    public static final int SHIFT_CLIMBER_PCM_ID = 7;
+	public static final int SHIFT_CLIMBER_PCM_ID = 7;
+	
+	public static final int ROPE_IN_PCM_ID = 0;
+	public static final int ROPE_OUT_PCM_ID = 1;
+	
+	public static final int G_IN_PCM_ID = 2;
+	public static final int G_OUT_PCM_ID = 3;
+
+	public static final int CLIMB_LIMIT_SWITCH_ID = 0;
 	
 	//Loops
 	public static final int kTimeoutMs = 20;    
@@ -92,6 +102,8 @@ public class Constants {
     public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
 	public static final int DRIVING_SETPOINT = 11500;
+
+	public static final double SUCC_DONE_CURRENT = 2.0;
 
     //DT PID
     // public static final double ENCODER_TICKS_TO_INCHES = 4096 * Math.PI * 6.0;
