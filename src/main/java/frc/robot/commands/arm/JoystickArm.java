@@ -1,17 +1,16 @@
 package frc.robot.commands.arm;
 
-import frc.robot.*;
+import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Arm.ArmControlMode;
 import frc.robot.subsystems.Arm.ArmPistonState;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class JoystickArm extends Command {
-	private double signal = 0;
+    private double signal = 0;
 
 	@Override
     protected boolean isFinished() {
-        return Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())<0.15;
+        return Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())<0.25;
     }
 
     protected void end(){
@@ -31,16 +30,21 @@ public class JoystickArm extends Command {
 
     @Override
     protected void execute() {
-        if(Robot.oi.getOperatorGamepad().getRightYAxis()>0){
-			signal = -0.3*Robot.oi.getOperatorGamepad().getRightYAxis();
-		}else{
-			signal = -0.3*Robot.oi.getOperatorGamepad().getRightYAxis();
-
+        if(Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())>0.15){
+			signal = Robot.oi.getOperatorGamepad().getRightYAxis();
+		}else if(Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())<0.15){
+			signal = -Robot.oi.getOperatorGamepad().getRightYAxis();
+        }else{
+            signal = 0.0;
         }
-        SmartDashboard.putNumber("signal", signal);
-		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
-        // Robot.elevator.motionMagicControl();
-        Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
+        // }
+        // SmartDashboard.putNumber("signal", signal);
+		// // Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
+        // // Robot.elevator.motionMagicControl();
+        if(Math.abs(Robot.oi.getOperatorGamepad().getRightYAxis())>0.15){
+            Robot.arm.setArmAngle(ArmControlMode.MANUAL, signal);
+        }
     }
-
 }
+
+

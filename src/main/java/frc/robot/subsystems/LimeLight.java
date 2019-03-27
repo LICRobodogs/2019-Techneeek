@@ -419,7 +419,7 @@ public class LimeLight extends Subsystem {
     public boolean isAtTarget(TargetType target) {
         switch (target) {
         case HATCH:
-            return Math.floor(getCamtranDistance()) <= 15.0;
+            return Math.floor(getCamtranDistance()) <= 19.0;
         case PORT:
             return getCamtranDistance() <= accepted_error_distance;
         default:

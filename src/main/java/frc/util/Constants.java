@@ -45,14 +45,14 @@ public class Constants {
 	public static final int SHOOT_IN_PCM_ID = 3;
 	public static final int SHOOT_OUT_PCM_ID = 2;
 
-	public static final int SHIFT_ELEVATOR_PCM_ID = 6;
-	public static final int SHIFT_CLIMBER_PCM_ID = 7;
+	public static final int SHIFT_ELEVATOR_PCM_ID = 7;
+	public static final int SHIFT_CLIMBER_PCM_ID = 6;
 	
-	public static final int ROPE_IN_PCM_ID = 0;
-	public static final int ROPE_OUT_PCM_ID = 1;
+	public static final int ROPE_IN_PCM_ID = 1;
+	public static final int ROPE_OUT_PCM_ID = 0;
 	
-	public static final int G_IN_PCM_ID = 2;
-	public static final int G_OUT_PCM_ID = 3;
+	public static final int G_IN_PCM_ID = 3;
+	public static final int G_OUT_PCM_ID = 2;
 
 	public static final int CLIMB_LIMIT_SWITCH_ID = 0;
 	
@@ -84,11 +84,11 @@ public class Constants {
 	public static double mArmDownKf = 0.0;
 	public static int mArmDownIZone = (int) (1023.0 / mArmDownKp);
 
-	public static double mArmRampRate = .1;
+	public static double mArmRampRate = .25;
     public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 4.0 / 12.0;
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
-	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
-	// public static final int START_CONFIG_ANGLE = 1850; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	// public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
+	public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	public static final double ARM_HOLDING_PWM = 0.3;
 
 	//Elevator
@@ -101,7 +101,7 @@ public class Constants {
 	public static final int CARGO_LEVEL2_SETPOINT = 31000;
     public static final int CARGO_LEVEL3_SETPOINT = 51500;
 
-	public static final int DRIVING_SETPOINT = 11500;
+	public static final int DRIVING_SETPOINT = 13000;
 
 	public static final double SUCC_DONE_CURRENT = 2.0;
 

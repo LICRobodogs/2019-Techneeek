@@ -35,15 +35,15 @@ public class JoystickElevator extends Command {
 		// Robot.elevator.incrementTargetPosition((int) (signal * positionIncrement));
 		// Robot.elevator.motionMagicControl();
 		
-		if (!Robot.elevator.isAtClimbLimit()) {
+		// if (!Robot.elevator.isAtClimbLimit()) {
 			Robot.elevator.setElevator(ControlMode.PercentOutput, signal);
-		} else {
-			Robot.elevator.setElevator(ControlMode.PercentOutput, 0);
-		}
+		// } else {
+		// 	Robot.elevator.setElevator(ControlMode.PercentOutput, 0);
+		// }
 
-		if (Robot.elevator.isDoneSUCCing()) {
-			SmartDashboard.putBoolean("DONE SUCC",true);
-		}
+		// if (Robot.elevator.isDoneSUCCing()) {
+		// 	SmartDashboard.putBoolean("DONE SUCC",true);
+		// }
 		// System.out.println("Elevator Velocity" +
 		// Robot.elevator.elevatorLead.getSelectedSensorVelocity(0));
 	}

@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.commands.IntakePositionAvoidCollision;
+import frc.robot.commands.IntakeSuction;
+import frc.robot.commands.ScoreMiddleHeight;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.Intake.IntakeState;
 import frc.robot.subsystems.LimeLight.LED;
 import frc.util.Constants;
 import frc.util.ControlLooper;
@@ -34,8 +38,6 @@ public class Robot extends TimedRobot {
 	private boolean m_LimelightHasValidTarget = false;
   	private double m_LimelightDriveCommand = 0.0;
   	private double m_LimelightSteerCommand = 0.0;
-
-	private Spark pump;
 
 	public static DriveTrain driveTrain;
 	public static Intake intake;
@@ -71,29 +73,33 @@ public class Robot extends TimedRobot {
 		elevator = Elevator.getInstance();
 		oi = OI.getInstance();
 		limeLight = LimeLight.getInstance();
-		// pump = new Spark(0);
 		// controlLoop.addLoopable(driveTrain);
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
 		comp = new Compressor();
 		// setupAutonChooser();
-		elevator.elevatorLead.setSelectedSensorPosition(4000);
-		// arm.setStartConfigAngle();
+		
 
 		elevator.disEngageClimber();
 		elevator.disEngageGravity();
 		elevator.disEngageRope();
+		CameraServer.getInstance().startAutomaticCapture();
+		// elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
+		// arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
 	}
 
 	@Override
 	public void robotPeriodic() {
-		// limeLight.postAllData();
+		// SmartDashboard.putNumber("Arm Position", elevator.getCurrentPosition());
+		limeLight.postAllData();
 		// updateStatus();
 	}
 
 	@Override
 	public void autonomousInit() {
-		m_autoSelected = m_chooser.getSelected();
+		new IntakeSuction(IntakeState.SUCC_IN).start();
+		elevator.elevatorLead.setSelectedSensorPosition(20700);
+		arm.setStartConfigAngle();
 	}
 
 	@Override
@@ -139,7 +145,20 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
+	public void testInit() {
+		elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
+		arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
+	}
+
+	@Override
 	public void testPeriodic() {
+		updateStatus();
+		Scheduler.getInstance().run();
+		// if(oi.getDriverGamepad().getAButton()){
+		// 	pump.set(0.4);
+		// }else{
+		// 	pump.set(0);
+		// }
 	}
 
 	public void updateStatus() {

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -96,6 +97,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 			armTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 
 			armTalon.configClosedloopRamp(Constants.mArmRampRate, 10);
+			armTalon.configOpenloopRamp(Constants.mArmRampRate, 10);
 
 			armTalon.configPeakOutputForward(Constants.ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
 			armTalon.configPeakOutputReverse(-Constants.ARM_MOTOR_VOLTAGE_PERCENT_LIMIT, 10);
@@ -263,6 +265,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		SmartDashboard.putNumber("Arm Angle: ", getArmAngle());
+		// SmartDashboard.putNumber("Arm P")
 		SmartDashboard.putString("Side: ", getSide().toString());
 		SmartDashboard.putString("Desired Side: ", getDesiredSide().toString());
 		SmartDashboard.putNumber("Arm RAW Angle: ", getCurrentPosition());
@@ -340,6 +343,17 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 
 	public void resetArmEncoder() {
 		armTalon.setSelectedSensorPosition(0, 0, 10);
+	}
+
+	public void resetArmEncoderCertainly() {
+		System.out.println("Entering");
+		 boolean setSucceeded;
+		 int retryCounter = 0;
+		 do {
+			 setSucceeded = true;
+			 setSucceeded &= armTalon.setSelectedSensorPosition(0) == ErrorCode.OK;
+		 } while (!setSucceeded && retryCounter++ < 5);
+		 System.out.println("Exiting: "+retryCounter);
 	}
 
 	public void setStartConfigAngle() {

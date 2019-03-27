@@ -166,7 +166,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		climbSUCC.set(0);
 	}
 	public void startSUCC() {
-		climbSUCC.set(ControlMode.PercentOutput, 40);
+		climbSUCC.set(ControlMode.PercentOutput, 4.0);
 	}
 
 	public boolean isDoneSUCCing() {

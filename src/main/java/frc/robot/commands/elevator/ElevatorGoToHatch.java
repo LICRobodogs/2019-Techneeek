@@ -2,10 +2,11 @@ package frc.robot.commands.elevator;
 
 import frc.robot.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 
 import edu.wpi.first.wpilibj.command.Command;
+
+import frc.util.Constants;
+import frc.robot.subsystems.Arm.ArmSide;
 
 /**
  *
@@ -22,6 +23,11 @@ public class ElevatorGoToHatch extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		super.setTimeout(5);
+		if (hatchLevel == Constants.HATCH_LEVEL1_SETPOINT) {
+			if(Robot.arm.getSide() == ArmSide.BACK) {
+				end();
+			}
+		}
 		Robot.elevator.setTargetPosition(hatchLevel);
 	}
 

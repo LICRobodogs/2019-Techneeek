@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.InternalButton;
@@ -18,16 +19,19 @@ import frc.robot.commands.ScoreBottomHeight;
 import frc.robot.commands.ScoreHatch;
 import frc.robot.commands.ScoreMiddleHeight;
 import frc.robot.commands.ScoreTopHeight;
-import frc.robot.commands.SetDriveSpeedNormal;
 import frc.robot.commands.arm.ArmPistonPosition;
-import frc.robot.commands.arm.ArmToggleBack;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.arm.KillArm;
+import frc.robot.commands.arm.ZeroArm;
 import frc.robot.commands.drivetrain.KillDrive;
+import frc.robot.commands.elevator.EngageClimber;
 import frc.robot.commands.elevator.EngageGravity;
 import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.elevator.PrepareClimber;
+import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.limelight.OffLED;
+import frc.robot.commands.limelight.StartDriverCam;
+import frc.robot.commands.limelight.StartVisionCam;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.util.Constants;
@@ -51,7 +55,7 @@ public class OI {
 		setDriveSpeedNormal.whenPressed(new PrepareClimber());
 
 		JoystickButton suctionRelease = new JoystickButton(m_driverGamepad, Constants.LEFT_BUMPER_BUTTON);
-		// suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
+		suctionRelease.whenPressed(new IntakeSuction(IntakeState.SUCC_OUT));
 
 		JoystickButton findTarget = new JoystickButton(m_driverGamepad, Constants.PS_RB_BUTTON);
 		// findTarget.whenPressed(new FindTarget());
@@ -100,8 +104,8 @@ public class OI {
 		JoystickButton toggleFrontSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.BACK_BUTTON);
 		toggleFrontSide.whenPressed(new ArmToggleFront());
 
-		JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.START_BUTTON);
-		toggleBackSide.whenPressed(new ArmToggleBack());
+		// JoystickButton toggleBackSide = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.START_BUTTON);
+		// toggleBackSide.whenPressed(new ArmToggleBack());
 
 		JoystickButton level1 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.A_BUTTON);
 		level1.whenPressed(new ScoreBottomHeight());
@@ -111,6 +115,10 @@ public class OI {
 
 		JoystickButton level3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
 		level3.whenPressed(new ScoreTopHeight());
+
+		Button zeroArm = new InternalButton();
+		zeroArm.whenPressed(new ZeroArm());
+		SmartDashboard.putData("ZERO Arm", zeroArm);
 
 		Button armDriving = new InternalButton();
 		armDriving.whenPressed(new DrivingPositionAvoidCollision());
@@ -132,6 +140,20 @@ public class OI {
 		killAll.whenPressed(new KillAll());
 		SmartDashboard.putData("KILL ALL", killAll);
 
+		Button zeroElevator = new InternalButton();
+		zeroElevator.whenPressed(new ZeroElevator());
+		SmartDashboard.putData("Zero Elevator", zeroElevator);
+
+	
+		
+		Button driverCam = new InternalButton();
+		driverCam.whenPressed(new StartDriverCam());
+		SmartDashboard.putData("Driver Cam", driverCam);
+		
+		Button visionCam = new InternalButton();
+		visionCam.whenPressed(new StartVisionCam());
+		SmartDashboard.putData("Driver Cam", visionCam);
+
 		// Pneumatics Diagonostics
 
 		Button testSuctionGrab = new InternalButton();
@@ -144,7 +166,7 @@ public class OI {
 
 		Button testArmShoot = new InternalButton();
 		testArmShoot.whenPressed(new ArmPistonPosition(ArmPistonState.SHOOT));
-		SmartDashboard.putData("Arm Shoot", testArmShoot);
+		// SmartDashboard.putData("Arm Shoot", testArmShoot);
 
 		Button testArmReload = new InternalButton();
 		testArmReload.whenPressed(new ArmPistonPosition(ArmPistonState.RELOAD));
@@ -157,6 +179,10 @@ public class OI {
 		Button testArmRelease = new InternalButton();
 		testArmRelease.whenPressed(new ArmPistonPosition(ArmPistonState.RELEASE));
 		SmartDashboard.putData("Arm Release", testArmRelease);
+
+		Button testPiston = new InternalButton();
+		testPiston.whenPressed(new EngageClimber());
+		SmartDashboard.putData("Testing Piston", testPiston);
 
 		// Button testArmGearboxArmDog = new InternalButton();
 		// testArmGearboxArmDog.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
@@ -177,13 +203,13 @@ public class OI {
 	}
 	
 	public double getMoveInput() {
-		// return getDriverGamepad().getTriggerAxis(Hand.kLeft) - getDriverGamepad().getTriggerAxis(Hand.kRight);
-		return 0;
+		return getDriverGamepad().getTriggerAxis(Hand.kLeft) - getDriverGamepad().getTriggerAxis(Hand.kRight);
+		// return 0;
 	}
 	
 	public double getSteerInput() {
 		if(Math.abs(getDriverGamepad().getRawAxis(0)) > 0.15){
-			return -getDriverGamepad().getRawAxis(0);
+			return getDriverGamepad().getRawAxis(0);
 		}
 		return 0;
 	}
