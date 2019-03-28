@@ -24,18 +24,21 @@ public class FancyDriveToHatch extends Command {
 	protected void execute() {
 		if(Robot.limeLight.is3dCompute()){
 			Robot.limeLight.fancyGetInHatchRange();
+			// Robot.limeLight.fancyDrive();
 		}
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return Robot.limeLight.isAtTarget(TargetType.HATCH);
+		return (Robot.limeLight.isAtTarget(TargetType.HATCH) && Robot.limeLight.isAlignedWithTarget());
+		// return Robot.limeLight.isAtTarget(TargetType.HATCH);
 	}
 
 	// Called once after isFinished returns true
 	protected void end() {
 		System.out.println("done driving command");
 		Robot.driveTrain.setSpeed(0);
+		Robot.driveTrain.drive(0, 0);
 	}
 
 	// Called when another command which requires one or more of the same

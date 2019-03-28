@@ -13,8 +13,8 @@ public class DriveAndScoreHatch extends CommandGroup {
         addSequential(new WaitCommand(0.5));
         addSequential(new FancyDriveToHatch());
         // addSequential(new ScoreHatch());
-        addSequential(new BlinkLED());
-        addSequential(new WaitCommand(0.75));
-        addSequential(new OffLED());
+        // addSequential(new BlinkLED());
+        // addSequential(new WaitCommand(0.75));
+        // addSequential(new OffLED());
 	}
 }

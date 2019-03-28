@@ -115,6 +115,7 @@ public class LimeLight extends Subsystem {
         Double[] emptyDouble = {};
         SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
         SmartDashboard.putNumber("real Distance", getCamtranDistance());
+        
         SmartDashboard.putNumber("real YAW", getCamtranYaw());
     }
 
@@ -338,7 +339,12 @@ public class LimeLight extends Subsystem {
         //     }
         // }
         // Robot.driveTrain.arcadeDrive(-driving_adjust, -steer);
-        Robot.driveTrain.arcadeDrive(0.7*-driving_adjust, -steer);
+        if (!isAtTarget(TargetType.HATCH)) {
+            Robot.driveTrain.arcadeDrive(0.7*-driving_adjust, -steer);
+        } else if (!isAlignedWithTarget()) {
+            Robot.driveTrain.arcadeDrive(0, -steer);
+        }
+        
     }
 
     /**
@@ -378,8 +384,8 @@ public class LimeLight extends Subsystem {
         double min_threshold = 1.0; // used for angle & distance..for now
 
         double steering_adjust = 0.0;
-        double heading_error = tX_offset.getDouble(0.0);
-        double distance_error = distanceToHatch() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
+        double heading_error = getCamtranYaw();
+        double distance_error = getCamtranDistance() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
 
         if (Math.abs(heading_error) > min_threshold) {
             steering_adjust = Constants.KpSteer * heading_error - min_power;
@@ -388,7 +394,7 @@ public class LimeLight extends Subsystem {
         }
         double distance_adjust = Constants.KpDrive * distance_error;
 
-        Robot.driveTrain.drive(distance_adjust, steering_adjust);
+        Robot.driveTrain.arcadeDrive(-distance_adjust, -steering_adjust);
     }
 
     public double xAngle_toPixelLocation(PixelCoord pixel) {
@@ -417,15 +423,20 @@ public class LimeLight extends Subsystem {
 
     
     public boolean isAtTarget(TargetType target) {
-        switch (target) {
-        case HATCH:
-            return Math.floor(getCamtranDistance()) <= 19.0;
-        case PORT:
-            return getCamtranDistance() <= accepted_error_distance;
-        default:
-            System.err.println("INVALID TARGET TYPE PASSED");
-            return true;
-        }
+        // switch (target) {
+        // case HATCH:
+        //     return Math.floor(getCamtranDistance()) <= 35.0;
+        // case PORT:
+        //     return getCamtranDistance() <= accepted_error_distance;
+        // default:
+        //     System.err.println("INVALID TARGET TYPE PASSED");
+        //     return true;
+        // }
+        return Math.floor(getCamtranDistance()) <= 35.0;
+    }
+
+    public boolean isAlignedWithTarget() {
+        return Math.abs(getCamtranYaw()) <= 1.5;
     }
 
     public boolean isAimed() {

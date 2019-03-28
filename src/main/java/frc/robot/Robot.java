@@ -7,24 +7,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.IntakePositionAvoidCollision;
 import frc.robot.commands.IntakeSuction;
-import frc.robot.commands.ScoreMiddleHeight;
+import frc.robot.commands.misc.UseDashBoardVariable;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Intake.IntakeState;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.LimeLight.LED;
 import frc.util.Constants;
 import frc.util.ControlLooper;
@@ -83,15 +79,17 @@ public class Robot extends TimedRobot {
 		elevator.disEngageClimber();
 		elevator.disEngageGravity();
 		elevator.disEngageRope();
-		CameraServer.getInstance().startAutomaticCapture();
-		// elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
-		// arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
+		// CameraServer.getInstance().startAutomaticCapture();
+		elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
+		arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
+		
 	}
 
 	@Override
 	public void robotPeriodic() {
 		// SmartDashboard.putNumber("Arm Position", elevator.getCurrentPosition());
-		limeLight.postAllData();
+		// limeLight.postAllData();
+		SmartDashboard.putNumber("SUCC Output Voltage",elevator.climbSUCC.getOutputCurrent());
 		// updateStatus();
 	}
 

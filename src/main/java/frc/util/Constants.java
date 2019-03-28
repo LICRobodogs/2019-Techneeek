@@ -87,8 +87,8 @@ public class Constants {
 	public static double mArmRampRate = .25;
     public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 4.0 / 12.0;
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
-	// public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
-	public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
+	// public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	public static final double ARM_HOLDING_PWM = 0.3;
 
 	//Elevator
@@ -219,8 +219,9 @@ public class Constants {
 	public static final double VERTICAL_FOV = 41; // degrees
 	
 	//Drivetrain
-	public static final double KpSteer = 0.0375; // 0.04 Proportional control constant for steering
-	public static final double KpDrive = 0.02; // 0.0175 Proportional control constant for steering
+	
+	public static final double KpDrive = 0.0100; // 0.0175 Proportional control constant for steering
+	public static final double KpSteer = 0.0100; // 0.04 Proportional control constant for steering
 
 
     

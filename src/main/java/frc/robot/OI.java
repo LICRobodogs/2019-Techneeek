@@ -32,6 +32,7 @@ import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.limelight.OffLED;
 import frc.robot.commands.limelight.StartDriverCam;
 import frc.robot.commands.limelight.StartVisionCam;
+import frc.robot.commands.misc.UseDashBoardVariable;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Intake.IntakeState;
 import frc.util.Constants;
@@ -69,7 +70,7 @@ public class OI {
 
 		JoystickButton driveToHatch = new JoystickButton(m_driverGamepad, Constants.PS_TRIANGLE_BUTTON);
 		driveToHatch.whileHeld(new DriveAndScoreHatch());
-		driveToHatch.whenReleased(new OffLED());
+		// driveToHatch.whenReleased(new OffLED());
 
 		// DPadButton armGearboxDogArm = new DPadButton(m_driverGamepad, DPadButton.Direction.RIGHT);
 		// armGearboxDogArm.whenPressed(new ArmGearboxPistonPosition(ArmGearboxState.ARM_DOG));
@@ -115,6 +116,10 @@ public class OI {
 
 		JoystickButton level3 = new JoystickButton(m_operatorGamepad.getJoyStick(), Constants.Y_BUTTON);
 		level3.whenPressed(new ScoreTopHeight());
+
+		Button getData = new InternalButton();
+		getData.whenPressed(new UseDashBoardVariable());
+		SmartDashboard.putData("GET DA DATAAAA", getData);
 
 		Button zeroArm = new InternalButton();
 		zeroArm.whenPressed(new ZeroArm());
