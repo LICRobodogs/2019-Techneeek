@@ -1,18 +1,16 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.commands.JoystickDrive;
+import frc.robot.commands.drivetrain.JoystickDrive;
 import frc.util.Constants;
 import frc.util.ControlLoopable;
-import frc.util.drivers.DunkTalonSRX;
-import frc.util.drivers.DunkVictorSPX;
 
 
 public class DriveTrain extends Subsystem implements ControlLoopable {

@@ -1,46 +1,47 @@
 package frc.controller;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import frc.util.Constants;
 
-
 public class Ps4_Controller extends Joystick {
 	private static Ps4_Controller instance = null;
+
 	public static Ps4_Controller getInstance() {
 		if (instance == null)
 			instance = new Ps4_Controller(Constants.DRIVER_GAMEPAD_USB_ID);
 		return instance;
 	}
-    
 
-    private Ps4_Controller(int axis) {
-        super(axis);
-    }
+	private Ps4_Controller(int axis) {
+		super(axis);
+	}
 
-    public Joystick getJoyStick() {
+	public Joystick getJoyStick() {
 		return this;
 	}
 
-    public double xSpeed() {
-        return getLeftTrigger() - getRightTrigger();
-    }
+	public double xSpeed() {
+		return getLeftTrigger() - getRightTrigger();
+	}
 
-    public double zRotation() {
-        return -(getLeftAnalog()+1/2);
-    }
+	public double zRotation() {
+		return -(getLeftAnalog() + 1 / 2);
+	}
 
-    public double getLeftTrigger() {
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_PS4_TRIGGER_AXIS));
-    }
-    public double getRightTrigger() {
-        // System.out.print(this.getRawAxis(rightTriggerAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.RIGHT_PS4_TRIGGER_AXIS));
-    }
-    public double getLeftAnalog() {
-        // System.out.print(this.getRawAxis(leftAnalogAxis));
-        return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_X_AXIS));
-    }
-    private boolean inDeadZone(double input) {
+	public double getLeftTrigger() {
+		return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_PS4_TRIGGER_AXIS));
+	}
+
+	public double getRightTrigger() {
+		return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.RIGHT_PS4_TRIGGER_AXIS));
+	}
+
+	public double getLeftAnalog() {
+		return getAxisWithDeadZoneCheck(this.getRawAxis(Constants.LEFT_X_AXIS));
+	}
+
+	private boolean inDeadZone(double input) {
 		boolean inDeadZone;
 		if (Math.abs(input) < Constants.DEADZONE) {
 			inDeadZone = true;
@@ -55,9 +56,9 @@ public class Ps4_Controller extends Joystick {
 			input = 0.0;
 		}
 		return input;
-    }
+	}
 
-    /**
+	/**
 	 * Returns -1 if nothing is pressed, or the angle of the button pressed 0 = up,
 	 * 90 = right, etc.
 	 */
@@ -94,10 +95,10 @@ public class Ps4_Controller extends Joystick {
 	}
 
 	public DPadButton getDPadRight() {
-        return new DPadButton(this, DPadButton.Direction.RIGHT);
-    }
-    
-    public static class DPadButton extends Button {
+		return new DPadButton(this, DPadButton.Direction.RIGHT);
+	}
+
+	public static class DPadButton extends Button {
 		public static enum Direction {
 			UP, DOWN, LEFT, RIGHT
 		}

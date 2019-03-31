@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.score;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.arm.ArmGoToBackCargo;

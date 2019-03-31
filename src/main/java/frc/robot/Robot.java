@@ -13,8 +13,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.IntakeSuction;
-import frc.robot.commands.misc.UseDashBoardVariable;
+import frc.robot.commands.intake.IntakeSuction;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
@@ -26,14 +25,7 @@ import frc.util.Constants;
 import frc.util.ControlLooper;
 
 public class Robot extends TimedRobot {
-	private static final String kDefaultAuto = "Default";
-	private static final String kCustomAuto = "My Auto";
-	private String m_autoSelected;
 	private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
-	private boolean m_LimelightHasValidTarget = false;
-  	private double m_LimelightDriveCommand = 0.0;
-  	private double m_LimelightSteerCommand = 0.0;
 
 	public static DriveTrain driveTrain;
 	public static Intake intake;
@@ -73,24 +65,20 @@ public class Robot extends TimedRobot {
 		// controlLoop.addLoopable(arm);
 		// controlLoop.addLoopable(intake);
 		comp = new Compressor();
-		// setupAutonChooser();
-		
 
 		elevator.disEngageClimber();
 		elevator.disEngageGravity();
 		elevator.disEngageRope();
 		// CameraServer.getInstance().startAutomaticCapture();
-		elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
-		arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
-		
+		elevator.elevatorLead.setSelectedSensorPosition(4000); // UNCOMMENT FOR MATCH
+		arm.setStartConfigAngle(); // UNCOMMENT FOR MATCH
+
 	}
 
 	@Override
 	public void robotPeriodic() {
-		// SmartDashboard.putNumber("Arm Position", elevator.getCurrentPosition());
-		// limeLight.postAllData();
-		SmartDashboard.putNumber("SUCC Output Voltage",elevator.climbSUCC.getOutputCurrent());
-		// updateStatus();
+		SmartDashboard.putNumber("SUCC Output Voltage", elevator.climbSUCC.getOutputCurrent());
+		updateStatus();
 	}
 
 	@Override
@@ -108,7 +96,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		comp.start();
-		// autonomousCommand.cancel();
 		limeLight.setLEID(LED.ON);
 		Scheduler.getInstance().removeAll();
 		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
@@ -121,17 +108,10 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		updateStatus();
 		Scheduler.getInstance().run();
-		// if(oi.getDriverGamepad().getAButton()){
-		// 	pump.set(0.4);
-		// }else{
-		// 	pump.set(0);
-		// }
 	}
 
 	public void disabledInit() {
 		limeLight.setLEID(LED.OFF);
-
-		// limeLight.setLEID(LED.OFF);
 		// arm.resetArmEncoder();
 		Scheduler.getInstance().removeAll();
 		// intake.setSuction(Intake.IntakeState.SUCC_OUT);
@@ -139,38 +119,34 @@ public class Robot extends TimedRobot {
 
 	public void disabledPeriodic() {
 		updateStatus();
-
 	}
 
 	@Override
 	public void testInit() {
-		elevator.elevatorLead.setSelectedSensorPosition(4000); //UNCOMMENT FOR MATCH
-		arm.setStartConfigAngle(); //UNCOMMENT FOR MATCH
+		elevator.elevatorLead.setSelectedSensorPosition(4000); // UNCOMMENT FOR MATCH
+		arm.setStartConfigAngle(); // UNCOMMENT FOR MATCH
 	}
 
 	@Override
 	public void testPeriodic() {
 		updateStatus();
 		Scheduler.getInstance().run();
-		// if(oi.getDriverGamepad().getAButton()){
-		// 	pump.set(0.4);
-		// }else{
-		// 	pump.set(0);
-		// }
+
 	}
 
 	public void updateStatus() {
 		arm.updateStatus(operationMode);
-		// driveTrain.updateStatus(operationMode);
+		driveTrain.updateStatus(operationMode);
 		intake.updateStatus(operationMode);
-		// limeLight.getBasicData();
 		limeLight.postAllData();
 	}
 
-	// public void setupAutonChooser() {
-	// 	m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    //     m_chooser.addOption("My Auto", kCustomAuto);
-    //     SmartDashboard.putData("Auto choices", m_chooser);
-	// }
-	
 }
+// !!!!!!!!!!!!see @link
+// https://wpilib.screenstepslive.com/s/3120/m/7932/l/81109-choosing-an-autonomous-program-from-smartdashboard
+
+// public void setupAutonChooser() {
+// m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+// m_chooser.addOption("My Auto", kCustomAuto);
+// SmartDashboard.putData("Auto choices", m_chooser);
+// }

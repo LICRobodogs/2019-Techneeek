@@ -1,27 +1,20 @@
-package frc.robot.commands;
-
-import frc.robot.*;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class SetDriveSpeedSlow extends Command {
 
-	@Override
+    @Override
     protected boolean isFinished() {
         return true;
     }
 
-    public SetDriveSpeedSlow(){
+    public SetDriveSpeedSlow() {
         requires(Robot.driveTrain);
     }
-    
 
-    public void initialize(){
+    public void initialize() {
         Robot.driveTrain.setDesiredSpeed(0.35);
     }
-
-    public void execute() {
-
-    }
-
 }

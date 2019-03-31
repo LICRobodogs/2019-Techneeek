@@ -16,7 +16,6 @@ public class ArmGoToFrontHatch extends Command {
         requires(Robot.arm);
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
         super.setTimeout(5);
         allowedToMove = Robot.arm.setTargetPosition(frontHatchPosition);// Robot.wrist.getUpwardLimit() <
@@ -30,30 +29,24 @@ public class ArmGoToFrontHatch extends Command {
         }
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (allowedToMove) {
-			Robot.arm.motionMagicControl();
-	    }
-    }
-    // Make this return true when this Command no longer needs to run execute()
-    protected boolean isFinished() {
-        if (allowedToMove) {
-			return Robot.arm.isInPosition(frontHatchPosition);
-		} else {
-			return true;
-        }    
+            Robot.arm.motionMagicControl();
+        }
     }
 
-    // Called once after isFinished returns true
+    protected boolean isFinished() {
+        if (allowedToMove) {
+            return Robot.arm.isInPosition(frontHatchPosition);
+        } else {
+            return true;
+        }
+    }
+
     protected void end() {
         Robot.arm.setHasMoved(true);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
         System.out.println("~~~ARM IS AT FRONT HATCH~~~");
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    }
 }

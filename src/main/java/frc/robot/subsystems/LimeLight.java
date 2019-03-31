@@ -1,12 +1,12 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.util.Constants;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * Singleton Class LimeLight that instantiates the camera & provides
@@ -18,8 +18,6 @@ public class LimeLight extends Subsystem {
             tHor_length, tVert_length, getPipe, camtran;
     private NetworkTableEntry ledMode, camMode, setPipe, streamMode, snapshot;
     private static LimeLight instance = null;
-    private static final double accepted_error_angle = 0.5;
-    private static final double accepted_error_distance = 0.5;
 
     public static enum LED {
         DEFAULT, OFF, BLINK, ON
@@ -33,15 +31,10 @@ public class LimeLight extends Subsystem {
         STANDARD, PIP_MAIN, PIP_SECONDARY
     }
 
-    public static enum TargetType {
-        PORT, HATCH
-    }
-
     private LimeLight() {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         initRetrievableData();
         initSetableData();
-
     }
 
     private void initRetrievableData() {
@@ -75,21 +68,6 @@ public class LimeLight extends Subsystem {
         return instance;
     }
 
-    /**
-     * post tv, ts, tx, & ty data to Smart Dashboard from network table
-     */
-    public void getBasicData() {
-        double v = tValid.getDouble(0.0);
-        double s = tSkew.getDouble(0.0);
-        double x = tX_offset.getDouble(0.0);
-        double y = tY_offset.getDouble(0.0);
-        double area = tArea.getDouble(0.0);
-        setData(v, s, x, y, area);
-    }
-
-    public void getAllData() {
-    }
-
     @Override
     protected void initDefaultCommand() {
     }
@@ -97,25 +75,15 @@ public class LimeLight extends Subsystem {
     /**
      * post to smart dashboard periodically
      */
-    public void setData(double v, double s, double x, double y, double area) {
-        SmartDashboard.putNumber("Valid Target", v);
-        SmartDashboard.putNumber("LimelightSkew", s);
-        SmartDashboard.putNumber("LimelightX", x);
-        SmartDashboard.putNumber("LimelightY", y);
-        SmartDashboard.putNumber("LimelightArea", area);
-        SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
-    }
     public void postAllData() {
         SmartDashboard.putNumber("Valid Target", tValid.getDouble(0.0));
         SmartDashboard.putNumber("LimelightSkew", tSkew.getDouble(0.0));
         SmartDashboard.putNumber("LimelightX", tX_offset.getDouble(0.0));
         SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
         SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
-        SmartDashboard.putNumber("Distance to hatch", distanceToHatch());
         Double[] emptyDouble = {};
         SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
         SmartDashboard.putNumber("real Distance", getCamtranDistance());
-        
         SmartDashboard.putNumber("real YAW", getCamtranYaw());
     }
 
@@ -132,9 +100,69 @@ public class LimeLight extends Subsystem {
             return values[4];
         return 0.0;
     }
+
     public Double[] getCamtranValues() {
-        Double[] emptyDouble = {-1000.0};
+        Double[] emptyDouble = { -1000.0 };
         return camtran.getDoubleArray(emptyDouble);
+    }
+
+    public double getPipeline() {
+        return getPipe.getDouble(0);
+    }
+
+    public void setPipeline(double pipe) {
+        setPipe.setNumber(pipe);
+    }
+
+    public boolean isSeeingTarget() {
+        return tValid.getDouble(0.0) != 0.0;
+    }
+
+    public boolean is3dCompute() {
+        return getCamtranValues().length > 1;
+    }
+
+    public void drive_and_steer() {
+        Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), -getSteeringAdjustment());
+    }
+
+    // TODO try with feed forward
+    public double getDrivingAdjustment() {
+        if (isAtTarget()) {
+            return 0.0;
+        }
+        double distance_error = getCamtranDistance() - Constants.DESIRED_STOPPING_DISTANCE;
+        double driving_adjust = distance_error * Constants.KpDrive;
+        return driving_adjust;
+    }
+
+    public double getSteeringAdjustment() {
+        if (isAimedAtTarget()) {
+            return 0.0;
+        }
+        double steer_adjust = getCamtranYaw() * Constants.KpSteer;
+        return steer_adjust;
+    }
+
+    public void driveStraightToTarget() {
+        Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), 0);
+    }
+
+    public void aimAtTarget() {
+        Robot.driveTrain.arcadeDrive(0, -getSteeringAdjustment());
+    }
+
+    /**
+     * Return true when robot is within an error distance of target
+     */
+    public boolean isAtTarget() {
+        double distance_error = Math.abs(getCamtranDistance() - Constants.DESIRED_STOPPING_DISTANCE);
+        return distance_error <= Constants.ACCEPTED_DISTANCE_ERROR;
+    }
+
+    public boolean isAimedAtTarget() {
+        double alignment_error = Math.abs(getCamtranYaw()) - Constants.DESIRED_STOPPING_ANGLE;
+        return Math.abs(alignment_error) <= Constants.ACCEPTED_ANGLE_ERROR;
     }
 
     public void setLEID(LED state) {
@@ -202,348 +230,4 @@ public class LimeLight extends Subsystem {
         }
     }
 
-    public double getPipeline() {
-        return getPipe.getDouble(0);
-    }
-
-    public void setPipeline(double pipe) {
-        setPipe.setNumber(pipe);
-    }
-
-    /**
-     * Determines the distance to a target using geometry
-     * 
-     * @param h1 height of camera
-     * @param h2 height of target
-     * @param a1 y angle of camera mount
-     * @param a2 y angle of target from crosshair of camera
-     * @return distance to a target
-     */
-    public double distanceToTarget(double h1, double h2, double a1, double a2) {
-        double radianAngle = Math.toRadians(a1 + a2);
-        double tan = Math.tan(radianAngle);
-        if (tan == 0)
-            return 0;
-        if (Math.abs(a1 + a2) < 0.05)
-            return 0;
-        double distance = (h2 - h1) / tan;
-        return distance;
-    }
-    public double distanceToTarget(double h1, double h2,double a1) {
-        double radianAngle = Math.toRadians(a1);
-        double tan = Math.tan(radianAngle);
-        if (tan == 0)
-            return 0;
-        if (Math.abs(a1) < 0.05)
-            return 0;
-        double distance = (h2 - h1) / tan;
-        return distance;
-    }
-
-    /**
-     * {@link #distanceToTarget(double, double, double, double)}
-     * 
-     * @return distance to Hatch Target
-     */
-    public double distanceToHatch() {
-            return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_HATCH_HEIGHT,
-                tY_offset.getDouble(0.0));
-    }
-
-    /**
-     * {@link #distanceToTarget(double, double, double, double)}
-     * 
-     * @return distance to Port Target
-     */
-    public double distanceToPort() {
-        return distanceToTarget(Constants.CAMERA_HEIGHT, Constants.TARGET_PORT_HEIGHT, Constants.CAMERA_MOUNT_ANGLE,
-                tY_offset.getDouble(0.0));
-    }
-
-    /**
-     * Spins robot until a target is in view, then centers on it
-     */
-    public void seekTarget() {
-        if (tValid.getDouble(0.0) == 0.0) {
-            Robot.driveTrain.drive(0.3);
-        } else {
-            aimAtTarget();
-        }
-    }
-    public boolean isSeeingTarget() {
-        return tValid.getDouble(0.0) != 0.0;
-    }
-    public boolean is3dCompute() {
-        return getCamtranValues().length > 1;
-    }
-
-    /**
-     * Aim at the largest target recognized in the limelight pipeline
-     */
-    public void aimAtTarget() {
-        double min_power = 0.05;
-        double min_threshold = 1.0;
-        double steering_adjust = 0.0;
-        double xAngle = tX_offset.getDouble(0.0);
-        if (Math.abs(xAngle) > min_threshold) {
-            steering_adjust = Constants.KpSteer * xAngle - min_power;
-        } else {
-            steering_adjust = Constants.KpSteer * xAngle + min_power;
-        }
-        Robot.driveTrain.drive(steering_adjust);
-    }
-
-    /**
-     * {@link #getInRange(double, double)} get within a constant distance of a hatch
-     * for scoring
-     */
-    public void getInHatchRange() {
-        getInRange(Constants.TARGET_HATCH_RANGE, getCamtranDistance());
-    }
-    public void fancyGetInHatchRange() {
-        fancyGetInRange(Constants.TARGET_HATCH_RANGE, getCamtranDistance(), getCamtranYaw());
-    }
-
-    /**
-     * {@link #getInRange(double, double)} get within a constant distance of port
-     * for scoring
-     */
-    public void getInPortRange() {
-        getInRange(Constants.TARGET_PORT_RANGE, distanceToPort());
-    }
-
-    /**
-     * drives to robots desired location based on distance to target
-     * 
-     * @param desired_distance inches of distance desired
-     * @param current_distance inches of current distance
-     */
-    public void getInRange(double desired_distance, double current_distance) {
-        double distance_error = current_distance - desired_distance;
-        double driving_adjust = Constants.KpDrive * distance_error;
-        Robot.driveTrain.setSpeed(-driving_adjust, driving_adjust);
-    }
-    public void fancyGetInRange(double desired_distance, double current_distance, double steer) {
-        double distance_error = current_distance - desired_distance;
-        double driving_adjust = Constants.KpDrive * distance_error;
-        // if(driving_adjust > 0.3){
-        //     driving_adjust = 0.3;
-        // }
-        steer = Constants.KpSteer * steer;
-        // if(Math.abs(steer) > 0.6){
-        //     if(steer > 0.6){
-        //         steer = 0.6;
-        //     }
-        //     if(steer < -0.6){
-        //         steer = -0.6;
-        //     }
-        // }
-        // Robot.driveTrain.arcadeDrive(-driving_adjust, -steer);
-        if (!isAtTarget(TargetType.HATCH)) {
-            Robot.driveTrain.arcadeDrive(0.7*-driving_adjust, -steer);
-        } else if (!isAlignedWithTarget()) {
-            Robot.driveTrain.arcadeDrive(0, -steer);
-        }
-        
-    }
-
-    /**
-     * To use, put robot at desired distance & calibrate the y-position of the
-     * crosshair. This allows the angle to report "0.0" when at desired distance
-     */
-    public void getInRange() {
-        double driving_adjust = Constants.KpDrive * tY_offset.getDouble(0.0);
-        Robot.driveTrain.setSpeed(driving_adjust, driving_adjust);
-    }
-
-    /**
-     * aim at hatch target & drive towards it
-     */
-    public void aimAndDrive() {
-        double min_power = 0.05;
-        double min_threshold = 1.0; // used for angle & distance..for now
-
-        double steering_adjust = 0.0;
-        double heading_error = tX_offset.getDouble(0.0);
-        double distance_error = distanceToHatch() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
-
-        if (Math.abs(heading_error) > min_threshold) {
-            steering_adjust = Constants.KpSteer * heading_error - min_power;
-        } else {
-            steering_adjust = Constants.KpSteer * heading_error + min_power;
-        }
-        double distance_adjust = Constants.KpDrive * distance_error;
-
-        Robot.driveTrain.drive(distance_adjust, steering_adjust);
-    }
-     /**
-     * aim at hatch target & drive towards it
-     */
-    public void fancyDrive() {
-        double min_power = 0.05;
-        double min_threshold = 1.0; // used for angle & distance..for now
-
-        double steering_adjust = 0.0;
-        double heading_error = getCamtranYaw();
-        double distance_error = getCamtranDistance() - min_threshold; // = ty.getDouble(0.0); //only if calibrated to do so
-
-        if (Math.abs(heading_error) > min_threshold) {
-            steering_adjust = Constants.KpSteer * heading_error - min_power;
-        } else {
-            steering_adjust = Constants.KpSteer * heading_error + min_power;
-        }
-        double distance_adjust = Constants.KpDrive * distance_error;
-
-        Robot.driveTrain.arcadeDrive(-distance_adjust, -steering_adjust);
-    }
-
-    public double xAngle_toPixelLocation(PixelCoord pixel) {
-        return angle_toPixelLocation(pixel.getNormalized().getViewPlaneCoordinates().getX());
-    }
-
-    public double yAngle_toPixelLocation(PixelCoord pixel) {
-        return angle_toPixelLocation(pixel.getNormalized().getViewPlaneCoordinates().getY());
-    }
-
-    public double angle_toPixelLocation(double loc) {
-        return Math.atan2(1, loc);
-    }
-/*
-    public boolean isAtTarget(TargetType target) {
-        switch (target) {
-        case HATCH:
-            return distanceToHatch() <= accepted_error_distance;
-        case PORT:
-            return distanceToPort() <= accepted_error_distance;
-        default:
-            System.err.println("INVALID TARGET TYPE PASSED");
-            return true;
-        }
-    }*/
-
-    
-    public boolean isAtTarget(TargetType target) {
-        // switch (target) {
-        // case HATCH:
-        //     return Math.floor(getCamtranDistance()) <= 35.0;
-        // case PORT:
-        //     return getCamtranDistance() <= accepted_error_distance;
-        // default:
-        //     System.err.println("INVALID TARGET TYPE PASSED");
-        //     return true;
-        // }
-        return Math.floor(getCamtranDistance()) <= 35.0;
-    }
-
-    public boolean isAlignedWithTarget() {
-        return Math.abs(getCamtranYaw()) <= 1.5;
-    }
-
-    public boolean isAimed() {
-        return tX_offset.getDouble(0.0) <= accepted_error_angle;
-    }
-
-    public void Update_Limelight_Tracking() {
-
-    }
-
-}
-
-/**
- * Helper class in case we need to start translating coordinates or mapping
- * coordinates onto virtual plane --Purpose of 3 classes is remapping raw pixels
- * into coordinate locations then determining their location on a virtual plan
- * and uses the two computed coordinate locations to determine angles
- */
-class Coordinate {
-    private double x, y;
-
-    public Coordinate() {
-        this(0.0, 0.0);
-    }
-
-    public Coordinate(double x, double y) {
-        set(x, y);
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        set(x, this.y);
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        set(this.x, y);
-    }
-
-    public void set(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
-}
-
-/**
- * pixel coordinates, 0,0 is the upper-left, positive down and to the righ
- */
-class PixelCoord extends Coordinate {
-    public PixelCoord(double x, double y) {
-        super(x, y);
-    }
-
-    /**
-     * Normalize the X coordinate with respect to 320 horizontal fov
-     */
-    public double getX_normalized() {
-        return (1 / 160) * (getX() - ((Constants.HORIZONTAL_FOV - 1) / 2));
-    }
-
-    /**
-     * Normalize the Y coordinate with respect to 240 vertical fov
-     */
-    public double getY_normalized() {
-        return (1 / 120) * (getY() - ((Constants.VERTICAL_FOV - 1) / 2));
-    }
-
-    public NormalCoordinate getNormalized() {
-        return new NormalCoordinate(getX_normalized(), getY_normalized());
-    }
-}
-
-/**
- * normalized pixel coordinates, 0,0 is the center, positive right and up
- */
-class NormalCoordinate extends Coordinate {
-    public NormalCoordinate(double x, double y) {
-        super(x, y);
-    }
-
-    public double getX_ViewPlaneCoord() {
-        double x = getViewPlaneWidth() / 2 * getX();
-        return x;
-    }
-
-    public double getY_ViewPlaneCoord() {
-        double y = getViewPlaneHeight() / 2 * getY();
-        return y;
-    }
-
-    public Coordinate getViewPlaneCoordinates() {
-        return new Coordinate(getX_ViewPlaneCoord(), getY_ViewPlaneCoord());
-    }
-
-    private double getViewPlaneWidth() {
-        double radianAngle = Math.toRadians(Constants.HORIZONTAL_FOV / 2);
-        return 2.0 * Math.tan(radianAngle);
-    }
-
-    private double getViewPlaneHeight() {
-        double radianAngle = Math.toRadians(Constants.VERTICAL_FOV / 2);
-        return 2.0 * Math.tan(radianAngle);
-    }
 }

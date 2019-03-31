@@ -16,7 +16,6 @@ public class ArmGoToBackHatch extends Command {
         requires(Robot.arm);
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
         super.setTimeout(5);
         Robot.arm.setTargetPosition(backHatchPosition);// Robot.wrist.getUpwardLimit() <
@@ -30,29 +29,24 @@ public class ArmGoToBackHatch extends Command {
         }
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (allowedToMove) {
             System.out.println("Going to back hatch");
-			Robot.arm.motionMagicControl();
-	    }
+            Robot.arm.motionMagicControl();
+        }
     }
-    // Make this return true when this Command no longer needs to run execute()
+
     protected boolean isFinished() {
         if (allowedToMove) {
-			return Robot.arm.isInPosition(backHatchPosition);
-		} else {
-			return true;
-		}    }
+            return Robot.arm.isInPosition(backHatchPosition);
+        } else {
+            return true;
+        }
+    }
 
-    // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
     }
 
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
-    }
 }

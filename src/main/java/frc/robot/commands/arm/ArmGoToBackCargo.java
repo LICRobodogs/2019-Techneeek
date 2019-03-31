@@ -1,16 +1,11 @@
 package frc.robot.commands.arm;
 
-import frc.robot.*;
-import frc.robot.subsystems.Arm.ArmPistonState;
-import frc.robot.subsystems.Arm.ArmSide;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.Arm.ArmPistonState;
 
 /**
- *
+ * Puts are in back cargo position
  */
 public class ArmGoToBackCargo extends Command {
 
@@ -19,46 +14,35 @@ public class ArmGoToBackCargo extends Command {
 
     public ArmGoToBackCargo() {
         requires(Robot.arm);
-
     }
 
-    // Called just before this Command runs the first time
     protected void initialize() {
         super.setTimeout(5);
         Robot.arm.setTargetPosition(backCargoPosition);// Robot.wrist.getUpwardLimit() <
         // Robot.wrist.homePosition;
 
         if (allowedToMove) {
-            // System.out.println("Allowed to move");
             Robot.arm.setArmPiston(ArmPistonState.RELEASE);
         } else {
-            // System.out.println("Not allowed to move");
         }
     }
 
-    // Called repeatedly when this Command is scheduled to run
     protected void execute() {
         if (allowedToMove) {
             System.out.println("Going to back cargo");
-			Robot.arm.motionMagicControl();
-	    }
+            Robot.arm.motionMagicControl();
+        }
     }
-    // Make this return true when this Command no longer needs to run execute()
+
     protected boolean isFinished() {
         if (allowedToMove) {
-			return Robot.arm.isInPosition(backCargoPosition);
-		} else {
-			return true;
-		}    }
+            return Robot.arm.isInPosition(backCargoPosition);
+        }
+        return true;
+    }
 
-    // Called once after isFinished returns true
     protected void end() {
         Robot.arm.setHasMoved(true);
         Robot.arm.setArmPiston(ArmPistonState.BRAKE);
-    }
-
-    // Called when another command which requires one or more of the same
-    // subsystems is scheduled to run
-    protected void interrupted() {
     }
 }

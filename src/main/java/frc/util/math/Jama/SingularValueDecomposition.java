@@ -1,5 +1,6 @@
 package frc.util.math.Jama;
-import frc.util.math.Jama.util.*;
+
+import frc.util.math.Jama.util.Maths;
 
    /** Singular Value Decomposition.
    <P>

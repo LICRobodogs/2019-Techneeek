@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -10,6 +10,7 @@ import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.arm.ReleaseArm;
 import frc.robot.commands.elevator.ElevatorGoToIntake;
+import frc.robot.commands.elevator.PreventElevatorCollision;
 import frc.robot.subsystems.Arm.ArmPistonState;
 import frc.robot.subsystems.Arm.ArmSide;
 
@@ -20,9 +21,9 @@ public class IntakePositionAvoidCollision extends Command {
     }
 
     protected void initialize() {
-        if(Robot.arm.getSide() != ArmSide.FRONT){
+        if (Robot.arm.getSide() != ArmSide.FRONT) {
             new SwitchSideAndGoToIntake().start();
-        }else{
+        } else {
             new GoToIntake().start();
         }
     }
@@ -52,9 +53,11 @@ public class IntakePositionAvoidCollision extends Command {
     }
 
     protected boolean isFinished() {
-        // if((Robot.arm.getSide() == ArmSide.BACK && Robot.arm.getDesiredSide() == ArmSide.BACK) || (Robot.arm.getSide() == ArmSide.FRONT && Robot.arm.getDesiredSide() == ArmSide.FRONT)){
-        //     System.out.println("~~~ MIDDLE HEIGHT DONE ~~~");
-        //     return true;
+        // if((Robot.arm.getSide() == ArmSide.BACK && Robot.arm.getDesiredSide() ==
+        // ArmSide.BACK) || (Robot.arm.getSide() == ArmSide.FRONT &&
+        // Robot.arm.getDesiredSide() == ArmSide.FRONT)){
+        // System.out.println("~~~ MIDDLE HEIGHT DONE ~~~");
+        // return true;
         // }
         return false;
     }

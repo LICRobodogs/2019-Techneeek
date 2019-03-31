@@ -158,3 +158,8 @@ bin/
 
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
+.idea/gradle.xml
+.idea/modules.xml
+.idea/modules/2019-dunkaroo.iml
+.idea/vcs.xml
+.idea/workspace.xml

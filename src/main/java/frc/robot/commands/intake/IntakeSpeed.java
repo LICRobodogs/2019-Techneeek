@@ -1,7 +1,7 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
-import frc.robot.*;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
 
 public class IntakeSpeed extends Command {
 
@@ -15,7 +15,6 @@ public class IntakeSpeed extends Command {
 		requires(Robot.intake);
 		this.mSpeed = speed;
 		this.mSpeed2 = 0;
-
 	}
 
 	public IntakeSpeed(double speed1, double speed2) {
@@ -24,30 +23,13 @@ public class IntakeSpeed extends Command {
 		this.mSpeed2 = speed2;
 	}
 
-	@Override
-	protected void initialize() {
-
-	}
-
 	protected void execute() {
 		Robot.intake.setSpeed(mSpeed);
-		if(Robot.comp.enabled()){
-			// Robot.comp.stop();
-		}
-		// SmartDashboard.putNumber("Intake Speed: ",mSpeed);
 	}
 
 	@Override
 	protected boolean isFinished() {
-		// TODO Auto-generated method stub
 		return true;
-	}
-
-	protected void end() {
-		// mSpeed = 0;
-		// if(!Robot.comp.enabled()){
-		// 	Robot.comp.start();
-		// }
 	}
 
 }

@@ -208,8 +208,6 @@ public class Constants {
 	//GameField
 	public static final double TARGET_PORT_HEIGHT = 39.125; //inches | front of rocket ship
 	public static final double TARGET_HATCH_HEIGHT = 31.0; //inches  | rocket side && loading station && cargo ship
-	public static final double TARGET_PORT_RANGE = 1.0; // inches away from target for scoring
-	public static final double TARGET_HATCH_RANGE = 23.0; // inches away from target for scoring
 	
 	//LimeLight
 	public static final double CAMERA_HEIGHT = 32.00;
@@ -219,9 +217,19 @@ public class Constants {
 	public static final double VERTICAL_FOV = 41; // degrees
 	
 	//Drivetrain
+	// public static final double DESIRED_STOPPING_DISTANCE = 23.0; // inches away from target
+	public static final double DESIRED_STOPPING_DISTANCE = 35; //inches
+	public static final double ACCEPTED_DISTANCE_ERROR = 1; //inches
+	public static final double MIN_DISTANCE_THRESHOLD = 5; // inches threshold to enable feed forward added
+
+	public static final double DESIRED_STOPPING_ANGLE = 0.2; //degrees
+	public static final double ACCEPTED_ANGLE_ERROR = 1.0; //degrees
+	public static final double MIN_ANGLE_THRESHOLD = 2.5; // inches threshold to enable feed forward added
 	
 	public static final double KpDrive = 0.0100; // 0.0175 Proportional control constant for steering
+	public static final double KfDrive = 0.0050; // 0.0175 Proportional control constant for steering
 	public static final double KpSteer = 0.0100; // 0.04 Proportional control constant for steering
+	public static final double KfSteer = 0.0050; // 0.04 Proportional control constant for steering
 
 
     

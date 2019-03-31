@@ -3,6 +3,7 @@ package frc.controller;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import frc.util.Constants;
+
 //TODO Code support for Start/Back/XBox(?) buttons.
 /**
  * This is a wrapper for the WPILib Joystick class that represents an XBox
@@ -11,12 +12,14 @@ import frc.util.Constants;
  * @author frc1675
  */
 public class GamePad {
-	public static GamePad instance = null;
+	private static GamePad instance = null;
+
 	public static GamePad getInstance() {
 		if (instance == null)
 			instance = new GamePad(Constants.OPERATOR_GAMEPAD_USB_ID);
 		return instance;
 	}
+
 	private Joystick stick;
 
 	private GamePad(int portNumber) {
