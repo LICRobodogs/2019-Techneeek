@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
 		// CameraServer.getInstance().startAutomaticCapture();
 		elevator.elevatorLead.setSelectedSensorPosition(4000); // UNCOMMENT FOR MATCH
 		arm.setStartConfigAngle(); // UNCOMMENT FOR MATCH
+		SmartDashboard.putNumber("ChangeThisVariable",0.0);
 
 	}
 

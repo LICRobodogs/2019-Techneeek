@@ -159,9 +159,10 @@ public class OI {
 	}
 
 	private void initInternalButtons() {		
-		Button getData = new InternalButton();
-		getData.whenPressed(new UseDashBoardVariable());
-		SmartDashboard.putData("GET DA DATAAAA", getData);
+		// Button getData = new InternalButton();
+		// getData.whenPressed(new UseDashBoardVariable());
+		// SmartDashboard.putData("GET DA DATAAAA", getData);
+		SmartDashboard.putData("Set Manual Arm Config", new UseDashBoardVariable());
 
 		Button zeroArm = new InternalButton();
 		zeroArm.whenPressed(new ZeroArm());

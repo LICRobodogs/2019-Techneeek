@@ -360,6 +360,17 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		armTalon.setSelectedSensorPosition(Constants.START_CONFIG_ANGLE);
 	}
 
+	public void setStartConfigAngle(int position) {
+		System.out.println("Entering");
+		 boolean setSucceeded;
+		 int retryCounter = 0;
+		 do {
+			 setSucceeded = true;
+			 setSucceeded &= armTalon.setSelectedSensorPosition(position) == ErrorCode.OK;
+		 } while (!setSucceeded && retryCounter++ < 5);
+		 System.out.println("Exiting: "+retryCounter);
+	}
+
 	public void setControlMode(ArmControlMode mode) {
 		this.controlMode = mode;
 		// resetArmEncoder();
