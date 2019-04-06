@@ -12,8 +12,10 @@ public class DriveAndScoreHatch extends CommandGroup {
         addSequential(new WaitCommand(0.5));
         addSequential(new DriveAndSteerToTarget());
         // addSequential(new ScoreHatch());
-        addSequential(new BlinkLED());
-        addSequential(new WaitCommand(0.75));
-        addSequential(new OnLED());
+        // addSequential(new BlinkLED());
+        // addSequential(new WaitCommand(0.55));
+        // addSequential(new OnLED());
+
+        
 	}
 }

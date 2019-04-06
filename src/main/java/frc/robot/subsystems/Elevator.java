@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -193,6 +194,19 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		boolean withinBounds = position <= upPositionLimit && position >= downPositionLimit;
 		return withinBounds;
 	}
+	public void zeroElevator() {
+		this.setElevatorPosition(0);
+	}
+	public void setElevatorPosition(int position) {
+		System.out.println("Entering");
+		 boolean setSucceeded;
+		 int retryCounter = 0;
+		 do {
+			 setSucceeded = true;
+			 setSucceeded &= elevatorLead.setSelectedSensorPosition(position) == ErrorCode.OK;
+		 } while (!setSucceeded && retryCounter++ < 5);
+		 System.out.println("Exiting: "+retryCounter);
+	}
 
 	// public boolean isSensorPresent(){
 	// 	return elevatorLead.isAlive()
@@ -305,6 +319,7 @@ public class Elevator extends Subsystem implements IPositionControlledSubsystem 
 		SmartDashboard.putNumber("Elevator Velocity", this.getCurrentVelocity());
 		SmartDashboard.putNumber("Elevator Current", this.getCurrentDraw());
 		SmartDashboard.putNumber("Elevator Voltage", this.elevatorLead.getMotorOutputVoltage());
+		SmartDashboard.putNumber("SUCC Output Voltage", this.climbSUCC.getOutputCurrent());
 	}
 
 	@Override

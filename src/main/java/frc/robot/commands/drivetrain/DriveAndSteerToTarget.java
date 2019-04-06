@@ -30,11 +30,13 @@ public class DriveAndSteerToTarget extends Command {
 
 	protected boolean isFinished() {
 		return lostCount >= 5 || (Robot.limeLight.isAtTarget() && Robot.limeLight.isAimedAtTarget());
+		// return lostCount >= 5 || (Robot.limeLight.isAtTarget());
 	}
 
 	protected void end() {
 		System.out.println("done driving command");
 		Robot.driveTrain.setSpeed(0);
+		Robot.limeLight.setDesiredYaw(0);
 	}
 
 	protected void interrupted() {

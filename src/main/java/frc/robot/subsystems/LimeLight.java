@@ -18,6 +18,8 @@ public class LimeLight extends Subsystem {
             tHor_length, tVert_length, getPipe, camtran;
     private NetworkTableEntry ledMode, camMode, setPipe, streamMode, snapshot;
     private static LimeLight instance = null;
+    Double[] previosValues = new Double[6];
+    double desiredYaw = 0;
 
     public static enum LED {
         DEFAULT, OFF, BLINK, ON
@@ -35,6 +37,7 @@ public class LimeLight extends Subsystem {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         initRetrievableData();
         initSetableData();
+        desiredYaw = 0.0;
     }
 
     private void initRetrievableData() {
@@ -77,12 +80,12 @@ public class LimeLight extends Subsystem {
      */
     public void postAllData() {
         SmartDashboard.putNumber("Valid Target", tValid.getDouble(0.0));
-        SmartDashboard.putNumber("LimelightSkew", tSkew.getDouble(0.0));
-        SmartDashboard.putNumber("LimelightX", tX_offset.getDouble(0.0));
-        SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
-        SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
+        // SmartDashboard.putNumber("LimelightSkew", tSkew.getDouble(0.0));
+        // SmartDashboard.putNumber("LimelightX", tX_offset.getDouble(0.0));
+        // SmartDashboard.putNumber("LimelightY", tY_offset.getDouble(0.0));
+        // SmartDashboard.putNumber("LimelightArea", tArea.getDouble(0.0));
         Double[] emptyDouble = {};
-        SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
+        // SmartDashboard.putNumberArray("CAMTRAN", camtran.getDoubleArray(emptyDouble));
         SmartDashboard.putNumber("real Distance", getCamtranDistance());
         SmartDashboard.putNumber("real YAW", getCamtranYaw());
     }
@@ -98,6 +101,12 @@ public class LimeLight extends Subsystem {
         Double[] values = getCamtranValues();
         if (values.length != 1)
             return values[4];
+        return 0.0;
+    }
+    public double getCamtranX() {
+        Double[] values = getCamtranValues();
+        if (values.length != 1)
+            return values[0];
         return 0.0;
     }
 
@@ -122,8 +131,28 @@ public class LimeLight extends Subsystem {
         return getCamtranValues().length > 1;
     }
 
+    // public void drive_and_steer() {
+    //     if (isNeedingTurn()) {
+    //         if(getCamtranX()>0) {
+    //             Robot.driveTrain.setSpeed(-.2, .2);
+    //         } else {
+    //             Robot.driveTrain.setSpeed(.2, -.2);
+    //         }
+    //     } else {
+    //         Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), 0.7 * -getSteeringAdjustment());
+    //     }
+    // }
     public void drive_and_steer() {
-        Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), -getSteeringAdjustment());
+        
+            // Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), 0.7 * -(getSteeringAdjustment()*getCamtranX()));
+            // Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), Constants.KpSteer * -getCamtranX());
+            Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), Constants.KpSteer * -getSteeringAdjustment());
+    }
+    public void setDesiredYaw(double desired) {
+        this.desiredYaw = desired;
+    }
+    public double getDesiredYaw() {
+        return (this.desiredYaw == 0.0) ? -getCamtranYaw() : this.desiredYaw;
     }
 
     // TODO try with feed forward
@@ -135,10 +164,31 @@ public class LimeLight extends Subsystem {
         double driving_adjust = distance_error * Constants.KpDrive;
         return driving_adjust;
     }
-
+/*
     public double getSteeringAdjustment() {
         if (isAimedAtTarget()) {
             return 0.0;
+        }
+        double steer_adjust = getCamtranYaw() * Constants.KpSteer;
+        return steer_adjust;
+    }
+    */
+    public boolean isNeedingTurn() {
+        double x = getCamtranX();
+        double yaw = getCamtranYaw();
+        double distance = getCamtranDistance();
+        SmartDashboard.putNumber("X: Camtran",x);
+
+        
+        // return (((yaw > 0) != (x > 0)) || ((Math.abs(x) > 4) && distance > 40)) ;
+        return ((yaw > 0) != (x > 0));
+    }
+
+    public double getSteeringAdjustment() {
+        double x = getCamtranX();
+        double yaw = getCamtranYaw();
+        if ((yaw > 0) == (x > 0)) {
+            return 0;
         }
         double steer_adjust = getCamtranYaw() * Constants.KpSteer;
         return steer_adjust;

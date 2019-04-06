@@ -14,12 +14,14 @@ import frc.robot.commands.KillAll;
 import frc.robot.commands.arm.ArmPistonPosition;
 import frc.robot.commands.arm.ArmToggleFront;
 import frc.robot.commands.arm.KillArm;
+import frc.robot.commands.arm.SetArmPosition;
 import frc.robot.commands.arm.ZeroArm;
 import frc.robot.commands.drivetrain.KillDrive;
 import frc.robot.commands.elevator.EngageClimber;
 import frc.robot.commands.elevator.EngageGravity;
 import frc.robot.commands.elevator.KillElevator;
 import frc.robot.commands.elevator.PrepareClimber;
+import frc.robot.commands.elevator.SetElevatorPosition;
 import frc.robot.commands.elevator.ZeroElevator;
 import frc.robot.commands.intake.IntakePositionAvoidCollision;
 import frc.robot.commands.intake.IntakeSpeed;
@@ -27,7 +29,7 @@ import frc.robot.commands.intake.IntakeSpeedOff;
 import frc.robot.commands.intake.IntakeSuction;
 import frc.robot.commands.limelight.StartDriverCam;
 import frc.robot.commands.limelight.StartVisionCam;
-import frc.robot.commands.misc.UseDashBoardVariable;
+import frc.robot.commands.misc.SetLightFromDash;
 import frc.robot.commands.score.ScoreBottomHeight;
 import frc.robot.commands.score.ScoreHatch;
 import frc.robot.commands.score.ScoreMiddleHeight;
@@ -162,15 +164,24 @@ public class OI {
 		// Button getData = new InternalButton();
 		// getData.whenPressed(new UseDashBoardVariable());
 		// SmartDashboard.putData("GET DA DATAAAA", getData);
-		SmartDashboard.putData("Set Manual Arm Config", new UseDashBoardVariable());
+		SmartDashboard.putData("Set Manual Arm Config", new SetArmPosition());
+		SmartDashboard.putData("Set Manual Elevator Config", new SetElevatorPosition());
+		SmartDashboard.putData("Set LimeLight Ps", new SetLightFromDash());
+		SmartDashboard.putData("Zero-Elevator", new ZeroElevator());
+		SmartDashboard.putData("Zero-Arm", new ZeroArm());
+		SmartDashboard.putData("Driver-Cam", new StartDriverCam());
+		SmartDashboard.putData("Vision-Cam", new StartVisionCam());
 
-		Button zeroArm = new InternalButton();
-		zeroArm.whenPressed(new ZeroArm());
-		SmartDashboard.putData("ZERO Arm", zeroArm);
 
-		Button armDriving = new InternalButton();
-		armDriving.whenPressed(new DrivingPositionAvoidCollision());
-		SmartDashboard.putData("Arm Driving", armDriving);
+		// Button armDriving = new InternalButton();
+		// armDriving.whenPressed(new DrivingPositionAvoidCollision());
+		// SmartDashboard.putData("Arm Driving", armDriving);
+		SmartDashboard.putData("Arm Driving", new DrivingPositionAvoidCollision());
+
+		
+		// Button zeroArm = new InternalButton();
+		// zeroArm.whenPressed(new ZeroArm());
+		// SmartDashboard.putData("ZERO Arm", zeroArm);
 
 		Button killArm = new InternalButton();
 		killArm.whenPressed(new KillArm());
@@ -188,17 +199,17 @@ public class OI {
 		killAll.whenPressed(new KillAll());
 		SmartDashboard.putData("KILL ALL", killAll);
 
-		Button zeroElevator = new InternalButton();
-		zeroElevator.whenPressed(new ZeroElevator());
-		SmartDashboard.putData("Zero Elevator", zeroElevator);
+		// Button zeroElevator = new InternalButton();
+		// zeroElevator.whenPressed(new ZeroElevator());
+		// SmartDashboard.putData("Zero Elevator", zeroElevator);
 
-		Button driverCam = new InternalButton();
-		driverCam.whenPressed(new StartDriverCam());
-		SmartDashboard.putData("Driver Cam", driverCam);
+		// Button driverCam = new InternalButton();
+		// driverCam.whenPressed(new StartDriverCam());
+		// SmartDashboard.putData("Driver Cam", driverCam);
 
-		Button visionCam = new InternalButton();
-		visionCam.whenPressed(new StartVisionCam());
-		SmartDashboard.putData("Driver Cam", visionCam);
+		// Button visionCam = new InternalButton();
+		// visionCam.whenPressed(new StartVisionCam());
+		// SmartDashboard.putData("Driver Cam", visionCam);
 	}
 
 	private void initDiagnosticButtons() {

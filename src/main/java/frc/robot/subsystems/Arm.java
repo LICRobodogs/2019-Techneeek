@@ -51,7 +51,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private int homePosition = 50;
 	private int restPosition = 950;
 	private int safePosition = 1000;
-	private int drivingPosition = 950;
+	private int drivingPosition = 830;
 	private int maxUpTravelPosition = 1850;
 	private int collectPosition = 350;
 	private int frontHatchPosition = 100;
@@ -71,7 +71,7 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 	private SRXGains downGains = new SRXGains(WRIST_PROFILE_DOWN, Constants.mArmDownKp, Constants.mArmDownKi, Constants.mArmDownKd, Constants.mArmDownKf, Constants.mArmDownIZone);
 
 	private MotionParameters upMotionParameters = new MotionParameters(1000, 1000, upGains);
-	private MotionParameters downMotionParameters = new MotionParameters(1000, 1000, downGains);
+	private MotionParameters downMotionParameters = new MotionParameters(500, 500, downGains);
 	
 	public double mAngle;
 	

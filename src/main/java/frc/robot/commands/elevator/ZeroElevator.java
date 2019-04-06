@@ -8,18 +8,15 @@ import frc.robot.Robot;
  *
  */
 public class ZeroElevator extends Command {
+    public ZeroElevator() {
+        requires(Robot.elevator);
+    }
 
     
     protected void initialize() {
-        Robot.elevator.elevatorLead.setSelectedSensorPosition(4000);
+        Robot.elevator.zeroElevator();
 
     }
-
-    
-    protected void execute() {
-        Robot.elevator.elevatorLead.setSelectedSensorPosition(4000);
-    }
-
     
     protected boolean isFinished() {
         return true;

@@ -84,11 +84,12 @@ public class Constants {
 	public static double mArmDownKf = 0.0;
 	public static int mArmDownIZone = (int) (1023.0 / mArmDownKp);
 
+
 	public static double mArmRampRate = .25;
     public static final double ARM_MOTOR_VOLTAGE_PERCENT_LIMIT = 4.0 / 12.0;
     public static final double ARM_NATIVE_TO_ANGLE_FACTOR = 10.0;
-	public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
-	// public static final int START_CONFIG_ANGLE = 1900; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
+	// public static final int START_CONFIG_ANGLE = 0; //FOR TESTING WHILE ROBOT INTAKE IS ON GROUND
+	public static final int START_CONFIG_ANGLE = 1850; //UNCOMMENT IF YOU WANT TO SIMULATE FULL MATCH
 	public static final double ARM_HOLDING_PWM = 0.3;
 
 	//Elevator
@@ -218,18 +219,19 @@ public class Constants {
 	
 	//Drivetrain
 	// public static final double DESIRED_STOPPING_DISTANCE = 23.0; // inches away from target
-	public static final double DESIRED_STOPPING_DISTANCE = 35; //inches
+	public static final double DESIRED_STOPPING_DISTANCE = 25; //inches
 	public static final double ACCEPTED_DISTANCE_ERROR = 1; //inches
 	public static final double MIN_DISTANCE_THRESHOLD = 5; // inches threshold to enable feed forward added
 
 	public static final double DESIRED_STOPPING_ANGLE = 0.2; //degrees
-	public static final double ACCEPTED_ANGLE_ERROR = 1.0; //degrees
+	public static final double ACCEPTED_ANGLE_ERROR = 0.2; //degrees
 	public static final double MIN_ANGLE_THRESHOLD = 2.5; // inches threshold to enable feed forward added
 	
-	public static final double KpDrive = 0.0100; // 0.0175 Proportional control constant for steering
+	public static double KpDrive = 0.008; // 0.0175 Proportional control constant for steering
 	public static final double KfDrive = 0.0050; // 0.0175 Proportional control constant for steering
-	public static final double KpSteer = 0.0100; // 0.04 Proportional control constant for steering
-	public static final double KfSteer = 0.0050; // 0.04 Proportional control constant for steering
+	public static double KpSteer = 0.0180; // 0.04 Proportional control constant for steering
+	public static final double KfSteer = 0.000; // 0.04 Proportional control constant for steering
+	public static double kpTEST = -10.0;
 
 
     

@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.intake.IntakeSuction;
+import frc.robot.commands.limelight.StartDriverCam;
+import frc.robot.commands.limelight.StartVisionCam;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
@@ -72,24 +74,28 @@ public class Robot extends TimedRobot {
 		// CameraServer.getInstance().startAutomaticCapture();
 		elevator.elevatorLead.setSelectedSensorPosition(4000); // UNCOMMENT FOR MATCH
 		arm.setStartConfigAngle(); // UNCOMMENT FOR MATCH
-		SmartDashboard.putNumber("ChangeThisVariable",0.0);
+		SmartDashboard.putNumber("ArmVariable", 0.0);
+		SmartDashboard.putNumber("ElevatorVariable", 4000.0);
+		SmartDashboard.putNumber("KPSTEER", Constants.KpSteer);
+		SmartDashboard.putNumber("KPDRIVE", Constants.KpDrive);
 
 	}
 
 	@Override
 	public void robotPeriodic() {
-		SmartDashboard.putNumber("SUCC Output Voltage", elevator.climbSUCC.getOutputCurrent());
 		updateStatus();
 	}
 
 	@Override
 	public void autonomousInit() {
+		Scheduler.getInstance().removeAll();
 		new IntakeSuction(IntakeState.SUCC_IN).start();
-		elevator.elevatorLead.setSelectedSensorPosition(20700);
+		new StartDriverCam().start();
+		elevator.elevatorLead.setSelectedSensorPosition(21000);
 		arm.setStartConfigAngle();
 	}
 
-	@Override
+	@Override	
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 	}
@@ -99,6 +105,7 @@ public class Robot extends TimedRobot {
 		comp.start();
 		limeLight.setLEID(LED.ON);
 		Scheduler.getInstance().removeAll();
+		new StartVisionCam().start();
 		// Robot.driveTrain.setControlMode(DriveTrainControlMode.JOYSTICK, 0);
 		// arm.setControlMode(ArmControlMode.MANUAL);
 		// driveTrain.setPeriodMs(Constants.kTimeoutMs);
@@ -107,6 +114,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		
 		updateStatus();
 		Scheduler.getInstance().run();
 	}
@@ -137,7 +145,7 @@ public class Robot extends TimedRobot {
 
 	public void updateStatus() {
 		arm.updateStatus(operationMode);
-		driveTrain.updateStatus(operationMode);
+		// driveTrain.updateStatus(operationMode);
 		intake.updateStatus(operationMode);
 		limeLight.postAllData();
 	}

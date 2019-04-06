@@ -13,17 +13,12 @@ public class ZeroArm extends Command {
     }
 
     protected void initialize() {
-
-        System.out.println("Trying to zero arm");
-        // Robot.arm.resetArmEncoderCertainly();
+        System.out.println("THE COMMAND STARTED");
+        Robot.arm.setStartConfigAngle(0);
     }
 
-    protected void execute() {
-        // System.out.println("Trying to zero arm");
-    }
-
+    
     protected boolean isFinished() {
-        // Robot.arm.getCurrentCommand()
         return true;
     }
 
