@@ -19,7 +19,8 @@ public class LimeLight extends Subsystem {
     private NetworkTableEntry ledMode, camMode, setPipe, streamMode, snapshot;
     private static LimeLight instance = null;
     Double[] previosValues = new Double[6];
-    double desiredYaw = 0;
+    double lSpeed = 0;
+    double rSpeed = 0;
 
     public static enum LED {
         DEFAULT, OFF, BLINK, ON
@@ -37,7 +38,8 @@ public class LimeLight extends Subsystem {
         table = NetworkTableInstance.getDefault().getTable("limelight");
         initRetrievableData();
         initSetableData();
-        desiredYaw = 0.0;
+        lSpeed = 0.0;
+        rSpeed = 0.0;
     }
 
     private void initRetrievableData() {
@@ -131,28 +133,17 @@ public class LimeLight extends Subsystem {
         return getCamtranValues().length > 1;
     }
 
-    // public void drive_and_steer() {
-    //     if (isNeedingTurn()) {
-    //         if(getCamtranX()>0) {
-    //             Robot.driveTrain.setSpeed(-.2, .2);
-    //         } else {
-    //             Robot.driveTrain.setSpeed(.2, -.2);
-    //         }
-    //     } else {
-    //         Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), 0.7 * -getSteeringAdjustment());
-    //     }
-    // }
     public void drive_and_steer() {
-        
-            // Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), 0.7 * -(getSteeringAdjustment()*getCamtranX()));
-            // Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), Constants.KpSteer * -getCamtranX());
-            Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), Constants.KpSteer * -getSteeringAdjustment());
+            Robot.driveTrain.arcadeDrive(0.7 * -getDrivingAdjustment(), getSteeringAdjustment());
+            // double steer =  getSteeringAdjustment();
+            // double driving = getDrivingAdjustment();
+            // this.lSpeed += steer + driving;
+            // this.rSpeed -= steer + driving;
+            // Robot.driveTrain.setSpeed(lSpeed, rSpeed);
     }
-    public void setDesiredYaw(double desired) {
-        this.desiredYaw = desired;
-    }
-    public double getDesiredYaw() {
-        return (this.desiredYaw == 0.0) ? -getCamtranYaw() : this.desiredYaw;
+    public void setZeroSpeeds() {
+        this.lSpeed = 0.0;
+        this.rSpeed = 0.0;
     }
 
     // TODO try with feed forward
@@ -164,26 +155,14 @@ public class LimeLight extends Subsystem {
         double driving_adjust = distance_error * Constants.KpDrive;
         return driving_adjust;
     }
-/*
-    public double getSteeringAdjustment() {
-        if (isAimedAtTarget()) {
-            return 0.0;
-        }
-        double steer_adjust = getCamtranYaw() * Constants.KpSteer;
-        return steer_adjust;
-    }
-    */
-    public boolean isNeedingTurn() {
-        double x = getCamtranX();
-        double yaw = getCamtranYaw();
-        double distance = getCamtranDistance();
-        SmartDashboard.putNumber("X: Camtran",x);
-
-        
-        // return (((yaw > 0) != (x > 0)) || ((Math.abs(x) > 4) && distance > 40)) ;
-        return ((yaw > 0) != (x > 0));
-    }
-
+    // public boolean isNeedingTurn() {
+    //     double x = getCamtranX();
+    //     double yaw = getCamtranYaw();
+    //     double distance = getCamtranDistance();
+    //     SmartDashboard.putNumber("X: Camtran",x);
+    //     return ((yaw > 0) != (x > 0));
+    // }
+/* old
     public double getSteeringAdjustment() {
         double x = getCamtranX();
         double yaw = getCamtranYaw();
@@ -192,6 +171,22 @@ public class LimeLight extends Subsystem {
         }
         double steer_adjust = getCamtranYaw() * Constants.KpSteer;
         return steer_adjust;
+    }
+    */
+    public double getSteeringAdjustment() {
+        double tx = this.tX_offset.getDouble(-69.0);
+        double heading_error = -tx;
+        double steer_adjust = 0.0;
+        // if (tx == -69.0) {
+        //     return 0.0;
+        // }
+        if (tx > 1.0) {
+            steer_adjust = heading_error * Constants.KpSteer - Constants.KfSteer;
+        } else if (tx < 1.0) {
+            steer_adjust = heading_error * Constants.KpSteer + Constants.KfSteer;
+        }
+        return steer_adjust;
+        
     }
 
     public void driveStraightToTarget() {

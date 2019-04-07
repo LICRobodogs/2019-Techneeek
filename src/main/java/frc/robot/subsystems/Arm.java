@@ -452,6 +452,15 @@ public class Arm extends Subsystem implements IPositionControlledSubsystem {
 		}else{
 			armSide = ArmSide.BACK;
 		}
+
+		if(getCurrentPosition() > 2500){
+			armTalon.setSelectedSensorPosition(-500);
+			if(armTalon.hasResetOccurred()){
+				System.out.println("ARM TALON RESET");
+			}else{
+				System.out.println("ARM POSITION LOST");
+			}
+		}
 	}
 
 	@Override

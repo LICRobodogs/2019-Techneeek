@@ -219,7 +219,7 @@ public class Constants {
 	
 	//Drivetrain
 	// public static final double DESIRED_STOPPING_DISTANCE = 23.0; // inches away from target
-	public static final double DESIRED_STOPPING_DISTANCE = 25; //inches
+	public static final double DESIRED_STOPPING_DISTANCE = 26; //inches
 	public static final double ACCEPTED_DISTANCE_ERROR = 1; //inches
 	public static final double MIN_DISTANCE_THRESHOLD = 5; // inches threshold to enable feed forward added
 
@@ -228,9 +228,11 @@ public class Constants {
 	public static final double MIN_ANGLE_THRESHOLD = 2.5; // inches threshold to enable feed forward added
 	
 	public static double KpDrive = 0.008; // 0.0175 Proportional control constant for steering
-	public static final double KfDrive = 0.0050; // 0.0175 Proportional control constant for steering
-	public static double KpSteer = 0.0180; // 0.04 Proportional control constant for steering
-	public static final double KfSteer = 0.000; // 0.04 Proportional control constant for steering
+	public static final double KfDrive = 0.000; // 0.0175 Proportional control constant for steering
+	public static double KpSteer = 0.011
+	
+	; // 0.04 Proportional control constant for steering
+	public static final double KfSteer = 0.005; // 0.04 Proportional control constant for steering
 	public static double kpTEST = -10.0;
 
 
