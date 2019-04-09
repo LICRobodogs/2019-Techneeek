@@ -2,7 +2,6 @@ package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.LimeLight;
 
 /**
  * Command to drive to a hatch
@@ -18,7 +17,6 @@ public class DriveAndSteerToTarget extends Command {
 		lostCount = 0;
 		setTimeout(5.0);
 		System.out.println("starting command");
-		Robot.limeLight.setZeroSpeeds();
 	}
 
 	protected void execute() {
